@@ -5,47 +5,302 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Customer Connect Desk</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
+      --primary-subtle: #eff6ff;
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      --card-bg: rgba(255, 255, 255, 0.96);
       --text: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
-      --radius: 14px;
+      --radius: 20px;
+      --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.2);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1.25rem; }
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; width: 100%; max-width: 440px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
-    h1 { font-size: 1.35rem; font-weight: 700; text-align: center; }
-    .subtitle { font-size: 0.85rem; color: var(--text-muted); text-align: center; margin: 0.25rem 0 1.25rem; }
-    .hidden { display: none !important; }
-    .auth-section { display: flex; justify-content: center; margin-top: 1rem; }
-    .user-profile { display: flex; align-items: center; gap: 0.75rem; background: #eff6ff; padding: 0.75rem 1rem; border-radius: 10px; margin-bottom: 1.25rem; }
-    .user-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-    .user-meta h4 { font-size: 0.9rem; }
-    .user-meta p { font-size: 0.75rem; color: var(--text-muted); }
-    .form-group { margin-bottom: 1rem; }
-    label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; }
-    input, textarea { width: 100%; padding: 0.7rem 0.85rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; outline: none; }
-    input:focus, textarea:focus { border-color: var(--primary); }
-    .row { display: flex; gap: 0.75rem; }
-    .row .form-group { flex: 1; }
-    .btn { display: block; width: 100%; padding: 0.8rem; border-radius: 8px; font-weight: 600; text-align: center; cursor: pointer; border: none; font-size: 0.95rem; text-decoration: none; }
-    .btn-primary { background: var(--primary); color: #fff; margin-top: 0.5rem; }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-review { background: #facc15; color: #713f12; margin: 0.75rem 0; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; }
-    .btn-review:hover { background: #eab308; }
-    .review-box { text-align: center; padding: 1rem 0; }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.25rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: var(--radius);
+      padding: 2.25rem 2rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      animation: cardEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #2563eb, #38bdf8, #facc15);
+    }
+
+    @keyframes cardEntrance {
+      from { opacity: 0; transform: translateY(16px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.85rem;
+      background: var(--primary-subtle);
+      color: var(--primary);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.65rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #0f172a;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      font-weight: 500;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .auth-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 0 0.5rem;
+      gap: 1rem;
+    }
+
+    .auth-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(37, 99, 235, 0.15);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 0.75rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: linear-gradient(135deg, #f0f7ff 0%, #f8fafc 100%);
+      padding: 0.85rem 1.15rem;
+      border-radius: 14px;
+      margin-bottom: 1.5rem;
+      border: 1px solid #dbeafe;
+    }
+
+    .user-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+      flex-shrink: 0;
+    }
+
+    .user-meta h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .user-meta p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+      color: #334155;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.8rem 0.95rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.92rem;
+      outline: none;
+      background: #f8fafc;
+      color: var(--text);
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .row {
+      display: flex;
+      gap: 0.85rem;
+    }
+
+    .dob-inputs {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .dob-inputs input {
+      text-align: center;
+      padding: 0.8rem 0.3rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.9rem;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      margin-top: 0.75rem;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-review {
+      background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);
+      color: #713f12;
+      font-weight: 800;
+      border: 1px solid #eab308;
+      box-shadow: 0 4px 12px rgba(234, 179, 8, 0.25);
+    }
+
+    .btn-review:hover {
+      background: linear-gradient(135deg, #fde047 0%, #eab308 100%);
+    }
+
+    .review-callout {
+      background: #fffbeb;
+      border: 1px dashed #f59e0b;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.15rem;
+      font-size: 0.78rem;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      line-height: 1.35;
+    }
+
+    .review-callout span {
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
 
 <div class="card">
-  <h1>Memon Lock Center</h1>
-  <p class="subtitle">Quick Digital Check-In & Service Records</p>
+  <div class="brand-header">
+    <div class="brand-badge">⚡ Quick Check-In</div>
+    <h1>Memon Lock Center</h1>
+    <p class="subtitle">Digital Service Desk & Review Rewards</p>
+  </div>
 
   <!-- Step 1: Google Sign-In -->
   <div id="signin-view" class="auth-section">
@@ -55,27 +310,35 @@
          data-auto_prompt="false">
     </div>
     <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with"></div>
+    <p class="auth-hint">Sign in with your Google account to proceed</p>
   </div>
 
   <!-- Loading State -->
-  <div id="loading-view" class="hidden" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">
-    Checking records...
+  <div id="loading-view" class="hidden" style="text-align: center; padding: 2rem 0; color: var(--text-muted);">
+    <div class="loading-spinner"></div>
+    <p style="font-weight: 600; font-size: 0.9rem;">Checking records, please wait...</p>
   </div>
 
-  <!-- Step 2A: Returning Customer (Review Only) -->
-  <div id="returning-view" class="hidden review-box">
+  <!-- Step 2A: Returning Customer Screen -->
+  <div id="returning-view" class="hidden">
     <div class="user-profile">
       <div class="user-avatar" id="returning-avatar">M</div>
-      <div class="user-meta" style="text-align: left;">
+      <div class="user-meta">
         <h4 id="returning-name">Customer</h4>
-        <p>Already Registered</p>
+        <p>Verified Customer</p>
       </div>
     </div>
-    <p style="font-size: 0.9rem; margin-bottom: 0.75rem;">Thanks for visiting us again! Please take 5 seconds to rate us on Google:</p>
-    <a id="google-review-btn-1" href="https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review" target="_blank" class="btn btn-review">
-      ⭐ Leave a Google Review
-    </a>
-    <button class="btn btn-primary" onclick="completeQuickVisit()">Check-in Complete</button>
+
+    <div class="review-callout">
+      <span>⭐</span>
+      <div>
+        <strong>Welcome back!</strong> Submitting will open Google Reviews so you can share your quick feedback.
+      </div>
+    </div>
+
+    <button id="returning-btn" class="btn btn-primary" onclick="completeQuickVisit()">
+      Complete Check-In & Rate
+    </button>
   </div>
 
   <!-- Step 2B: New Customer Onboarding Form -->
@@ -94,31 +357,36 @@
     </div>
 
     <div class="row">
-      <div class="form-group">
-        <label>Date of Birth *</label>
-        <input type="date" id="user-dob" required onchange="calculateAccurateAge()" />
+      <div class="form-group" style="flex: 2.2;">
+        <label>Date of Birth (DD / MM / YYYY) *</label>
+        <div class="dob-inputs">
+          <input type="tel" id="dob-day" placeholder="DD" maxlength="2" pattern="[0-9]{1,2}" required oninput="validateAndCalculateAge()" />
+          <input type="tel" id="dob-month" placeholder="MM" maxlength="2" pattern="[0-9]{1,2}" required oninput="validateAndCalculateAge()" />
+          <input type="tel" id="dob-year" placeholder="YYYY" maxlength="4" pattern="[0-9]{4}" required oninput="validateAndCalculateAge()" />
+        </div>
       </div>
-      <div class="form-group" style="max-width: 90px;">
+      <div class="form-group" style="flex: 1; max-width: 85px;">
         <label>Age</label>
-        <input type="text" id="user-age" readonly placeholder="Auto" />
+        <input type="text" id="user-age" readonly placeholder="Auto" style="background: #f1f5f9; font-weight: 700; text-align: center;" />
       </div>
     </div>
 
-    <div class="form-group">
-      <label>Support us with a 5★ Review (Optional)</label>
-      <a href="https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review" target="_blank" class="btn btn-review">
-        ⭐ Rate Us On Google
-      </a>
+    <div class="review-callout">
+      <span>⭐</span>
+      <div>
+        Clicking <strong>Complete Check-In</strong> saves your record and opens our Google Review page in a new tab.
+      </div>
     </div>
 
-    <button type="submit" id="submit-btn" class="btn btn-primary">Complete Check-In</button>
+    <button type="submit" id="submit-btn" class="btn btn-primary">
+      Complete Check-In & Review
+    </button>
   </form>
 </div>
 
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4aac8UybOJCYk4ermw3_24_eHYOwdhx4TvDaE1ZF91l77k5wknyLHT0TkMWY6h8Ef/exec";
-
-  const GOOGLE_REVIEW_URL = "https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review"; // Put your Business Profile review link here
+  const GOOGLE_REVIEW_URL = "https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review";
 
   let currentUser = { name: "", email: "", phone: "", age: "", dob: "" };
 
@@ -137,7 +405,6 @@
     document.getElementById("signin-view").classList.add("hidden");
     document.getElementById("loading-view").classList.remove("hidden");
 
-    // Check backend if customer already exists
     try {
       const res = await fetch(SCRIPT_URL, {
         method: "POST",
@@ -148,13 +415,11 @@
       document.getElementById("loading-view").classList.add("hidden");
 
       if (data.exists) {
-        // Show Returning User Screen (Review only)
         currentUser.phone = data.phone;
         document.getElementById("returning-name").textContent = data.name || currentUser.name;
         document.getElementById("returning-avatar").textContent = (currentUser.name || "C")[0].toUpperCase();
         document.getElementById("returning-view").classList.remove("hidden");
       } else {
-        // Show Registration Form
         document.getElementById("new-name").textContent = currentUser.name;
         document.getElementById("new-email").textContent = currentUser.email;
         document.getElementById("new-avatar").textContent = (currentUser.name || "C")[0].toUpperCase();
@@ -162,36 +427,73 @@
       }
     } catch (err) {
       document.getElementById("loading-view").classList.add("hidden");
-      // Fallback to new user form if network check fails
       document.getElementById("new-user-form").classList.remove("hidden");
     }
   }
 
-  // Exact calendar age calculation
-  function calculateAccurateAge() {
-    const dobVal = document.getElementById("user-dob").value;
-    if (!dobVal) return;
-    const birthDate = new Date(dobVal);
+  function validateAndCalculateAge() {
+    const dayInput = document.getElementById("dob-day");
+    const monthInput = document.getElementById("dob-month");
+    const yearInput = document.getElementById("dob-year");
+
+    if (dayInput.value.length === 2 && document.activeElement === dayInput) monthInput.focus();
+    if (monthInput.value.length === 2 && document.activeElement === monthInput) yearInput.focus();
+
+    const d = parseInt(dayInput.value, 10);
+    const m = parseInt(monthInput.value, 10);
+    const y = parseInt(yearInput.value, 10);
+
+    if (!d || !m || !y || yearInput.value.length < 4 || m < 1 || m > 12 || d < 1 || d > 31) {
+      document.getElementById("user-age").value = "";
+      return;
+    }
+
+    const birthDate = new Date(y, m - 1, d);
+    if (birthDate.getFullYear() !== y || birthDate.getMonth() !== (m - 1) || birthDate.getDate() !== d) {
+      document.getElementById("user-age").value = "";
+      return;
+    }
+
     const today = new Date();
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-    document.getElementById("user-age").value = age >= 0 ? age : "";
-    currentUser.age = age;
-    currentUser.dob = dobVal;
+
+    if (age >= 0 && age <= 120) {
+      document.getElementById("user-age").value = age;
+      currentUser.age = age;
+      currentUser.dob = `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
+    } else {
+      document.getElementById("user-age").value = "";
+    }
   }
 
   async function submitNewUser(e) {
     e.preventDefault();
+
+    const day = document.getElementById("dob-day").value.padStart(2, '0');
+    const month = document.getElementById("dob-month").value.padStart(2, '0');
+    const year = document.getElementById("dob-year").value;
+    const age = document.getElementById("user-age").value;
+
+    if (!age) {
+      alert("Please enter a valid Date of Birth (DD / MM / YYYY).");
+      return;
+    }
+
+    // Auto-open Google Review in a new tab immediately upon submission click
+    // (Opening directly in user click prevents browser popup blockers)
+    window.open(GOOGLE_REVIEW_URL, '_blank');
+
     const btn = document.getElementById("submit-btn");
     btn.disabled = true;
     btn.textContent = "Saving...";
 
     currentUser.phone = document.getElementById("user-phone").value;
-    currentUser.dob = document.getElementById("user-dob").value;
-    currentUser.age = document.getElementById("user-age").value;
+    currentUser.dob = `${day}/${month}/${year}`;
+    currentUser.age = age;
 
     try {
       await fetch(SCRIPT_URL, {
@@ -199,24 +501,32 @@
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ action: "saveUser", ...currentUser })
       });
-      alert("Check-in successful! Thank you.");
+      alert("Check-in successful! Please rate us on the open Google tab. Thank you!");
       location.reload();
     } catch (err) {
       alert("Submission failed. Please check your connection.");
       btn.disabled = false;
-      btn.textContent = "Complete Check-In";
+      btn.textContent = "Complete Check-In & Review";
     }
   }
 
   async function completeQuickVisit() {
+    // Auto-open review tab for returning customer
+    window.open(GOOGLE_REVIEW_URL, '_blank');
+
+    const btn = document.getElementById("returning-btn");
+    btn.disabled = true;
+    btn.textContent = "Saving...";
+
     try {
-      fetch(SCRIPT_URL, {
+      await fetch(SCRIPT_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ action: "logReviewOnly", name: currentUser.name, email: currentUser.email })
       });
     } catch (e) {}
-    alert("Thank you for your visit!");
+
+    alert("Thank you for your visit! Please leave your rating on the open Google tab.");
     location.reload();
   }
 </script>
