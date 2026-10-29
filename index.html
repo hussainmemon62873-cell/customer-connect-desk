@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer Connect Desk | Check-In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+      width: 100%;
+      max-width: 440px;
+      padding: 2rem;
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: #eff6ff;
+      color: var(--primary);
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      margin-bottom: 0.5rem;
+    }
+
+    .brand-header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .brand-header p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .auth-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: #f1f5f9;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .user-profile img {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .user-details h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .user-details p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.35rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      background: #ffffff;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--primary);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      margin-top: 0.5rem;
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-submit:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .success-box {
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+
+    .success-icon {
+      width: 48px;
+      height: 48px;
+      background: #dcfce7;
+      color: var(--success);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .success-box h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-box p {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <main class="card">
+    <div class="brand-header">
+      <span class="badge">Customer Connect Desk</span>
+      <h1 id="shopTitle">Memon Lock Center</h1>
+      <p id="shopSubtitle">Quick Digital Check-In & Service Records</p>
+    </div>
+
+    <!-- Step 1: Google Sign-In -->
+    <div id="stepAuth" class="auth-step">
+      <p style="font-size: 0.85rem; color: var(--text-muted); text-align: center;">
+        Sign in with Google to record your visit and warranty details.
+      </p>
+      <div id="g_id_onload"
+           data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
+           data-context="signin"
+           data-ux_mode="popup"
+           data-callback="handleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-shape="pill"
+           data-theme="outline"
+           data-text="continue_with"
+           data-size="large"
+           data-logo_alignment="left">
+      </div>
+    </div>
+
+    <!-- Step 2: Customer Details Form -->
+    <form id="stepDetails" class="hidden" onsubmit="submitCustomerData(event)">
+      <div class="user-profile">
+        <img id="userPicture" src="" alt="Profile Photo" />
+        <div class="user-details">
+          <h4 id="userName">User Name</h4>
+          <p id="userEmail">user@example.com</p>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="userPhone">WhatsApp / Mobile Number *</label>
+        <input type="tel" id="userPhone" placeholder="Enter 10-digit number" pattern="[0-9]{10}" required />
+      </div>
+
+      <div class="form-group">
+        <label for="visitPurpose">Service Category / Purpose</label>
+        <select id="visitPurpose">
+          <option value="Duplicate Keys / Lock Repair">Duplicate Keys / Lock Repair</option>
+          <option value="New Lock Purchase / Installation">New Lock Purchase / Installation</option>
+          <option value="Digital / Smart Lock Inquiry">Digital / Smart Lock Inquiry</option>
+          <option value="Warranty / Service Check">Warranty / Service Check</option>
+          <option value="General Visit">General Visit</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Notes / Specifications (Optional)</label>
+        <textarea id="notes" rows="2" placeholder="e.g., 2 Godrej keys duplicated"></textarea>
+      </div>
+
+      <button type="submit" id="submitBtn" class="btn-submit">Complete Check-In</button>
+    </form>
+
+    <!-- Step 3: Success Screen -->
+    <div id="stepSuccess" class="success-box hidden">
+      <div class="success-icon">✓</div>
+      <h3>Registered Successfully!</h3>
+      <p>Your details have been saved to the store desk. Thank you for visiting.</p>
+    </div>
+  </main>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4aac8UybOJCYk4ermw3_24_eHYOwdhx4TvDaE1ZF91l77k5wknyLHT0TkMWY6h8Ef/exec";
+
+    let customerPayload = {
+      name: "",
+      email: "",
+      picture: "",
+      phone: "",
+      purpose: "",
+      notes: ""
+    };
+
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64)
+            .split('')
+            .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+        );
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        console.error("JWT decoding failed", e);
+        return null;
+      }
+    }
+
+    function handleCredentialResponse(response) {
+      const data = parseJwt(response.credential);
+      if (!data) return;
+
+      customerPayload.name = data.name || "";
+      customerPayload.email = data.email || "";
+      customerPayload.picture = data.picture || "";
+
+      document.getElementById("userName").textContent = customerPayload.name;
+      document.getElementById("userEmail").textContent = customerPayload.email;
+      document.getElementById("userPicture").src = customerPayload.picture;
+
+      document.getElementById("stepAuth").classList.add("hidden");
+      document.getElementById("stepDetails").classList.remove("hidden");
+    }
+
+    async function submitCustomerData(event) {
+      event.preventDefault();
+      const submitBtn = document.getElementById("submitBtn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Saving...";
+
+      customerPayload.phone = document.getElementById("userPhone").value.trim();
+      customerPayload.purpose = document.getElementById("visitPurpose").value;
+      customerPayload.notes = document.getElementById("notes").value.trim();
+      customerPayload.timestamp = new Date().toLocaleString();
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(customerPayload)
+        });
+
+        document.getElementById("stepDetails").classList.add("hidden");
+        document.getElementById("stepSuccess").classList.remove("hidden");
+      } catch (err) {
+        alert("Submission failed. Please check internet connection.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Complete Check-In";
+      }
+    }
+  </script>
+</body>
+</html>
