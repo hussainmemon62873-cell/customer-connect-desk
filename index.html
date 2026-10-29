@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Customer Connect Desk</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,14 +12,15 @@
     :root {
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
-      --primary-subtle: #eff6ff;
-      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-      --card-bg: rgba(255, 255, 255, 0.98);
+      --primary-glow: rgba(37, 99, 235, 0.2);
+      --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+      --card-bg: #ffffff;
       --text: #0f172a;
       --text-muted: #64748b;
-      --border: #cbd5e1;
-      --radius: 20px;
-      --shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.35);
+      --border: #e2e8f0;
+      --border-focus: #3b82f6;
+      --radius: 24px;
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
     }
 
     * {
@@ -37,18 +38,24 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 1.25rem;
+      padding: 1rem;
     }
 
+    /* Fixed, comfortable viewport card sizing across all phone displays */
     .card {
       background: var(--card-bg);
       border-radius: var(--radius);
-      padding: 2.25rem 2rem;
+      padding: 2.25rem 1.75rem;
       width: 100%;
       max-width: 440px;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     .card::before {
@@ -57,8 +64,8 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 5px;
-      background: linear-gradient(90deg, #2563eb, #38bdf8, #facc15);
+      height: 6px;
+      background: linear-gradient(90deg, #2563eb, #38bdf8, #f59e0b);
     }
 
     .brand-header {
@@ -69,25 +76,26 @@
     .brand-badge {
       display: inline-flex;
       align-items: center;
-      padding: 0.35rem 0.85rem;
-      background: var(--primary-subtle);
+      padding: 0.35rem 0.9rem;
+      background: #eff6ff;
       color: var(--primary);
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 700;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin-bottom: 0.65rem;
+      margin-bottom: 0.6rem;
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       font-weight: 800;
-      color: #0f172a;
       letter-spacing: -0.02em;
+      color: #0f172a;
     }
 
     .subtitle {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: var(--text-muted);
       margin-top: 0.25rem;
       font-weight: 500;
@@ -101,25 +109,36 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 1.5rem 0 0.5rem;
-      gap: 1rem;
+      justify-content: center;
+      flex-grow: 1;
+      gap: 1.25rem;
+      padding: 2rem 0;
     }
 
     .auth-hint {
-      font-size: 0.82rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
       font-weight: 500;
+      text-align: center;
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      padding: 3rem 0;
     }
 
     .loading-spinner {
-      display: inline-block;
-      width: 34px;
-      height: 34px;
-      border: 3.5px solid rgba(37, 99, 235, 0.15);
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(37, 99, 235, 0.15);
       border-radius: 50%;
       border-top-color: var(--primary);
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 0.75rem;
+      animation: spin 0.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+      margin-bottom: 1rem;
     }
 
     @keyframes spin {
@@ -131,68 +150,69 @@
       align-items: center;
       gap: 0.85rem;
       background: linear-gradient(135deg, #f0f7ff 0%, #f8fafc 100%);
-      padding: 0.85rem 1.15rem;
-      border-radius: 14px;
+      padding: 0.9rem 1.15rem;
+      border-radius: 16px;
       margin-bottom: 1.5rem;
       border: 1px solid #dbeafe;
     }
 
     .user-avatar {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 1.1rem;
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+      font-weight: 800;
+      font-size: 1.15rem;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
       flex-shrink: 0;
     }
 
     .user-meta h4 {
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
       color: var(--text);
     }
 
     .user-meta p {
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       color: var(--text-muted);
       word-break: break-all;
     }
 
     .form-group {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.35rem;
     }
 
     label {
       display: block;
-      font-size: 0.82rem;
+      font-size: 0.88rem;
       font-weight: 700;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.5rem;
       color: #334155;
     }
 
+    /* Premium high-legibility inputs (16px font-size prevents unwanted iOS auto-zoom) */
     input {
       width: 100%;
-      padding: 0.8rem 0.95rem;
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      font-size: 0.92rem;
+      padding: 0.88rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 1rem;
       outline: none;
       background: #f8fafc;
-      color: var(--text);
-      transition: all 0.2s ease;
+      color: #0f172a;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
       font-weight: 600;
     }
 
     input:focus {
-      border-color: var(--primary);
+      border-color: var(--border-focus);
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+      box-shadow: 0 0 0 4px var(--primary-glow);
     }
 
     .phone-wrapper {
@@ -203,26 +223,26 @@
 
     .phone-prefix {
       position: absolute;
-      left: 0.95rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      font-size: 0.92rem;
+      left: 1rem;
+      font-weight: 800;
+      color: #64748b;
+      font-size: 1rem;
       pointer-events: none;
     }
 
     #user-phone {
-      padding-left: 3.2rem;
+      padding-left: 3.5rem;
     }
 
     .input-error {
       border-color: #ef4444 !important;
       background: #fff8f8 !important;
-      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
     }
 
     .field-msg {
-      font-size: 0.75rem;
-      margin-top: 0.35rem;
+      font-size: 0.78rem;
+      margin-top: 0.4rem;
       color: #ef4444;
       font-weight: 600;
       display: none;
@@ -235,12 +255,13 @@
 
     .dob-inputs {
       display: flex;
-      gap: 0.4rem;
+      gap: 0.45rem;
     }
 
     .dob-inputs input {
       text-align: center;
-      padding: 0.8rem 0.25rem;
+      padding: 0.88rem 0.2rem;
+      font-weight: 700;
       letter-spacing: 0.5px;
     }
 
@@ -250,12 +271,12 @@
       justify-content: center;
       gap: 0.5rem;
       width: 100%;
-      padding: 0.9rem;
-      border-radius: 12px;
+      padding: 1rem;
+      border-radius: 14px;
       font-weight: 700;
       cursor: pointer;
       border: none;
-      font-size: 0.95rem;
+      font-size: 1rem;
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -268,8 +289,8 @@
       color: #713f12;
       font-weight: 800;
       border: 1px solid #eab308;
-      box-shadow: 0 4px 14px rgba(234, 179, 8, 0.3);
-      margin-bottom: 0.75rem;
+      box-shadow: 0 4px 14px rgba(234, 179, 8, 0.25);
+      margin-bottom: 0.85rem;
     }
 
     .btn-review:hover {
@@ -279,11 +300,12 @@
     .btn-primary {
       background: linear-gradient(135deg, #2563eb, #1d4ed8);
       color: #fff;
-      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
+      margin-top: 0.5rem;
     }
 
     .btn-primary:hover {
-      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+      box-shadow: 0 6px 22px rgba(37, 99, 235, 0.45);
       background: linear-gradient(135deg, #1d4ed8, #1e40af);
     }
 
@@ -293,12 +315,12 @@
       transform: none;
     }
 
-    /* Modal Styling */
+    /* Modal Overlay & Card */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.65);
-      backdrop-filter: blur(4px);
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(6px);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -314,29 +336,30 @@
 
     .modal-card {
       background: #ffffff;
-      border-radius: 18px;
-      padding: 1.75rem 1.5rem;
+      border-radius: 22px;
+      padding: 2rem 1.75rem;
       width: 100%;
       max-width: 360px;
       text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
       animation: modalScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     @keyframes modalScale {
-      from { transform: scale(0.92); }
+      from { transform: scale(0.94); }
       to { transform: scale(1); }
     }
 
     .modal-icon {
-      width: 52px;
-      height: 52px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      margin: 0 auto 1rem;
+      margin: 0 auto 1.15rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
+      font-size: 1.6rem;
+      font-weight: 800;
     }
 
     .modal-icon.error {
@@ -350,17 +373,17 @@
     }
 
     .modal-title {
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 800;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.4rem;
       color: #0f172a;
     }
 
     .modal-desc {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: var(--text-muted);
       line-height: 1.45;
-      margin-bottom: 1.35rem;
+      margin-bottom: 1.5rem;
     }
   </style>
 </head>
@@ -370,7 +393,7 @@
   <div class="brand-header">
     <div class="brand-badge">⚡ Quick Check-In</div>
     <h1>Memon Lock Center</h1>
-    <p class="subtitle">Digital Service Desk & Review Rewards</p>
+    <p class="subtitle">Digital Service Desk & Registration</p>
   </div>
 
   <!-- Step 1: Google Sign-In -->
@@ -385,9 +408,9 @@
   </div>
 
   <!-- Loading State -->
-  <div id="loading-view" class="hidden" style="text-align: center; padding: 2rem 0; color: var(--text-muted);">
+  <div id="loading-view" class="loading-container hidden">
     <div class="loading-spinner"></div>
-    <p style="font-weight: 600; font-size: 0.9rem;">Checking spreadsheet records...</p>
+    <p style="font-weight: 600; font-size: 0.95rem; color: var(--text-muted);">Checking records, please wait...</p>
   </div>
 
   <!-- Step 2A: Returning Customer Screen -->
@@ -400,13 +423,12 @@
       </div>
     </div>
 
-    <!-- Review button shown first -->
-    <button class="btn btn-review" onclick="openReviewLink('returning')">
-      ⭐ Leave a Google Review
+    <!-- Review is optional; complete button is directly available -->
+    <button type="button" class="btn btn-review" onclick="openReviewLink()">
+      ⭐ Leave a Google Review (Optional)
     </button>
 
-    <!-- Complete button appears only after review clicked -->
-    <button id="returning-complete-btn" class="btn btn-primary hidden" onclick="completeQuickVisit()">
+    <button id="returning-complete-btn" class="btn btn-primary" onclick="completeQuickVisit()">
       Complete Check-In
     </button>
   </div>
@@ -421,54 +443,60 @@
       </div>
     </div>
 
-    <!-- 10-digit WhatsApp number (blocks leading zero) -->
+    <!-- 10-digit WhatsApp Number with prefix -->
     <div class="form-group">
       <label>WhatsApp / Mobile Number *</label>
       <div class="phone-wrapper">
         <span class="phone-prefix">+91</span>
         <input type="tel" id="user-phone" maxlength="10" placeholder="10-digit number" oninput="sanitizePhoneNumber(this)" />
       </div>
-      <div id="phone-err" class="field-msg">Please enter a valid 10-digit mobile number (6-9 start).</div>
+      <div id="phone-err" class="field-msg">Please enter a valid 10-digit mobile number (starting with 6-9).</div>
     </div>
 
-    <!-- DD / MM / YYYY Date of Birth (No strict 18+ limit) -->
+    <!-- Date of Birth: Smooth auto-jump & single backspace across inputs -->
     <div class="row">
       <div class="form-group" style="flex: 2.2;">
         <label>Date of Birth (DD / MM / YYYY) *</label>
         <div class="dob-inputs">
-          <input type="tel" id="dob-day" placeholder="DD" maxlength="2" oninput="validateAndCalculateAge()" />
-          <input type="tel" id="dob-month" placeholder="MM" maxlength="2" oninput="validateAndCalculateAge()" />
-          <input type="tel" id="dob-year" placeholder="YYYY" maxlength="4" oninput="validateAndCalculateAge()" />
+          <input type="tel" id="dob-day" placeholder="DD" maxlength="2"
+                 oninput="handleDobInput(this, 'dob-month')"
+                 onkeydown="handleDobBackspace(event, this, null)" />
+          <input type="tel" id="dob-month" placeholder="MM" maxlength="2"
+                 oninput="handleDobInput(this, 'dob-year')"
+                 onkeydown="handleDobBackspace(event, this, 'dob-day')" />
+          <input type="tel" id="dob-year" placeholder="YYYY" maxlength="4"
+                 oninput="handleDobInput(this, null)"
+                 onkeydown="handleDobBackspace(event, this, 'dob-month')" />
         </div>
-        <div id="dob-err" class="field-msg">Enter a valid birth date.</div>
+        <div id="dob-err" class="field-msg">Please enter a valid past birth date.</div>
       </div>
-      <div class="form-group" style="flex: 1; max-width: 85px;">
+      <div class="form-group" style="flex: 1; max-width: 90px;">
         <label>Age</label>
-        <input type="text" id="user-age" readonly placeholder="Auto" style="background: #f1f5f9; text-align: center;" />
+        <input type="text" id="user-age" readonly placeholder="Auto" style="background: #f1f5f9; text-align: center; font-weight: 700;" />
       </div>
     </div>
 
-    <!-- Google Review Button (Must be clicked before Complete Check-In appears) -->
-    <div class="form-group" style="margin-top: 0.5rem;">
-      <label>Google Review *</label>
-      <button type="button" class="btn btn-review" onclick="openReviewLink('new')">
+    <!-- Optional Review Link (Always allows check-in without forcing review) -->
+    <div class="form-group" style="margin-top: 0.25rem;">
+      <label>Support Us (Optional)</label>
+      <button type="button" class="btn btn-review" onclick="openReviewLink()">
         ⭐ Rate Us On Google
       </button>
     </div>
 
-    <!-- Final Check-In Button (hidden until review button is pressed) -->
-    <button type="button" id="new-complete-btn" class="btn btn-primary hidden" onclick="validateAndSubmitNewUser()">
+    <!-- Final Check-In Button -->
+    <button type="button" id="new-complete-btn" class="btn btn-primary" onclick="validateAndSubmitNewUser()">
       Complete Check-In
     </button>
   </div>
 </div>
 
-<!-- Modal Popup for Errors and Alerts -->
+<!-- Modal Popup for Errors and Confirmations -->
 <div id="app-modal" class="modal-overlay hidden">
   <div class="modal-card">
     <div id="modal-icon" class="modal-icon error">!</div>
-    <div id="modal-title" class="modal-title">Action Required</div>
-    <div id="modal-desc" class="modal-desc">Please complete all required fields.</div>
+    <div id="modal-title" class="modal-title">Notice</div>
+    <div id="modal-desc" class="modal-desc">Message content goes here.</div>
     <button class="btn btn-primary" onclick="closeModal()">Got it</button>
   </div>
 </div>
@@ -478,8 +506,6 @@
   const GOOGLE_REVIEW_URL = "https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review";
 
   let currentUser = { name: "", email: "", phone: "", age: "", dob: "" };
-  let hasReviewedNew = false;
-  let hasReviewedReturning = false;
 
   function showModal(title, message, isError = true) {
     const modal = document.getElementById("app-modal");
@@ -508,7 +534,6 @@
     return JSON.parse(jsonPayload);
   }
 
-  // Prevents leading 0, strips non-numbers, locks length strictly to 10 digits
   function sanitizePhoneNumber(input) {
     let clean = input.value.replace(/\D/g, '');
     if (clean.startsWith('0')) {
@@ -526,16 +551,38 @@
     }
   }
 
+  /* Seamless typing and single-backspace auto-jump across date inputs */
+  function handleDobInput(el, nextId) {
+    el.value = el.value.replace(/\D/g, '');
+    const max = parseInt(el.getAttribute("maxlength"), 10);
+    
+    if (el.value.length >= max && nextId) {
+      const nextEl = document.getElementById(nextId);
+      if (nextEl) nextEl.focus();
+    }
+    validateAndCalculateAge();
+  }
+
+  function handleDobBackspace(e, el, prevId) {
+    if (e.key === "Backspace" && el.value.length === 0 && prevId) {
+      const prevEl = document.getElementById(prevId);
+      if (prevEl) {
+        prevEl.focus();
+        // Remove trailing digit in previous field with single backspace
+        prevEl.value = prevEl.value.slice(0, -1);
+        validateAndCalculateAge();
+      }
+    }
+  }
+
   async function handleCredentialResponse(response) {
     const payload = parseJwt(response.credential);
     currentUser.name = payload.name;
     currentUser.email = payload.email;
 
-    // Immediately hide sign-in and show checking status
     document.getElementById("signin-view").classList.add("hidden");
     document.getElementById("loading-view").classList.remove("hidden");
 
-    // Check backend to see if customer email exists in the sheet
     try {
       const res = await fetch(SCRIPT_URL, {
         method: "POST",
@@ -546,13 +593,11 @@
       document.getElementById("loading-view").classList.add("hidden");
 
       if (data && data.exists) {
-        // Returning user flow: show only name and profile, no phone/dob required
         currentUser.phone = data.phone || "";
         document.getElementById("returning-name").textContent = data.name || currentUser.name;
         document.getElementById("returning-avatar").textContent = (currentUser.name || "C")[0].toUpperCase();
         document.getElementById("returning-view").classList.remove("hidden");
       } else {
-        // New user flow: ask WhatsApp number, date of birth, and age
         document.getElementById("new-name").textContent = currentUser.name;
         document.getElementById("new-email").textContent = currentUser.email;
         document.getElementById("new-avatar").textContent = (currentUser.name || "C")[0].toUpperCase();
@@ -560,75 +605,85 @@
       }
     } catch (err) {
       document.getElementById("loading-view").classList.add("hidden");
-      // Fallback to onboarding if verification fails
       document.getElementById("new-user-form").classList.remove("hidden");
     }
   }
 
-  // Validates any birth date (allows minors, age 0-120)
+  /* Validates calendar dates strictly; blocks future dates, 2200, invalid months/days */
   function validateAndCalculateAge() {
     const dayInput = document.getElementById("dob-day");
     const monthInput = document.getElementById("dob-month");
     const yearInput = document.getElementById("dob-year");
     const dobErr = document.getElementById("dob-err");
 
-    if (dayInput.value.length === 2 && document.activeElement === dayInput) monthInput.focus();
-    if (monthInput.value.length === 2 && document.activeElement === monthInput) yearInput.focus();
-
     const d = parseInt(dayInput.value, 10);
     const m = parseInt(monthInput.value, 10);
     const y = parseInt(yearInput.value, 10);
 
-    if (!d || !m || !y || yearInput.value.length < 4 || m < 1 || m > 12 || d < 1 || d > 31) {
+    // Clear state if inputs are incomplete
+    if (!d || !m || !y || yearInput.value.length < 4) {
       document.getElementById("user-age").value = "";
-      return false;
-    }
-
-    const birthDate = new Date(y, m - 1, d);
-    if (birthDate.getFullYear() !== y || birthDate.getMonth() !== (m - 1) || birthDate.getDate() !== d) {
-      document.getElementById("user-age").value = "";
-      dobErr.style.display = "block";
+      dobErr.style.display = "none";
       return false;
     }
 
     const today = new Date();
+    const currentYear = today.getFullYear();
+
+    // Check year sanity (must not be greater than current year, nor unrealistically old)
+    if (y > currentYear || y < 1900) {
+      document.getElementById("user-age").value = "";
+      dobErr.textContent = `Year must be between 1900 and ${currentYear}.`;
+      dobErr.style.display = "block";
+      return false;
+    }
+
+    if (m < 1 || m > 12 || d < 1 || d > 31) {
+      document.getElementById("user-age").value = "";
+      dobErr.textContent = "Please enter a valid month (1-12) and day (1-31).";
+      dobErr.style.display = "block";
+      return false;
+    }
+
+    // Verify day validity according to leap years and calendar days
+    const birthDate = new Date(y, m - 1, d);
+    if (birthDate.getFullYear() !== y || birthDate.getMonth() !== (m - 1) || birthDate.getDate() !== d) {
+      document.getElementById("user-age").value = "";
+      dobErr.textContent = "Invalid date for the selected month.";
+      dobErr.style.display = "block";
+      return false;
+    }
+
+    // Must be in the past
     if (birthDate > today) {
       document.getElementById("user-age").value = "";
-      dobErr.textContent = "Date of birth cannot be in the future.";
+      dobErr.textContent = "Birth date cannot be in the future.";
       dobErr.style.display = "block";
       return false;
     }
 
     dobErr.style.display = "none";
+
+    // Exact calendar age calculation
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
 
-    // Accepts any age (under 18 or above)
-    if (age >= 0 && age <= 120) {
+       // Accepts any age (minors included)
+    if (age >= 0) {
       document.getElementById("user-age").value = age;
       currentUser.age = age;
       currentUser.dob = `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
       return true;
     }
 
-    document.getElementById("user-age").value = "";
     return false;
   }
 
-  // Opens Google Review in new tab and displays the hidden "Complete Check-In" button
-  function openReviewLink(type) {
+  function openReviewLink() {
     window.open(GOOGLE_REVIEW_URL, '_blank');
-
-    if (type === 'new') {
-      hasReviewedNew = true;
-      document.getElementById("new-complete-btn").classList.remove("hidden");
-    } else {
-      hasReviewedReturning = true;
-      document.getElementById("returning-complete-btn").classList.remove("hidden");
-    }
   }
 
   async function validateAndSubmitNewUser() {
@@ -637,15 +692,14 @@
     const isDobValid = validateAndCalculateAge();
     const ageVal = document.getElementById("user-age").value;
 
-    // Strict validation before submission
     if (!phoneVal || phoneVal.length !== 10 || !/^[6-9]/.test(phoneVal)) {
       phoneInput.classList.add("input-error");
-      showModal("Invalid Phone Number", "Please provide a valid 10-digit mobile number before checking in.");
+      showModal("Invalid Phone Number", "Please enter a valid 10-digit mobile number.");
       return;
     }
 
     if (!isDobValid || !ageVal) {
-      showModal("Invalid Date of Birth", "Please enter a valid Date of Birth (DD / MM / YYYY).");
+      showModal("Invalid Date of Birth", "Please enter a valid birth date (DD / MM / YYYY). Future dates and invalid years are not permitted.");
       return;
     }
 
@@ -662,8 +716,30 @@
         body: JSON.stringify({ action: "saveUser", ...currentUser })
       });
       showModal("Check-In Successful", "Your check-in is complete. Thank you!", false);
-      setTimeout(() => location.reload(), 
-}
+      setTimeout(() => location.reload(), 1600);
+    } catch (err) {
+      showModal("Network Error", "Submission failed. Please check your connection and try again.");
+      btn.disabled = false;
+      btn.textContent = "Complete Check-In";
+    }
+  }
+
+  async function completeQuickVisit() {
+    const btn = document.getElementById("returning-complete-btn");
+    btn.disabled = true;
+    btn.textContent = "Saving...";
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "logReviewOnly", name: currentUser.name, email: currentUser.email })
+      });
+    } catch (e) {}
+
+    showModal("Check-In Complete", "Thank you for visiting us again!", false);
+    setTimeout(() => location.reload(), 1600);
+  }
 </script>
 
 </body>
