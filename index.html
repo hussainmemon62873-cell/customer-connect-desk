@@ -16,362 +16,210 @@
       --border: #e2e8f0;
       --radius: 14px;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 1.25rem;
-    }
-
-    .card {
-      background: var(--card-bg);
-      width: 100%;
-      max-width: 440px;
-      padding: 2rem;
-      border-radius: var(--radius);
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
-      border: 1px solid var(--border);
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-      text-align: center;
-      width: 100%;
-    }
-
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text);
-      text-align: center;
-      margin-bottom: 0.35rem;
-    }
-
-    .subtitle {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      text-align: center;
-      margin-bottom: 1.75rem;
-    }
-
-    .auth-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      background: #f1f5f9;
-      border-radius: 10px;
-      margin-bottom: 1.25rem;
-    }
-
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--primary);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
-
-    .user-info {
-      overflow: hidden;
-    }
-
-    .user-name {
-      font-weight: 600;
-      font-size: 0.95rem;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .user-email {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .form-group {
-      margin-bottom: 1.1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-    }
-
-    .dob-age-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1.1rem;
-    }
-
-    .dob-age-row .form-group {
-      margin-bottom: 0;
-    }
-
-    label {
-      font-size: 0.825rem;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    input, select, textarea {
-      width: 100%;
-      padding: 0.75rem 0.85rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-      background: #fff;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--primary);
-    }
-
-    input[readonly] {
-      background-color: #f1f5f9;
-      color: #334155;
-      font-weight: 600;
-      cursor: not-allowed;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 70px;
-    }
-
-    button.submit-btn {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 0.85rem;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 0.5rem;
-      transition: background 0.2s;
-    }
-
-    button.submit-btn:hover {
-      background: var(--primary-hover);
-    }
-
-    button.submit-btn:disabled {
-      background: #94a3b8;
-      cursor: not-allowed;
-    }
-
-    .hidden {
-      display: none !important;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 1.25rem; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.75rem; width: 100%; max-width: 440px; box-shadow: 0 4px 16px rgba(0,0,0,0.05); }
+    h1 { font-size: 1.35rem; font-weight: 700; text-align: center; }
+    .subtitle { font-size: 0.85rem; color: var(--text-muted); text-align: center; margin: 0.25rem 0 1.25rem; }
+    .hidden { display: none !important; }
+    .auth-section { display: flex; justify-content: center; margin-top: 1rem; }
+    .user-profile { display: flex; align-items: center; gap: 0.75rem; background: #eff6ff; padding: 0.75rem 1rem; border-radius: 10px; margin-bottom: 1.25rem; }
+    .user-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    .user-meta h4 { font-size: 0.9rem; }
+    .user-meta p { font-size: 0.75rem; color: var(--text-muted); }
+    .form-group { margin-bottom: 1rem; }
+    label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; }
+    input, textarea { width: 100%; padding: 0.7rem 0.85rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; outline: none; }
+    input:focus, textarea:focus { border-color: var(--primary); }
+    .row { display: flex; gap: 0.75rem; }
+    .row .form-group { flex: 1; }
+    .btn { display: block; width: 100%; padding: 0.8rem; border-radius: 8px; font-weight: 600; text-align: center; cursor: pointer; border: none; font-size: 0.95rem; text-decoration: none; }
+    .btn-primary { background: var(--primary); color: #fff; margin-top: 0.5rem; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-review { background: #facc15; color: #713f12; margin: 0.75rem 0; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; }
+    .btn-review:hover { background: #eab308; }
+    .review-box { text-align: center; padding: 1rem 0; }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <span class="badge">Customer Connect Desk</span>
-    <h1 id="shop-name">Memon Lock Center</h1>
-    <p class="subtitle" id="shop-tagline">Quick Digital Check-In & Service Records</p>
+<div class="card">
+  <h1>Memon Lock Center</h1>
+  <p class="subtitle">Quick Digital Check-In & Service Records</p>
 
-    <!-- Sign-in Screen -->
-    <div id="signin-view" class="auth-section">
-      <div id="g_id_onload"
-        data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
-        data-callback="handleCredentialResponse"
-        data-auto_prompt="false">
-      </div>
-      <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with" data-shape="rectangular" data-logo_alignment="left"></div>
+  <!-- Step 1: Google Sign-In -->
+  <div id="signin-view" class="auth-section">
+    <div id="g_id_onload"
+         data-client_id="YOUR_COPIED_CLIENT_ID.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
     </div>
-
-    <!-- Check-in Form Screen -->
-    <form id="form-view" class="hidden" onsubmit="submitForm(event)">
-      <div class="user-profile">
-        <div class="avatar" id="user-avatar">?</div>
-        <div class="user-info">
-          <div class="user-name" id="user-name">User Name</div>
-          <div class="user-email" id="user-email">email@example.com</div>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="phone">WhatsApp / Mobile Number *</label>
-        <input type="tel" id="phone" required placeholder="Enter 10-digit number" pattern="[0-9]{10}" />
-      </div>
-
-      <!-- DOB & Auto-Calculated Age Grid -->
-      <div class="dob-age-row">
-        <div class="form-group">
-          <label for="dob">Date of Birth</label>
-          <input type="date" id="dob" onchange="calculateAge()" />
-        </div>
-        <div class="form-group">
-          <label for="age">Age</label>
-          <input type="text" id="age" placeholder="Auto" readonly />
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="category">Service Category / Purpose</label>
-        <select id="category">
-          <option value="Duplicate Keys / Lock Repair">Duplicate Keys / Lock Repair</option>
-          <option value="New Lock Purchase / Installation">New Lock Purchase / Installation</option>
-          <option value="Digital / Smart Lock Inquiry">Digital / Smart Lock Inquiry</option>
-          <option value="Warranty / Service Check">Warranty / Service Check</option>
-          <option value="General Visit" selected>General Visit</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="notes">Notes / Specifications (Optional)</label>
-        <textarea id="notes" placeholder="e.g., 2 Godrej keys duplicated"></textarea>
-      </div>
-
-      <button type="submit" class="submit-btn">Complete Check-In</button>
-    </form>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with"></div>
   </div>
 
-  <script>
-    // 1. Dynamic Shop Name detection from URL (?shop=Name)
-    const urlParams = new URLSearchParams(window.location.search);
-    const customShopName = urlParams.get('shop');
-    if (customShopName) {
-      document.getElementById('shop-name').textContent = customShopName;
-      document.title = customShopName + " - Customer Check-In";
-    }
+  <!-- Loading State -->
+  <div id="loading-view" class="hidden" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">
+    Checking records...
+  </div>
 
-    let customerData = {
-      name: '',
-      email: '',
-      phone: '',
-      dob: '',
-      age: '',
-      shop: customShopName || 'Memon Lock Center'
-    };
+  <!-- Step 2A: Returning Customer (Review Only) -->
+  <div id="returning-view" class="hidden review-box">
+    <div class="user-profile">
+      <div class="user-avatar" id="returning-avatar">M</div>
+      <div class="user-meta" style="text-align: left;">
+        <h4 id="returning-name">Customer</h4>
+        <p>Already Registered</p>
+      </div>
+    </div>
+    <p style="font-size: 0.9rem; margin-bottom: 0.75rem;">Thanks for visiting us again! Please take 5 seconds to rate us on Google:</p>
+    <a id="google-review-btn-1" href="https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review" target="_blank" class="btn btn-review">
+      ⭐ Leave a Google Review
+    </a>
+    <button class="btn btn-primary" onclick="completeQuickVisit()">Check-in Complete</button>
+  </div>
 
-    // 2. Decode Google Sign-In JWT token
-    function parseJwt(token) {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
-    }
+  <!-- Step 2B: New Customer Onboarding Form -->
+  <form id="new-user-form" class="hidden" onsubmit="submitNewUser(event)">
+    <div class="user-profile">
+      <div class="user-avatar" id="new-avatar">M</div>
+      <div class="user-meta">
+        <h4 id="new-name">Customer Name</h4>
+        <p id="new-email">customer@gmail.com</p>
+      </div>
+    </div>
 
-    function handleCredentialResponse(response) {
-      const payload = parseJwt(response.credential);
-      customerData.name = payload.name;
-      customerData.email = payload.email;
+    <div class="form-group">
+      <label>WhatsApp / Mobile Number *</label>
+      <input type="tel" id="user-phone" pattern="[0-9]{10}" placeholder="Enter 10-digit number" required />
+    </div>
 
-      document.getElementById('user-name').textContent = payload.name;
-      document.getElementById('user-email').textContent = payload.email;
-      document.getElementById('user-avatar').textContent = payload.name.charAt(0).toUpperCase();
+    <div class="row">
+      <div class="form-group">
+        <label>Date of Birth *</label>
+        <input type="date" id="user-dob" required onchange="calculateAccurateAge()" />
+      </div>
+      <div class="form-group" style="max-width: 90px;">
+        <label>Age</label>
+        <input type="text" id="user-age" readonly placeholder="Auto" />
+      </div>
+    </div>
 
-      document.getElementById('signin-view').classList.add('hidden');
-      document.getElementById('form-view').classList.remove('hidden');
-    }
+    <div class="form-group">
+      <label>Support us with a 5★ Review (Optional)</label>
+      <a href="https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review" target="_blank" class="btn btn-review">
+        ⭐ Rate Us On Google
+      </a>
+    </div>
 
-    // 3. Accurate Age Calculation Logic
-    function calculateAge() {
-      const dobInput = document.getElementById('dob').value;
-      const ageField = document.getElementById('age');
+    <button type="submit" id="submit-btn" class="btn btn-primary">Complete Check-In</button>
+  </form>
+</div>
 
-      if (!dobInput) {
-        ageField.value = '';
-        customerData.age = '';
-        return;
-      }
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4aac8UybOJCYk4ermw3_24_eHYOwdhx4TvDaE1ZF91l77k5wknyLHT0TkMWY6h8Ef/exec";
 
-      const birthDate = new Date(dobInput);
-      const today = new Date();
+  const GOOGLE_REVIEW_URL = "https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review"; // Put your Business Profile review link here
 
-      let calculatedAge = today.getFullYear() - birthDate.getFullYear();
-      const monthDifference = today.getMonth() - birthDate.getMonth();
+  let currentUser = { name: "", email: "", phone: "", age: "", dob: "" };
 
-      if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
-        calculatedAge--;
-      }
+  function parseJwt(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+    return JSON.parse(jsonPayload);
+  }
 
-      if (calculatedAge >= 0) {
-        ageField.value = calculatedAge;
-        customerData.age = calculatedAge;
+  async function handleCredentialResponse(response) {
+    const payload = parseJwt(response.credential);
+    currentUser.name = payload.name;
+    currentUser.email = payload.email;
+
+    document.getElementById("signin-view").classList.add("hidden");
+    document.getElementById("loading-view").classList.remove("hidden");
+
+    // Check backend if customer already exists
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "checkUser", email: currentUser.email })
+      });
+      const data = await res.json();
+      document.getElementById("loading-view").classList.add("hidden");
+
+      if (data.exists) {
+        // Show Returning User Screen (Review only)
+        currentUser.phone = data.phone;
+        document.getElementById("returning-name").textContent = data.name || currentUser.name;
+        document.getElementById("returning-avatar").textContent = (currentUser.name || "C")[0].toUpperCase();
+        document.getElementById("returning-view").classList.remove("hidden");
       } else {
-        ageField.value = '';
-        customerData.age = '';
+        // Show Registration Form
+        document.getElementById("new-name").textContent = currentUser.name;
+        document.getElementById("new-email").textContent = currentUser.email;
+        document.getElementById("new-avatar").textContent = (currentUser.name || "C")[0].toUpperCase();
+        document.getElementById("new-user-form").classList.remove("hidden");
       }
+    } catch (err) {
+      document.getElementById("loading-view").classList.add("hidden");
+      // Fallback to new user form if network check fails
+      document.getElementById("new-user-form").classList.remove("hidden");
     }
+  }
 
-    // 4. Form Submission to Google Apps Script
-    const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL";
-
-    async function submitForm(event) {
-      event.preventDefault();
-
-      const submitBtn = document.querySelector('.submit-btn');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Submitting...';
-
-      customerData.phone = document.getElementById('phone').value;
-      customerData.dob = document.getElementById('dob').value;
-      customerData.category = document.getElementById('category').value;
-      customerData.notes = document.getElementById('notes').value;
-
-      try {
-        await fetch(SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(customerData)
-        });
-
-        alert('Check-in successful for ' + customerData.shop + '!');
-        document.getElementById('form-view').reset();
-        document.getElementById('age').value = '';
-      } catch (err) {
-        console.error('Submission error:', err);
-        alert('Submission failed. Please check your connection.');
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Complete Check-In';
-      }
+  // Exact calendar age calculation
+  function calculateAccurateAge() {
+    const dobVal = document.getElementById("user-dob").value;
+    if (!dobVal) return;
+    const birthDate = new Date(dobVal);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
     }
-  </script>
+    document.getElementById("user-age").value = age >= 0 ? age : "";
+    currentUser.age = age;
+    currentUser.dob = dobVal;
+  }
+
+  async function submitNewUser(e) {
+    e.preventDefault();
+    const btn = document.getElementById("submit-btn");
+    btn.disabled = true;
+    btn.textContent = "Saving...";
+
+    currentUser.phone = document.getElementById("user-phone").value;
+    currentUser.dob = document.getElementById("user-dob").value;
+    currentUser.age = document.getElementById("user-age").value;
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "saveUser", ...currentUser })
+      });
+      alert("Check-in successful! Thank you.");
+      location.reload();
+    } catch (err) {
+      alert("Submission failed. Please check your connection.");
+      btn.disabled = false;
+      btn.textContent = "Complete Check-In";
+    }
+  }
+
+  async function completeQuickVisit() {
+    try {
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action: "logReviewOnly", name: currentUser.name, email: currentUser.email })
+      });
+    } catch (e) {}
+    alert("Thank you for your visit!");
+    location.reload();
+  }
+</script>
+
 </body>
 </html>
-//done
