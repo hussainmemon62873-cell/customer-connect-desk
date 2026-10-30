@@ -17,24 +17,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="https://customer-connect-desk.pages.dev/favicon.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="https://customer-connect-desk.pages.dev/favicon.png" />
 
-  <!-- Open Graph & WhatsApp / Social Previews -->
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://customer-connect-desk.pages.dev/" />
-  <meta property="og:site_name" content="Customer Connect Desk" />
-  <meta property="og:title" content="Customer Connect Desk - Memon Lock Center" />
-  <meta property="og:description" content="Quick digital service desk and visit check-in for customers." />
-  <meta property="og:image" content="https://customer-connect-desk.pages.dev/og-image.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-
-  <!-- Twitter / X Card Preview -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://customer-connect-desk.pages.dev/" />
-  <meta name="twitter:title" content="Customer Connect Desk - Memon Lock Center" />
-  <meta name="twitter:description" content="Quick digital service desk and visit check-in for customers." />
-  <meta name="twitter:image" content="https://customer-connect-desk.pages.dev/og-image.png" />
-
-  <!-- Google Rich Snippets / Structured Data -->
+  <!-- Google Rich Snippets / Structured Data (No Image) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -42,7 +25,6 @@
     "name": "Memon Lock Center - Customer Connect Desk",
     "url": "https://customer-connect-desk.pages.dev/",
     "logo": "https://customer-connect-desk.pages.dev/favicon.png",
-    "image": "https://customer-connect-desk.pages.dev/og-image.png",
     "description": "Digital service check-in desk for lock repairs, key duplications, and customer support.",
     "telephone": "+919979955386"
   }
@@ -662,7 +644,7 @@
     } else if (code === "+61") {
       digits = digits.slice(0, 9);
       if (digits.length > 5) {
-             formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 5)} ${digits.slice(5)}`;
+        formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 5)} ${digits.slice(5)}`;
       } else if (digits.length > 2) {
         formatted = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
       } else if (digits.length > 0) {
@@ -699,6 +681,7 @@
     validateAndCalculateAge();
   }
 
+  function h
   function handleDobBackspace(e, el, prevId) {
     if (e.key === "Backspace" && el.value.length === 0 && prevId) {
       const prevEl = document.getElementById(prevId);
