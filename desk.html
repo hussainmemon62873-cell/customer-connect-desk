@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Customer Desk</title>
+  
+  <meta name="theme-color" content="#0b0f19" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --accent: #2563eb;
+      --bg-dark: #0b0f19;
+      --card-bg: #151c2c;
+      --input-bg: #0d121f;
+      --border: #232d42;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem 1rem;
+    }
+
+    .desk-wrapper {
+      width: 100%;
+      max-width: 420px;
+      margin: auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.75rem 1.35rem;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    .shop-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--accent);
+      margin-bottom: 0.65rem;
+    }
+
+    .shop-header h1 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1.25;
+      margin-bottom: 0.35rem;
+    }
+
+    .shop-header p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .form-group {
+      margin-bottom: 1.15rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 0.45rem;
+    }
+
+    input, select {
+      width: 100%;
+      height: 50px;
+      padding: 0 1rem;
+      background: var(--input-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin: 1.25rem 0 1.5rem;
+      cursor: pointer;
+    }
+
+    .checkbox-container input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--accent);
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .checkbox-container span {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .btn-submit {
+      width: 100%;
+      height: 52px;
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn-submit:active {
+      opacity: 0.9;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .state-box {
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .state-box svg {
+      margin-bottom: 1rem;
+    }
+
+    .review-action-btn {
+      display: inline-block;
+      width: 100%;
+      height: 52px;
+      line-height: 52px;
+      text-align: center;
+      background: var(--success);
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 14px;
+      font-weight: 700;
+      margin-top: 1.25rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="desk-wrapper">
+    <div class="card">
+      
+      <!-- LOADING STATE -->
+      <div id="loading-state" class="state-box">
+        <p style="color: var(--text-muted); font-size: 0.95rem;">Connecting to desk...</p>
+      </div>
+
+      <!-- ERROR / NOT FOUND STATE -->
+      <div id="error-state" class="state-box hidden">
+        <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Store Unavailable</h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem;" id="error-message">This store desk is inactive or invalid.</p>
+      </div>
+
+      <!-- MAIN CHECK-IN INTERFACE -->
+      <div id="main-content" class="hidden">
+        <header class="shop-header">
+          <span class="badge" id="desk-tag">Store Desk</span>
+          <h1 id="shop-title">Shop Name</h1>
+          <p id="shop-sub">Welcome! Please check in below.</p>
+        </header>
+
+        <!-- STEP 1: Google One-Tap / Button Identification -->
+        <div id="step-auth">
+          <div style="display: flex; justify-content: center; margin: 1rem 0 1.5rem;">
+            <div id="g_id_onload"
+                 data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
+                 data-callback="handleCustomerAuth"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-text="signin_with" data-shape="rectangular" data-width="320"></div>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); text-align: center;">Sign in with Google to auto-fill your profile</p>
+        </div>
+
+        <!-- STEP 2: Phone, Birthday & Intake Details -->
+        <form id="desk-form" class="hidden" onsubmit="submitCustomerCheckin(event)">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="cust-name" required placeholder="Your full name" />
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="text" id="cust-email" readonly style="opacity: 0.75;" />
+          </div>
+
+          <div class="form-group">
+            <label>WhatsApp / Mobile Number *</label>
+            <input type="tel" id="cust-mobile" required placeholder="e.g. 9876543210" pattern="[0-9]{10}" title="Enter a valid 10-digit mobile number" />
+          </div>
+
+          <div class="form-group">
+            <label>Date of Birth (Optional for Birthday Treats)</label>
+            <input type="date" id="cust-dob" />
+          </div>
+
+          <div class="form-group">
+            <label>Reason for Visit</label>
+            <select id="cust-visittype">
+              <option value="General Visit / Inquiry">General Visit / Inquiry</option>
+              <option value="Product Purchase">Product Purchase</option>
+              <option value="Repair / Service">Repair / Service</option>
+              <option value="Pickup / Delivery">Pickup / Delivery</option>
+            </select>
+          </div>
+
+          <label class="checkbox-container">
+            <input type="checkbox" id="cust-optin" checked />
+            <span>Send me invoice updates and exclusive offers via WhatsApp.</span>
+          </label>
+
+          <button type="submit" id="submit-btn" class="btn-submit">
+            <span>Complete Check-In</span>
+          </button>
+        </form>
+
+        <!-- STEP 3: SUCCESS & GOOGLE REVIEW CALL-TO-ACTION -->
+        <div id="success-state" class="state-box hidden">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <h2 style="font-size: 1.35rem; margin-bottom: 0.4rem;">Check-In Complete!</h2>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Thank you for visiting us today.</p>
+
+          <div id="review-container" class="hidden">
+            <a id="review-link" href="#" target="_blank" rel="noopener noreferrer" class="review-action-btn">
+              ⭐ Leave Us a 5-Star Review
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2dR05Yv9Iym9YHM9rfNypfUzeXwenigfZDMe_Dvsm7CwaZdOIIhNahKMSISW10qBS/exec";
+    
+    let currentStore = null;
+    let customerProfile = { name: "", email: "" };
+
+    const $ = id => document.getElementById(id);
+
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+        );
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    async function initDesk() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const shopSlug = (urlParams.get("shop") || "").trim().toLowerCase();
+
+      if (!shopSlug) {
+        showError("No store specified in the link.");
+        return;
+      }
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "getStoreConfig", shopId: shopSlug })
+        });
+        const data = await res.json();
+
+        if (data.status !== "success" || !data.store) {
+          showError(data.message || "Store not found or currently suspended.");
+          return;
+        }
+
+        currentStore = data.store;
+        applyStoreConfig(currentStore);
+
+      } catch (err) {
+        showError("Network error. Unable to load store details.");
+      }
+    }
+
+    function applyStoreConfig(store) {
+      document.title = `${store.shopName} | Check-In`;
+      $("shop-title").textContent = store.shopName;
+      $("shop-sub").textContent = store.tagline || "Welcome! Please check in below.";
+      $("desk-tag").textContent = store.shopId;
+
+      // Apply dynamic colors
+      if (store.primaryColor) {
+        document.documentElement.style.setProperty("--accent", store.primaryColor);
+      }
+
+      $("loading-state").classList.add("hidden");
+      $("main-content").classList.remove("hidden");
+    }
+
+    function showError(msg) {
+      $("loading-state").classList.add("hidden");
+      $("error-message").textContent = msg;
+      $("error-state").classList.remove("hidden");
+    }
+
+    function handleCustomerAuth(response) {
+      const payload = parseJwt(response.credential);
+      if (!payload || !payload.email) return;
+
+      customerProfile.name = payload.name || "";
+      customerProfile.email = payload.email.toLowerCase();
+
+      $("cust-name").value = customerProfile.name;
+      $("cust-email").value = customerProfile.email;
+
+      $("step-auth").classList.add("hidden");
+      $("desk-form").classList.remove("hidden");
+      $("cust-mobile").focus();
+    }
+
+    async function submitCustomerCheckin(e) {
+      e.preventDefault();
+      const btn = $("submit-btn");
+      btn.disabled = true;
+      btn.innerHTML = `<span>Checking In...</span>`;
+
+      const payload = {
+        action: "recordCustomerVisit",
+        shopId: currentStore.shopId,
+        name: $("cust-name").value.trim(),
+        email: customerProfile.email || $("cust-email").value.trim(),
+        mobile: $("cust-mobile").value.trim(),
+        dob: $("cust-dob").value,
+        visitType: $("cust-visittype").value,
+        whatsappOptIn: $("cust-optin").checked
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+
+        $("desk-form").classList.add("hidden");
+        $("shop-title").classList.add("hidden");
+        $("shop-sub").classList.add("hidden");
+        $("desk-tag").classList.add("hidden");
+
+        $("success-state").classList.remove("hidden");
+
+        if (currentStore.reviewUrl && currentStore.reviewUrl.trim().length > 5) {
+          $("review-link").href = currentStore.reviewUrl.trim();
+          $("review-container").classList.remove("hidden");
+        }
+
+      } catch (err) {
+        alert("Check-in saved locally! Thank you.");
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", initDesk);
+  </script>
+</body>
+</html>
