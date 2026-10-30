@@ -1,180 +1,367 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Super-Admin Portal | Customer Connect Desk</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>B2B Super-Admin Console | Customer Connect Desk</title>
   
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#0f172a" />
 
-  <!-- Google Identity Services & QRCode Library -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  
-  <!-- Fonts -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
-  <!-- External Stylesheet -->
   <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
 
-  <div class="container">
-    <div class="card">
-      <div class="header">
-        <h1>Customer Connect Desk</h1>
-        <p>Super-Admin & Store Management Portal</p>
+  <!-- Google Auth Overlay -->
+  <div id="auth-gate-overlay" class="auth-gate-shell">
+    <div class="auth-gate-card">
+      <div class="auth-brand-logo">🛡️</div>
+      <h2>Enterprise Console</h2>
+      <p class="auth-sub">Super-Admin Identity Verification</p>
+
+      <div class="form-group" style="text-align: left; margin: 1.25rem 0 0.5rem;">
+        <label for="admin-pass">Master Setup Password</label>
+        <div class="password-wrap">
+          <input type="password" id="admin-pass" placeholder="Enter setup password (1st time only)" />
+          <button type="button" class="btn-eye" id="btn-toggle-eye">👁️</button>
+        </div>
+        <span class="field-hint">Required on first login to link your Google Identity permanently.</span>
       </div>
 
-      <!-- STEP 1: Google Login & Master Password Gate -->
-      <div id="signin-view" class="auth-box">
-        <div class="form-group">
-          <label for="admin-pass">Setup / Admin Security Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="admin-pass" placeholder="Enter setup password (1st time only)" />
-            <button type="button" class="toggle-eye-btn" id="btn-toggle-eye" aria-label="Toggle password view">
-              <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </button>
-          </div>
-          <p class="auth-hint">
-            Required only on first login to permanently bind your Google account as Super-Admin.
-          </p>
+      <div class="g-signin-wrap">
+        <div id="g_id_onload"
+             data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
+             data-callback="handleAdminLogin"
+             data-auto_prompt="false">
         </div>
-
-        <div class="g-signin-wrap">
-          <div id="g_id_onload"
-               data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
-               data-callback="handleAdminLogin"
-               data-auto_prompt="false">
-          </div>
-          <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue"></div>
-        </div>
-      </div>
-
-      <!-- STEP 2: Authenticated Dashboard -->
-      <div id="dashboard-view" class="hidden">
-        <div class="profile-bar">
-          <div>
-            <h4 id="user-name">Admin</h4>
-            <p id="user-email"></p>
-            <span class="role-badge">Super-Admin</span>
-          </div>
-          <button class="btn-small" id="btn-logout">Logout</button>
-        </div>
-
-        <!-- SUPER ADMIN MASTER APPROVALS -->
-        <div id="super-admin-panel">
-          <div class="admin-section-title">
-            <span>Registered Stores</span>
-            <span id="store-count-badge">0 Stores</span>
-          </div>
-          <div id="all-stores-list"></div>
-          <hr class="divider" />
-        </div>
-
-        <!-- STORE CREATION / CONFIGURATION -->
-        <div id="store-config-panel">
-          <div class="admin-section-title">
-            <span id="form-heading">Register / Manage Store</span>
-            <span id="store-status-pill" class="status-tag tag-active hidden">Active</span>
-          </div>
-
-          <form id="store-form" novalidate>
-            <div class="form-group">
-              <label for="shop-id">Store Slug / ID * (e.g. memonlock, blinkit)</label>
-              <input type="text" id="shop-id" required placeholder="memonlock" />
-            </div>
-
-            <div class="form-group">
-              <label for="shop-name">Store Display Name *</label>
-              <input type="text" id="shop-name" required placeholder="Memon Lock Center" />
-            </div>
-
-            <div class="form-group">
-              <label for="shop-tagline">Tagline / Category</label>
-              <input type="text" id="shop-tagline" placeholder="Computerized Key Making & Locksmith" />
-            </div>
-
-            <div class="form-group">
-              <label for="shop-mobile">WhatsApp / Contact Number *</label>
-              <input type="tel" id="shop-mobile" required placeholder="9979955386" maxlength="10" />
-            </div>
-
-            <div class="form-group">
-              <label for="shop-review-url">Google Review Link</label>
-              <input type="url" id="shop-review-url" placeholder="https://g.page/r/..." />
-            </div>
-
-            <div class="form-group">
-              <label for="shop-map-url">Google Maps Embed URL</label>
-              <input type="url" id="shop-map-url" placeholder="https://www.google.com/maps/embed?..." />
-            </div>
-
-            <label>Branding Colors</label>
-            <div class="color-grid">
-              <div class="color-item">
-                <span>Primary</span>
-                <input type="color" id="col-primary" value="#2563eb" />
-              </div>
-              <div class="color-item">
-                <span>Background</span>
-                <input type="color" id="col-bg" value="#0f172a" />
-              </div>
-              <div class="color-item">
-                <span>Card Base</span>
-                <input type="color" id="col-card" value="#ffffff" />
-              </div>
-              <div class="color-item">
-                <span>Text Color</span>
-                <input type="color" id="col-text" value="#0f172a" />
-              </div>
-            </div>
-
-            <button type="submit" id="save-store-btn" class="btn btn-primary">
-              <span>Save Store & Generate Stand QR</span>
-            </button>
-          </form>
-        </div>
-
-        <!-- QR CODES AND DESK LINKS SECTION -->
-        <div id="qr-output-section" class="qr-grid hidden">
-          <div class="qr-card">
-            <h4>1. In-Store Counter Stand (NFC & QR)</h4>
-            <p>Use for physical counter desk stand or NFC chip</p>
-            <div id="stand-qr" class="qr-box"></div>
-            <div id="stand-url-chip" class="url-chip"></div>
-            <div class="qr-btn-row">
-              <button type="button" class="btn-small flex-1" id="btn-copy-stand">Copy Link</button>
-              <button type="button" class="btn-small flex-1" id="btn-dl-stand">Download QR</button>
-            </div>
-          </div>
-
-          <div class="qr-card">
-            <h4>2. Google Business Profile & Social Link</h4>
-            <p>Link for your customer storefront or Google Maps listing</p>
-            <div id="public-qr" class="qr-box"></div>
-            <div id="public-url-chip" class="url-chip"></div>
-            <div class="qr-btn-row">
-              <button type="button" class="btn-small flex-1" id="btn-copy-public">Copy Link</button>
-              <button type="button" class="btn-small flex-1" id="btn-dl-public">Download QR</button>
-            </div>
-          </div>
-        </div>
-
+        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="rectangular"></div>
       </div>
     </div>
   </div>
 
-  <!-- Custom Notification Toast (Replaces Browser Alerts) -->
-  <div class="toast-box" id="toast-box"></div>
+  <!-- Main B2B Console Application -->
+  <div class="app-layout" id="app-layout">
+    
+    <!-- Collapsible Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-badge">🏪 CCD CORE</div>
+        <span class="version-tag">v2.6 PRO</span>
+      </div>
 
-  <!-- External Script -->
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="tab-overview">
+          <span class="nav-icon">📊</span>
+          <span>Overview</span>
+        </button>
+        <button class="nav-item" data-tab="tab-stores">
+          <span class="nav-icon">🏢</span>
+          <span>Stores Directory</span>
+          <span class="nav-count-badge" id="badge-total-stores">0</span>
+        </button>
+        <button class="nav-item" data-tab="tab-wizard">
+          <span class="nav-icon">➕</span>
+          <span>Register Store</span>
+        </button>
+        <button class="nav-item" data-tab="tab-qr">
+          <span class="nav-icon">📱</span>
+          <span>NFC & Stand Studio</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-pill">
+          <div class="admin-avatar">👤</div>
+          <div class="admin-info">
+            <span class="admin-name" id="user-name">Super Admin</span>
+            <span class="admin-email" id="user-email">admin@ccd.internal</span>
+          </div>
+        </div>
+        <button class="btn-logout" id="btn-logout" title="Exit Console">🚪 Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Area -->
+    <main class="main-content">
+      
+      <!-- Top Action Bar -->
+      <header class="topbar">
+        <div class="topbar-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="global-store-search" placeholder="Search by Store Name, Slug, Phone, or Owner..." />
+        </div>
+
+        <div class="topbar-actions">
+          <button class="btn-theme-toggle" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
+            <span id="theme-icon">☀️ Light</span>
+          </button>
+          <button class="btn-quick-add" id="btn-top-add">+ New Store</button>
+        </div>
+      </header>
+
+      <!-- TAB 1: OVERVIEW & ANALYTICS -->
+      <section class="tab-pane active" id="tab-overview">
+        <div class="page-title-row">
+          <div>
+            <h1>Platform Performance</h1>
+            <p class="subtitle">System health, active stands, and database telemetry.</p>
+          </div>
+          <button class="btn-refresh" id="btn-refresh-overview">🔄 Refresh Data</button>
+        </div>
+
+        <div class="stats-metric-grid">
+          <div class="metric-card">
+            <div class="metric-top">
+              <span class="metric-title">TOTAL REGISTERED</span>
+              <span class="metric-pill">Active</span>
+            </div>
+            <div class="metric-val emerald" id="stat-active-stores">0</div>
+            <div class="metric-footer">Live merchant endpoints</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-top">
+              <span class="metric-title">PENDING APPROVAL</span>
+              <span class="metric-pill warning">Review</span>
+            </div>
+            <div class="metric-val amber" id="stat-pending-stores">0</div>
+            <div class="metric-footer">Self-registered applications</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-top">
+              <span class="metric-title">DATABASE SYNC</span>
+              <span class="metric-pill info">Google Sheets</span>
+            </div>
+            <div class="metric-val blue">100%</div>
+            <div class="metric-footer">Master-Sheet connection live</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: STORES DIRECTORY (Table with Filter & Actions) -->
+      <section class="tab-pane" id="tab-stores">
+        <div class="page-title-row">
+          <div>
+            <h1>Stores Directory</h1>
+            <p class="subtitle">Manage store registrations, approvals, status controls, and data deletion.</p>
+          </div>
+        </div>
+
+        <div class="table-container card-surface">
+          <table class="b2b-table">
+            <thead>
+              <tr>
+                <th>STORE & SLUG</th>
+                <th>OWNER / CONTACT</th>
+                <th>TAGLINE</th>
+                <th>STATUS</th>
+                <th>MANAGEMENT ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="store-table-body">
+              <tr>
+                <td colspan="5" class="table-loading">Loading store registry...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- TAB 3: STEPPER REGISTRATION WIZARD -->
+      <section class="tab-pane" id="tab-wizard">
+        <div class="page-title-row">
+          <div>
+            <h1 id="wizard-heading">Register New Store</h1>
+            <p class="subtitle">Complete the fields below. Unique email and mobile guards are enforced.</p>
+          </div>
+        </div>
+
+        <div class="wizard-card card-surface">
+          <!-- Step Indicators -->
+          <div class="stepper-bar">
+            <div class="step-item active" data-step="1">
+              <span class="step-num">1</span>
+              <span class="step-lbl">Identity</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item" data-step="2">
+              <span class="step-num">2</span>
+              <span class="step-lbl">Contact & Owner</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item" data-step="3">
+              <span class="step-num">3</span>
+              <span class="step-lbl">Google Links & Theme</span>
+            </div>
+          </div>
+
+          <form id="wizard-form" novalidate>
+            <!-- SECTION 1: IDENTITY -->
+            <div class="wizard-section active" id="wizard-sec-1">
+              <div class="form-group">
+                <label for="shop-id">Store Slug / Identifier * (URL key)</label>
+                <div class="slug-input-wrapper">
+                  <span class="slug-prefix">desk.html?shop=</span>
+                  <input type="text" id="shop-id" class="text-input" placeholder="e.g. memonlock" required />
+                </div>
+                <span class="field-hint">Alphanumeric only. Min 3 chars. Must be unique across database.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="shop-name">Store Display Name *</label>
+                <input type="text" id="shop-name" class="text-input" placeholder="e.g. Memon Lock Center" required />
+              </div>
+
+              <div class="form-group">
+                <label for="shop-tagline">Business Tagline / Specialty *</label>
+                <input type="text" id="shop-tagline" class="text-input" placeholder="e.g. Computerized Key Making & Sensor Locks" required />
+              </div>
+
+              <div class="wizard-nav-btns">
+                <div></div>
+                <button type="button" class="btn-step-next" onclick="goToStep(2)">Proceed to Step 2 →</button>
+              </div>
+            </div>
+
+            <!-- SECTION 2: CONTACT & OWNER -->
+            <div class="wizard-section" id="wizard-sec-2">
+              <div class="form-group">
+                <label for="owner-name">Owner Full Name *</label>
+                <input type="text" id="owner-name" class="text-input" placeholder="e.g. Hussain Memon" required />
+              </div>
+
+              <div class="form-group">
+                <label for="owner-email">Owner Email Address * (Duplication Protected)</label>
+                <input type="email" id="owner-email" class="text-input" placeholder="merchant@gmail.com" required />
+              </div>
+
+              <div class="form-group">
+                <label for="shop-mobile">Owner WhatsApp / Mobile * (Duplication Protected)</label>
+                <input type="tel" id="shop-mobile" class="text-input" placeholder="10-digit mobile number" maxlength="10" required />
+                <span class="field-hint">Used for merchant dashboard security PIN (last 4 digits).</span>
+              </div>
+
+              <div class="wizard-nav-btns">
+                <button type="button" class="btn-step-prev" onclick="goToStep(1)">← Back to Step 1</button>
+                <button type="button" class="btn-step-next" onclick="goToStep(3)">Proceed to Step 3 →</button>
+              </div>
+            </div>
+
+            <!-- SECTION 3: LINKS & BRAND THEME -->
+            <div class="wizard-section" id="wizard-sec-3">
+              <div class="form-group">
+                <label for="shop-review-url">Google 5-Star Review Link</label>
+                <input type="url" id="shop-review-url" class="text-input" placeholder="https://g.page/r/your-review-id" />
+              </div>
+
+              <div class="form-group">
+                <label for="shop-map-url">Google Maps Embed URL</label>
+                <input type="url" id="shop-map-url" class="text-input" placeholder="https://www.google.com/maps/embed?pb=..." />
+              </div>
+
+              <label style="margin-top: 1rem; display: block; font-weight: 700;">Theme Colors</label>
+              <div class="color-grid">
+                <div class="color-box">
+                  <span>Primary</span>
+                  <input type="color" id="col-primary" value="#2563eb" />
+                </div>
+                <div class="color-box">
+                  <span>Background</span>
+                  <input type="color" id="col-bg" value="#0f172a" />
+                </div>
+                <div class="color-box">
+                  <span>Card Base</span>
+                  <input type="color" id="col-card" value="#ffffff" />
+                </div>
+                <div class="color-box">
+                  <span>Text Color</span>
+                  <input type="color" id="col-text" value="#0f172a" />
+                </div>
+              </div>
+
+              <div class="wizard-nav-btns">
+                <button type="button" class="btn-step-prev" onclick="goToStep(2)">← Back to Step 2</button>
+                <button type="submit" class="btn-save" id="btn-save-store">
+                  <span>💾 Save to Master-Sheet & Provision Tab</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- TAB 4: NFC & STAND STUDIO (QR Code Generator) -->
+      <section class="tab-pane" id="tab-qr">
+        <div class="page-title-row">
+          <div>
+            <h1>NFC & Stand Studio</h1>
+            <p class="subtitle">Generate in-store counter stand QR codes and Google Business listings.</p>
+          </div>
+          <div class="store-select-wrap">
+            <select id="qr-store-selector" class="dropdown-select">
+              <option value="">-- Choose Store --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="qr-studio-grid">
+          <!-- Stand QR -->
+          <div class="qr-panel card-surface">
+            <div class="qr-panel-head">
+              <h3>In-Store Counter Stand (NFC & QR)</h3>
+              <p>Scan target for walk-in customer check-ins</p>
+            </div>
+            <div id="box-stand-qr" class="qr-canvas-box"></div>
+            <div class="url-chip" id="chip-stand-url">Select a store to view URL</div>
+            <div class="qr-actions">
+              <button class="btn-small" onclick="copyStudioLink('stand')">📋 Copy URL</button>
+              <button class="btn-small" onclick="downloadStudioQr('stand')">💾 Download PNG</button>
+            </div>
+          </div>
+
+          <!-- Public Storefront QR -->
+          <div class="qr-panel card-surface">
+            <div class="qr-panel-head">
+              <h3>Public Storefront / Google Maps QR</h3>
+              <p>Direct link for business cards, ads, and flyers</p>
+            </div>
+            <div id="box-public-qr" class="qr-canvas-box"></div>
+            <div class="url-chip" id="chip-public-url">Select a store to view URL</div>
+            <div class="qr-actions">
+              <button class="btn-small" onclick="copyStudioLink('public')">📋 Copy URL</button>
+              <button class="btn-small" onclick="downloadStudioQr('public')">💾 Download PNG</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Confirmation Modal (Zero Native Browser Confirmations) -->
+  <div class="modal-backdrop" id="confirm-modal">
+    <div class="modal-card">
+      <div class="modal-icon" id="modal-icon">⚠️</div>
+      <h3 id="modal-title">Confirm Action</h3>
+      <p id="modal-desc">Are you sure you want to proceed?</p>
+      <div class="modal-btns">
+        <button class="btn-modal-cancel" id="btn-modal-cancel">Cancel</button>
+        <button class="btn-modal-confirm" id="btn-modal-confirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Database Sync Success Toast -->
+  <div class="db-toast" id="db-toast"></div>
+
   <script src="admin.js"></script>
 </body>
 </html>
