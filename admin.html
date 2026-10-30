@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
+    <style>
     :root {
       --primary: #2563eb;
       --bg: #0f172a;
@@ -148,6 +148,36 @@
       margin-bottom: 0.4rem;
     }
 
+    /* Password field with eye toggle container */
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .password-wrapper input {
+      padding-right: 2.85rem !important;
+    }
+
+    .toggle-eye-btn {
+      position: absolute;
+      right: 0.75rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem;
+      outline: none;
+    }
+
+    .toggle-eye-btn:hover {
+      color: #ffffff;
+    }
+
     input[type="text"], input[type="password"], input[type="tel"], input[type="url"] {
       width: 100%;
       padding: 0.85rem 1rem;
@@ -273,6 +303,7 @@
       border: 1px solid var(--border);
     }
   </style>
+
 </head>
 <body>
 
