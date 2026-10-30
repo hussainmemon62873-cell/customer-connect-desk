@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" name="viewport"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <title id="page-title">Merchant Dashboard | Customer Connect Desk</title>
+  
+  <!-- External Stylesheet -->
+  <link rel="stylesheet" href="merchant.css" />
+</head>
+<body>
+
+  <!-- Sticky Top Header -->
+  <header class="sticky-header">
+    <div class="header-inner">
+      <div class="brand-meta">
+        <div class="brand-avatar">🏪</div>
+        <div class="brand-details">
+          <span class="brand-title" id="dash-shop-name">Store Dashboard</span>
+          <span class="brand-slug" id="dash-shop-slug">slug: memonlock</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon" id="btn-refresh" title="Refresh Live Data">🔄</button>
+        <button class="btn-icon" id="btn-logout" title="Lock Dashboard">🔒</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Responsive Container -->
+  <main class="app-shell">
+
+    <!-- 1. Real-Time Status & Closing Time Card -->
+    <section class="card status-card" id="status-card-box">
+      <div class="card-title-row">
+        <h2 class="card-title"><span>⚡</span> Live Store Status</h2>
+        <label class="switch">
+          <input type="checkbox" id="status-toggle" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="status-indicator-box">
+        <div class="status-label-group">
+          <span class="status-bulb"></span>
+          <span class="status-headline" id="status-headline">STORE IS OPEN</span>
+        </div>
+        <span class="status-subtext" id="status-subtext">Visible on shop.html</span>
+      </div>
+
+      <div class="closing-time-wrap">
+        <label class="input-label" for="closing-time-input">Today's Closing Time</label>
+        <div class="time-picker-row">
+          <input type="text" id="closing-time-input" class="time-input" value="9:00 PM" placeholder="e.g. 9:00 PM" />
+        </div>
+        <div class="quick-chips">
+          <button type="button" class="time-chip" data-time="8:00 PM">8:00 PM</button>
+          <button type="button" class="time-chip" data-time="8:30 PM">8:30 PM</button>
+          <button type="button" class="time-chip" data-time="9:00 PM">9:00 PM</button>
+          <button type="button" class="time-chip" data-time="9:30 PM">9:30 PM</button>
+          <button type="button" class="time-chip" data-time="10:00 PM">10:00 PM</button>
+        </div>
+      </div>
+
+      <button type="button" class="btn-primary" id="save-status-btn">
+        <span>💾 Update Live Store Status</span>
+      </button>
+    </section>
+
+    <!-- 2. Today's Counter Analytics -->
+    <section class="metrics-grid">
+      <div class="metric-item">
+        <div class="metric-num metric-emerald" id="stat-today-visits">--</div>
+        <div class="metric-label">Today's Visits</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-num metric-indigo" id="stat-total-customers">--</div>
+        <div class="metric-label">Total CRM</div>
+      </div>
+      <div class="metric-item">
+        <div class="metric-num metric-amber" id="stat-review-rating">5.0 ★</div>
+        <div class="metric-label">Rating</div>
+      </div>
+    </section>
+
+    <!-- 3. Dynamic Promo & Banner Manager -->
+    <section class="card promo-card-box">
+      <div class="card-title-row">
+        <h2 class="card-title"><span>🏷️</span> Website Promo Offer</h2>
+        <label class="switch">
+          <input type="checkbox" id="promo-toggle" checked />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="input-label" for="promo-headline-input">Offer Headline</label>
+        <input type="text" id="promo-headline-input" class="text-input" placeholder="e.g. 15% Off On Duplicate Keys" />
+      </div>
+
+      <div class="form-group">
+        <label class="input-label" for="promo-code-input">Coupon Code (Optional)</label>
+        <input type="text" id="promo-code-input" class="text-input" placeholder="e.g. DESK15" />
+      </div>
+
+      <div class="form-group">
+        <label class="input-label" for="promo-desc-input">Terms / Counter Subtext</label>
+        <input type="text" id="promo-desc-input" class="text-input" placeholder="e.g. Mention this counter desk screen for instant savings." />
+      </div>
+
+      <button type="button" class="btn-primary btn-amber" id="save-promo-btn">
+        <span>🔥 Update Active Offer</span>
+      </button>
+    </section>
+
+    <!-- 4. Quick Links & Live Actions -->
+    <section class="quick-link-grid">
+      <a href="#" target="_blank" class="quick-link-btn" id="preview-storefront-btn">
+        <span class="quick-link-icon">🌐</span>
+        <span>View Shop Website</span>
+      </a>
+      <a href="#" target="_blank" class="quick-link-btn" id="preview-desk-btn">
+        <span class="quick-link-icon">📲</span>
+        <span>Open Counter Desk</span>
+      </a>
+    </section>
+
+    <!-- 5. Profile & Review Configuration -->
+    <section class="card">
+      <h2 class="card-title mb-14"><span>⚙️</span> Shop Contact Settings</h2>
+      
+      <div class="form-group">
+        <label class="input-label" for="merchant-review-url">Google 5-Star Review URL</label>
+        <input type="url" id="merchant-review-url" class="text-input" placeholder="https://g.page/r/..." />
+      </div>
+
+      <div class="form-group">
+        <label class="input-label" for="merchant-phone">WhatsApp Contact Number</label>
+        <input type="tel" id="merchant-phone" class="text-input" placeholder="10-digit mobile number" />
+      </div>
+
+      <button type="button" class="btn-primary btn-dark" id="save-profile-btn">
+        <span>💾 Save Contact Settings</span>
+      </button>
+    </section>
+
+  </main>
+
+  <!-- Passcode Verification Modal (Replaces Browser Prompts) -->
+  <div class="auth-backdrop" id="auth-backdrop">
+    <div class="auth-card">
+      <span class="auth-lock-icon">🔐</span>
+      <h3 class="auth-title">Merchant Access</h3>
+      <p class="auth-sub">Enter your 4-digit PIN to manage this desk</p>
+
+      <div class="pin-input-group">
+        <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••" />
+      </div>
+
+      <button type="button" class="btn-primary" id="btn-unlock">
+        <span>Unlock Dashboard</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Custom Designed Toast Popup (Replaces Alert Boxes) -->
+  <div class="toast-box" id="toast-box">Notification message</div>
+
+  <!-- External Script -->
+  <script src="merchant.js"></script>
+</body>
+</html>
