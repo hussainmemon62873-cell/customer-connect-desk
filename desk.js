@@ -1,263 +1,148 @@
 // ==========================================
-// COUNTER CHECK-IN CONTROLLER (desk.js)
-// Zero-Friction Intake + 3-Box DOB + Storefront Redirect
+// CUSTOMER DESK ENGINE (desk.js)
 // ==========================================
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyq5CbrZ5VzrFEcBh-gfs3iy5UewHoNfJT7ZtLxhHXhhW_bs7R_a0roSqYbZehydJCn/exec";
 
-
-let storeData = null;
-let customerProfile = { name: "", email: "" };
-let activeSlug = "memonlock";
-
 const $ = id => document.getElementById(id);
 
-// 1. Toast Notification Utility (Zero Native Alerts)
-function toast(text, type = "info") {
-  const wrap = $("toast-wrap");
-  if (!wrap) return;
+// Get shop slug from URL parameters (e.g. desk.html?shop=memonlock)
+const urlParams = new URLSearchParams(window.location.search);
+const currentShopId = urlParams.get("shop") || "memonlock";
 
-  const el = document.createElement("div");
-  el.className = `toast toast-${type}`;
-  el.innerHTML = `<span>${text}</span>`;
-  wrap.appendChild(el);
+let cachedStoreData = null;
 
-  setTimeout(() => {
-    el.style.opacity = "0";
-    el.style.transform = "translateY(-15px)";
-    el.style.transition = "all 0.25s ease";
-    setTimeout(() => el.remove(), 250);
-  }, 3500);
-}
+// 1. On Page Load: Check if browser remembers last used phone number (Cross-Shop Memory)
+window.addEventListener("DOMContentLoaded", async () => {
+  await fetchStoreThemeAndConfig();
 
-// 2. Google Identity Services JWT Parser
-function parseJwt(token) {
+  const savedPhone = localStorage.getItem("ccd_last_phone");
+  if (savedPhone && savedPhone.length === 10) {
+    $("customer-phone").value = savedPhone;
+    // Automatically trigger lookup to see if data exists
+    checkCustomerLookup(savedPhone);
+  }
+});
+
+async function fetchStoreThemeAndConfig() {
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
-    );
-    return JSON.parse(jsonPayload);
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "customerCheckin", actionType: "lookup", shopId: currentShopId, phone: "0000000000" })
+    });
+    const data = await res.json();
+    if (data.status === "success" && data.store) {
+      cachedStoreData = data.store;
+      applyStoreTheme(data.store);
+    }
   } catch (e) {
-    return null;
+    console.error("Error loading store config");
   }
 }
 
-// 3. Smart 3-Segment DOB Engine (Single-Digit Backspace Deletion)
-function initSmartDobInputs() {
-  const dayInput = $("dob-day");
-  const monthInput = $("dob-month");
-  const yearInput = $("dob-year");
+function applyStoreTheme(store) {
+  $("shop-title").textContent = store.shopName;
+  $("shop-tagline").textContent = store.tagline;
+  if (store.primaryColor) document.documentElement.style.setProperty('--primary', store.primaryColor);
+}
 
-  if (!dayInput || !monthInput || !yearInput) return;
+// 2. Real-time Lookup when 10 digits are entered
+$("customer-phone").addEventListener("input", (e) => {
+  const phone = e.target.value.replace(/\D/g, '');
+  if (phone.length === 10) {
+    checkCustomerLookup(phone);
+  }
+});
 
-  function setupSegment(input, nextInput, prevInput, maxLength) {
-    input.addEventListener("input", () => {
-      input.value = input.value.replace(/[^0-9]/g, '');
-      if (input.value.length >= maxLength && nextInput) {
-        nextInput.focus();
-        nextInput.select();
-      }
+async function checkCustomerLookup(phone) {
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify({ action: "customerCheckin", actionType: "lookup", shopId: currentShopId, phone: phone })
     });
+    const data = await res.json();
 
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Backspace") {
-        if (input.value.length === 0 && prevInput) {
-          e.preventDefault();
-          prevInput.focus();
-          const len = prevInput.value.length;
-          prevInput.setSelectionRange(len, len);
-        }
+    if (data.status === "success") {
+      if (data.exists) {
+        // Customer exists in system (either at this shop or another shop)
+        $("system-notice").style.display = "block";
+        $("system-notice").textContent = "Your data exists in our system";
+        
+        // Prefill hidden/visible fields
+        $("customer-name").value = data.customer.name || "";
+        $("customer-email").value = data.customer.email || "";
+        $("customer-dob").value = data.customer.dob || "";
+
+        // Optional: Hide extra fields if you want 1-tap checkin for returning users
+        // $("extra-fields-container").style.display = "none";
+      } else {
+        $("system-notice").style.display = "none";
+        // New customer: clear fields so they can enter info
+        $("customer-name").value = "";
+        $("customer-email").value = "";
+        $("customer-dob").value = "";
       }
-    });
+    }
+  } catch (err) {
+    console.error("Lookup failed");
   }
-
-  setupSegment(dayInput, monthInput, null, 2);
-  setupSegment(monthInput, yearInput, dayInput, 2);
-  setupSegment(yearInput, null, monthInput, 4);
 }
 
-function getAssembledDob() {
-  const d = $("dob-day").value.trim().padStart(2, '0');
-  const m = $("dob-month").value.trim().padStart(2, '0');
-  const y = $("dob-year").value.trim();
+// 3. Handle Check-in Submission
+$("checkin-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const phone = $("customer-phone").value.replace(/\D/g, '');
+  const name = $("customer-name").value.trim();
+  const email = $("customer-email").value.trim();
+  const dob = $("customer-dob").value.trim();
 
-  if (d && m && y && y.length === 4) {
-    return `${y}-${m}-${d}`;
-  }
-  return "";
-}
-
-// 4. Desk Bootstrap & Store Config Fetch
-async function initDesk() {
-  initSmartDobInputs();
-
-  const params = new URLSearchParams(window.location.search);
-  activeSlug = (params.get("shop") || "").trim().toLowerCase();
-
-  if (!activeSlug) {
-    showError("No store identifier detected. Please scan your counter stand QR.");
+  if (phone.length !== 10) {
+    alert("Please enter a valid 10-digit mobile number.");
     return;
   }
+
+  // Save phone to browser localStorage for cross-shop memory
+  localStorage.setItem("ccd_last_phone", phone);
+
+  const payload = {
+    action: "customerCheckin",
+    actionType: "submit",
+    shopId: currentShopId,
+    phone: phone,
+    name: name,
+    email: email,
+    dob: dob
+  };
 
   try {
     const res = await fetch(SCRIPT_URL, {
       method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ action: "getStoreConfig", shopId: activeSlug })
+      body: JSON.stringify(payload)
     });
     const data = await res.json();
 
-    if (data.status !== "success" || !data.store) {
-      showError(data.message || "Store is inactive or does not exist.");
-      return;
+    if (data.status === "success") {
+      showSuccessScreen(data);
+    } else {
+      alert(data.message);
     }
-
-    storeData = data.store;
-    setupUI(storeData);
   } catch (err) {
-    showError("Failed to connect to desk server. Please refresh.");
-  }
-}
-
-function setupUI(store) {
-  document.title = `${store.shopName} | Check-In Desk`;
-  $("desk-page-title").textContent = `${store.shopName} | Check-In Desk`;
-  $("shop-title").textContent = store.shopName;
-  $("shop-sub").textContent = store.tagline || "Quick 1-Tap Counter Check-In & Rewards";
-  $("desk-badge").textContent = store.shopId.toUpperCase();
-
-  if (store.primaryColor) {
-    document.documentElement.style.setProperty("--accent", store.primaryColor);
-  }
-
-  $("loading-panel").classList.add("hidden");
-  $("desk-content").classList.remove("hidden");
-}
-
-function showError(msg) {
-  $("loading-panel").classList.add("hidden");
-  $("error-msg").textContent = msg;
-  $("error-panel").classList.remove("hidden");
-  toast(msg, "error");
-}
-
-// 5. Google 1-Tap Auth Handler
-window.handleCustomerAuth = async function(response) {
-  const payload = parseJwt(response.credential);
-  if (!payload || !payload.email) return;
-
-  customerProfile.name = payload.name || "";
-  customerProfile.email = payload.email.toLowerCase();
-
-  $("cust-name").value = customerProfile.name;
-  $("cust-email").value = customerProfile.email;
-
-  $("auth-section").classList.add("hidden");
-  $("checkin-form").classList.remove("hidden");
-  $("cust-phone").focus();
-
-  toast("Profile connected! Enter your mobile number.", "info");
-
-  try {
-    const checkRes = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        action: "checkCustomerStatus",
-        email: customerProfile.email
-      })
-    });
-    const checkData = await checkRes.json();
-
-    if (checkData.exists && checkData.customer) {
-      const c = checkData.customer;
-      if (c.phone) $("cust-phone").value = c.phone.slice(-10);
-      if (c.dob && c.dob.includes('-')) {
-        const parts = c.dob.split('-');
-        if (parts.length === 3) {
-          $("dob-year").value = parts[0];
-          $("dob-month").value = parts[1];
-          $("dob-day").value = parts[2];
-        }
-      }
-      toast(`Welcome back, ${c.name || 'Friend'}! Tap submit to check in.`, "success");
-    }
-  } catch (e) {
-    // Non-blocking lookup fallback
-  }
-};
-
-// 6. Check-In Submission & Auto-Forward to shop.html
-$("checkin-form").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const name = $("cust-name").value.trim();
-  const phone = $("cust-phone").value.trim().replace(/[^0-9]/g, '');
-  const email = $("cust-email").value.trim().toLowerCase();
-  const dob = getAssembledDob();
-  const optIn = $("cust-optin").checked;
-  const btn = $("submit-btn");
-
-  if (!name) {
-    toast("Please enter your name", "error");
-    $("cust-name").focus();
-    return;
-  }
-
-  if (phone.length !== 10) {
-    toast("Please enter a valid 10-digit mobile number", "error");
-    $("cust-phone").focus();
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = `<span>Saving Visit...</span>`;
-
-  const payload = {
-    action: "recordCustomerVisit",
-    shopId: storeData.shopId,
-    name: name,
-    mobile: phone,
-    email: customerProfile.email || email,
-    dob: dob,
-    visitType: "Counter Check-In",
-    whatsappOptIn: optIn
-  };
-
-  try {
-    await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(payload)
-    });
-
-    $("checkin-form").classList.add("hidden");
-    $("shop-title").classList.add("hidden");
-    $("shop-sub").classList.add("hidden");
-    $("desk-badge").classList.add("hidden");
-
-    $("success-panel").classList.remove("hidden");
-    toast("Check-in successful! Welcome to " + storeData.shopName, "success");
-
-    const storefrontUrl = `shop.html?shop=${storeData.shopId}`;
-    $("store-redirect-btn").href = storefrontUrl;
-
-    if (storeData.reviewUrl && storeData.reviewUrl.trim().length > 5) {
-      $("review-btn").href = storeData.reviewUrl.trim();
-      $("review-btn").classList.remove("hidden");
-    }
-
-    setTimeout(() => {
-      window.location.href = storefrontUrl;
-    }, 2800);
-  } catch (err) {
-    toast("Visit recorded locally! Forwarding to store...", "info");
-    setTimeout(() => {
-      window.location.href = `shop.html?shop=${storeData.shopId}`;
-    }, 2000);
+    alert("Network error during check-in.");
   }
 });
 
-window.addEventListener("DOMContentLoaded", initDesk);
+function showSuccessScreen(data) {
+  $("form-container").style.display = "none";
+  $("success-container").style.display = "block";
+  
+  $("visit-counter").textContent = `Total Visits: ${data.totalVisits}`;
+
+  // Display Google Review Button if review link exists for this store
+  if (data.store && data.store.reviewUrl) {
+    $("review-btn-wrap").innerHTML = `
+      <a href="${data.store.reviewUrl}" target="_blank" class="btn-review">
+        ⭐ Leave a Google Review
+      </a>
+    `;
+  }
+}
