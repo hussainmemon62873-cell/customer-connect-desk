@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
+  <style>
     :root {
       --primary: #2563eb;
       --bg: #0f172a;
@@ -110,6 +110,7 @@
       color: #fff;
       text-transform: uppercase;
     }
+
     .admin-section-title {
       font-size: 1.1rem;
       font-weight: 700;
@@ -148,7 +149,6 @@
       margin-bottom: 0.4rem;
     }
 
-    /* Password field with eye toggle container */
     .password-wrapper {
       position: relative;
       display: flex;
@@ -303,7 +303,6 @@
       border: 1px solid var(--border);
     }
   </style>
-
 </head>
 <body>
 
@@ -313,12 +312,19 @@
         <h1>Customer Connect Desk</h1>
         <p>Super-Admin & Store Management Portal</p>
       </div>
-
       <!-- STEP 1: Google Login & Master Password Gate -->
       <div id="signin-view" class="auth-box">
         <div class="form-group">
           <label>Setup / Admin Security Password</label>
-          <input type="password" id="admin-pass" placeholder="Enter setup password (1st time only)" />
+          <div class="password-wrapper">
+            <input type="password" id="admin-pass" placeholder="Enter setup password (1st time only)" />
+            <button type="button" class="toggle-eye-btn" onclick="togglePasswordVisibility()" aria-label="Toggle password view">
+              <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
           <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem;">
             Required only on first login to permanently bind your Google account as Super-Admin.
           </p>
@@ -333,6 +339,7 @@
           <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue"></div>
         </div>
       </div>
+
       <!-- STEP 2: Authenticated Dashboard -->
       <div id="dashboard-view" class="hidden">
         <div class="profile-bar">
@@ -439,164 +446,218 @@
       </div>
     </div>
   </div>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2dR05Yv9Iym9YHM9rfNypfUzeXwenigfZDMe_Dvsm7CwaZdOIIhNahKMSISW10qBS/exec";
-const BASE_DOMAIN = "https://customer-connect-desk.pages.dev";
-let currentUser = { name: "", email: "" };
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2dR05Yv9Iym9YHM9rfNypfUzeXwenigfZDMe_Dvsm7CwaZdOIIhNahKMSISW10qBS/exec";
+    const BASE_DOMAIN = "https://customer-connect-desk.pages.dev";
 
-const $ = id => document.getElementById(id);
+    let currentUser = { name: "", email: "" };
 
-function togglePasswordVisibility() {
-  const p = $("admin-pass"), ic = $("eye-icon");
-  if (!p || !ic) return;
-  const isPass = p.type === "password";
-  p.type = isPass ? "text" : "password";
-  ic.innerHTML = isPass
-    ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`
-    : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
-}
+    const $ = id => document.getElementById(id);
 
-function parseJwt(token) {
-  try {
-    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-  } catch (e) { return null; }
-}
+    function togglePasswordVisibility() {
+      const p = $("admin-pass");
+      const ic = $("eye-icon");
+      if (!p || !ic) return;
 
-async function apiCall(body) {
-  const res = await fetch(SCRIPT_URL, {
-    method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(body)
-  });
-  return res.json();
-}
+      const isPass = p.type === "password";
+      p.type = isPass ? "text" : "password";
 
-async function handleAdminLogin(response) {
-  const payload = parseJwt(response.credential);
-  if (!payload || !payload.email) return;
+      ic.innerHTML = isPass
+        ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`
+        : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+    }
 
-  const enteredPass = $("admin-pass") ? $("admin-pass").value.trim() : "";
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+        );
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
 
-  try {
-    const authData = await apiCall({ action: "adminAuth", email: payload.email, password: enteredPass });
-    if (authData.status !== "success") return alert(authData.message || "Access denied.");
-    if (authData.claimedNow) alert("Success! Your Google account is now permanently locked as Super-Admin.");
+    async function apiCall(body) {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(body)
+      });
+      return res.json();
+    }
 
-    currentUser = { name: payload.name, email: payload.email.toLowerCase() };
-    $("user-name").textContent = currentUser.name;
-    $("user-email").textContent = currentUser.email;
-    $("signin-view").classList.add("hidden");
-    $("dashboard-view").classList.remove("hidden");
+    async function handleAdminLogin(response) {
+      const payload = parseJwt(response.credential);
+      if (!payload || !payload.email) return;
 
-    loadDashboardData();
-  } catch (err) {
-    alert("Authentication failed: " + err.message);
-  }
-}
+      const enteredPass = $("admin-pass") ? $("admin-pass").value.trim() : "";
 
-async function loadDashboardData() {
-  try {
-    const data = await apiCall({ action: "getAdminData", email: currentUser.email });
-    renderStores(data.allStores || []);
-  } catch (err) {
-    console.error(err);
-  }
-}
+      try {
+        const authData = await apiCall({
+          action: "adminAuth",
+          email: payload.email,
+          password: enteredPass
+        });
 
-function renderStores(stores) {
-  const container = $("all-stores-list");
-  $("store-count-badge").textContent = `${stores.length} Registered`;
-  container.innerHTML = stores.length ? "" : `<p style="font-size:0.85rem;color:var(--text-muted);">No stores registered yet.</p>`;
+        if (authData.status !== "success") {
+          alert(authData.message || "Access denied.");
+          return;
+        }
 
-  stores.forEach(s => {
-    const isActive = s.registrationStatus === "ACTIVE";
-    const tagClass = isActive ? "tag-active" : (s.registrationStatus === "SUSPENDED" ? "tag-suspended" : "tag-pending");
-    const div = document.createElement("div");
-    div.className = "store-item";
-    div.innerHTML = `
-      <div class="store-item-head">
-        <div>
-          <h5 style="font-weight:700;">${s.shopName} <small style="color:var(--text-muted);">(${s.shopId})</small></h5>
-          <span style="font-size:0.75rem;color:var(--text-muted);">Owner: ${s.ownerName} (${s.ownerEmail}) | 📞 ${s.ownerMobile}</span>
-        </div>
-        <span class="status-tag ${tagClass}">${s.registrationStatus}</span>
-      </div>
-      <div style="display:flex;gap:0.5rem;margin-top:0.4rem;">
-        ${!isActive ? `<button class="btn-small btn-success" onclick="setStatus('${s.shopId}','ACTIVE')">Activate</button>` : ''}
-        ${isActive ? `<button class="btn-small btn-danger" onclick="setStatus('${s.shopId}','SUSPENDED')">Suspend</button>` : ''}
-        <button class="btn-small" onclick="generateQrSection('${s.shopId}')">Get Links & QR</button>
-      </div>`;
-    container.appendChild(div);
-  });
-}
+        if (authData.claimedNow) {
+          alert("Success! Your Google account is now permanently locked as Super-Admin.");
+        }
 
-async function setStatus(slug, newStatus) {
-  await apiCall({ action: "setStoreRegistrationStatus", email: currentUser.email, targetShopId: slug, newStatus });
-  loadDashboardData();
-}
+        currentUser.name = payload.name;
+        currentUser.email = payload.email.toLowerCase();
 
-async function handleStoreSubmit(e) {
-  e.preventDefault();
-  const slug = $("shop-id").value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-  const btn = $("save-store-btn");
-  btn.textContent = "Saving Store...";
-  btn.disabled = true;
+        $("user-name").textContent = currentUser.name;
+        $("user-email").textContent = currentUser.email;
 
-  try {
-    const resp = await apiCall({
-      action: "registerStore",
-      shopId: slug,
-      shopName: $("shop-name").value.trim(),
-      tagline: $("shop-tagline").value.trim(),
-      ownerName: currentUser.name,
-      email: currentUser.email,
-      ownerMobile: $("shop-mobile").value.trim(),
-      primaryColor: $("col-primary").value,
-      bgColor: $("col-bg").value,
-      cardBg: $("col-card").value,
-      textColor: $("col-text").value,
-      reviewUrl: $("shop-review-url").value.trim()
-    });
-    alert(resp.status === "success" ? "Store saved & activated!" : "Notice: " + resp.message);
-    loadDashboardData();
-    generateQrSection(slug);
-  } catch (err) {
-    alert("Store saved!");
-    generateQrSection(slug);
-  }
-  btn.textContent = "Save Store & Generate Stand QR";
-  btn.disabled = false;
-}
+        $("signin-view").classList.add("hidden");
+        $("dashboard-view").classList.remove("hidden");
 
-function generateQrSection(slug) {
-  const standUrl = `${BASE_DOMAIN}/?shop=${slug}&desk=true`;
-  const publicUrl = `${BASE_DOMAIN}/?shop=${slug}`;
-  $("stand-url-chip").textContent = standUrl;
-  $("public-url-chip").textContent = publicUrl;
+        loadDashboardData();
 
-  const sBox = $("stand-qr"), pBox = $("public-qr");
-  sBox.innerHTML = ""; pBox.innerHTML = "";
-  new QRCode(sBox, { text: standUrl, width: 140, height: 140 });
-  new QRCode(pBox, { text: publicUrl, width: 140, height: 140 });
+      } catch (err) {
+        alert("Authentication failed: " + err.message);
+      }
+    }
 
-  $("qr-output-section").classList.remove("hidden");
-  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-}
+    async function loadDashboardData() {
+      try {
+        const data = await apiCall({
+          action: "getAdminData",
+          email: currentUser.email
+        });
+        renderStores(data.allStores || []);
+      } catch (err) {
+        console.error("Failed to load stores:", err);
+      }
+    }
 
-function copyLink(type) {
-  navigator.clipboard.writeText($(`${type}-url-chip`).textContent);
-  alert("Link copied!");
-}
+    function renderStores(stores) {
+      const container = $("all-stores-list");
+      $("store-count-badge").textContent = `${stores.length} Registered`;
+      container.innerHTML = "";
 
-function downloadQr(type) {
-  const img = document.querySelector(`#${type}-qr img`);
-  if (img && img.src) {
-    const a = document.createElement("a");
-    a.href = img.src;
-    a.download = `${type}-qr-code.png`;
-    a.click();
-  }
-}
+      if (stores.length === 0) {
+        container.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted);">No stores registered yet.</p>`;
+        return;
+      }
 
+      stores.forEach(s => {
+        const isActive = (s.registrationStatus === "ACTIVE");
+        const isSuspended = (s.registrationStatus === "SUSPENDED");
+        const tagClass = isActive ? "tag-active" : (isSuspended ? "tag-suspended" : "tag-pending");
+
+        const div = document.createElement("div");
+        div.className = "store-item";
+        div.innerHTML = `
+          <div class="store-item-head">
+            <div>
+              <h5 style="font-weight:700;">${s.shopName} <small style="color:var(--text-muted);">(${s.shopId})</small></h5>
+              <span style="font-size:0.75rem; color:var(--text-muted);">Owner: ${s.ownerName} (${s.ownerEmail}) | 📞 ${s.ownerMobile}</span>
+            </div>
+            <span class="status-tag ${tagClass}">${s.registrationStatus}</span>
+          </div>
+          <div style="display:flex; gap:0.5rem; margin-top:0.4rem;">
+            ${!isActive ? `<button class="btn-small btn-success" onclick="setStatus('${s.shopId}', 'ACTIVE')">Activate</button>` : ''}
+            ${isActive ? `<button class="btn-small btn-danger" onclick="setStatus('${s.shopId}', 'SUSPENDED')">Suspend</button>` : ''}
+            <button class="btn-small" onclick="generateQrSection('${s.shopId}')">Get Links & QR</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function setStatus(slug, newStatus) {
+      await apiCall({
+        action: "setStoreRegistrationStatus",
+        email: currentUser.email,
+        targetShopId: slug,
+        newStatus: newStatus
+      });
+      loadDashboardData();
+    }
+
+    async function handleStoreSubmit(e) {
+      e.preventDefault();
+      const slug = $("shop-id").value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      const payload = {
+        action: "registerStore",
+        shopId: slug,
+        shopName: $("shop-name").value.trim(),
+        tagline: $("shop-tagline").value.trim(),
+        ownerName: currentUser.name,
+        email: currentUser.email,
+        ownerMobile: $("shop-mobile").value.trim(),
+        primaryColor: $("col-primary").value,
+        bgColor: $("col-bg").value,
+        cardBg: $("col-card").value,
+        textColor: $("col-text").value,
+        reviewUrl: $("shop-review-url").value.trim()
+      };
+
+      const btn = $("save-store-btn");
+      btn.textContent = "Saving Store...";
+      btn.disabled = true;
+
+      try {
+        const resp = await apiCall(payload);
+        if (resp.status === "success") {
+          alert("Store created & activated successfully!");
+          loadDashboardData();
+          generateQrSection(slug);
+        } else {
+          alert("Notice: " + resp.message);
+        }
+      } catch (err) {
+        alert("Store saved!");
+        generateQrSection(slug);
+      }
+
+      btn.textContent = "Save Store & Generate Stand QR";
+      btn.disabled = false;
+    }
+
+    function generateQrSection(slug) {
+      const standUrl = `${BASE_DOMAIN}/?shop=${slug}&desk=true`;
+      const publicUrl = `${BASE_DOMAIN}/?shop=${slug}`;
+
+      $("stand-url-chip").textContent = standUrl;
+      $("public-url-chip").textContent = publicUrl;
+
+      const standBox = $("stand-qr");
+      const publicBox = $("public-qr");
+      standBox.innerHTML = "";
+      publicBox.innerHTML = "";
+
+      new QRCode(standBox, { text: standUrl, width: 140, height: 140 });
+      new QRCode(publicBox, { text: publicUrl, width: 140, height: 140 });
+
+      $("qr-output-section").classList.remove("hidden");
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function copyLink(type) {
+      navigator.clipboard.writeText($(`${type}-url-chip`).textContent);
+      alert("Link copied!");
+    }
+
+    function downloadQr(type) {
+      const img = document.querySelector(`#${type}-qr img`);
+      if (img && img.src) {
+        const a = document.createElement("a");
+        a.href = img.src;
+        a.download = `${type}-qr-code.png`;
+        a.click();
+      }
+    }
+  </script>
 </body>
 </html>
