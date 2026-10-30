@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" name="viewport"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <title>Customer Hub | Verified Visits & Rewards</title>
+  <link rel="stylesheet" href="customer.css"/>
+</head>
+<body>
+
+  <main class="cust-shell">
+
+    <!-- Auth / Login Card -->
+    <section class="card" id="login-card">
+      <div class="card-icon">🎁</div>
+      <h1 class="card-title">Customer Rewards Hub</h1>
+      <p class="card-sub">Access your verified counter visits & loyalty status</p>
+
+      <div class="form-group">
+        <label class="field-label" for="cust-phone">Your 10-Digit Mobile Number</label>
+        <input type="tel" id="cust-phone" class="text-input" maxlength="10" placeholder="e.g. 9876543210"/>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label" for="cust-pin">Security PIN (Last 4 Digits of Mobile)</label>
+        <input type="password" id="cust-pin" class="text-input" maxlength="4" placeholder="••••"/>
+      </div>
+
+      <button type="button" class="btn-primary" id="btn-cust-login">
+        <span>Verify & View Rewards</span>
+      </button>
+    </section>
+
+    <!-- Profile & Rewards Dashboard (Hidden until PIN verified) -->
+    <section class="card profile-card" id="profile-card">
+      <div class="profile-header">
+        <div>
+          <h2 class="profile-name" id="cust-welcome">Welcome!</h2>
+          <p class="profile-sub" id="cust-phone-display"></p>
+        </div>
+        <span class="badge-vip" id="stat-cust-tier">Verified Member</span>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-num emerald" id="stat-cust-visits">0</div>
+          <div class="stat-label">Total Visits</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num indigo" id="stat-cust-store">--</div>
+          <div class="stat-label">First Store</div>
+        </div>
+      </div>
+
+      <div class="privilege-box">
+        <div class="privilege-title">🎁 Next Counter Visit Privilege</div>
+        <p class="privilege-text">Show this active badge screen at the shop counter for priority service and instant repeat-customer savings.</p>
+      </div>
+
+      <button type="button" class="btn-dark" id="btn-cust-logout">
+        <span>🔒 Secure Logout</span>
+      </button>
+    </section>
+
+  </main>
+
+  <div class="toast-box" id="toast-box"></div>
+  <script src="customer.js"></script>
+</body>
+</html>
