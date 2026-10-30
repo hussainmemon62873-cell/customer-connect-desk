@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" name="viewport"/>
+  <meta content="#ffffff" name="theme-color"/>
+  <title>Merchant Onboarding | Customer Connect Desk</title>
+  <link rel="stylesheet" href="register.css"/>
+</head>
+<body>
+
+  <header class="reg-header">
+    <div class="reg-header-inner">
+      <div class="reg-brand-avatar">🏪</div>
+      <div>
+        <h1 class="reg-brand-title">Customer Connect Desk</h1>
+        <p class="reg-brand-sub">Register Your Physical Counter Stand</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="reg-shell">
+    <form class="reg-card" id="register-form" novalidate>
+      <div class="card-head">
+        <h2 class="card-title"><span>📝</span> Store Application</h2>
+        <span class="badge-pending">Status: PENDING Approval</span>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label" for="shop-name">Business / Store Name *</label>
+        <input type="text" id="shop-name" class="text-input" placeholder="e.g. Memon Lock & Key Maker" required/>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label" for="shop-slug">Store Slug (URL Identifier) *</label>
+        <div class="slug-preview-row">
+          <span class="slug-prefix">desk.html?shop=</span>
+          <input type="text" id="shop-slug" class="text-input slug-input" placeholder="memonlock" maxlength="25" required/>
+        </div>
+        <span class="field-hint">Letters and numbers only. No spaces. Min 3 characters.</span>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label" for="shop-tagline">Tagline / Specialization</label>
+        <input type="text" id="shop-tagline" class="text-input" placeholder="e.g. Car Sensor Keys & Safe Duplicate Experts"/>
+      </div>
+
+      <div class="row-two">
+        <div class="form-group">
+          <label class="field-label" for="owner-name">Owner Full Name *</label>
+          <input type="text" id="owner-name" class="text-input" placeholder="e.g. Hussain Memon" required/>
+        </div>
+        <div class="form-group">
+          <label class="field-label" for="owner-mobile">Owner WhatsApp Mobile *</label>
+          <input type="tel" id="owner-mobile" class="text-input" placeholder="10-digit mobile" maxlength="10" required/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label" for="owner-email">Owner Email Address *</label>
+        <input type="email" id="owner-email" class="text-input" placeholder="merchant@gmail.com" required/>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label" for="review-url">Google 5-Star Review URL</label>
+        <input type="url" id="review-url" class="text-input" placeholder="https://g.page/r/your-review-link"/>
+      </div>
+
+      <div class="form-group">
+        <label class="field-label" for="map-url">Google Maps Embed URL</label>
+        <input type="url" id="map-url" class="text-input" placeholder="https://www.google.com/maps/embed?..."/>
+      </div>
+
+      <div class="color-picker-box">
+        <label class="field-label">Store Brand Theme Color</label>
+        <div class="color-picker-row">
+          <input type="color" id="primary-color" value="#2563eb" class="color-swatch-input"/>
+          <span class="color-preview-code" id="color-code">#2563eb</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btn-submit">
+        <span>🚀 Submit Registration Application</span>
+      </button>
+    </form>
+  </main>
+
+  <div class="toast-box" id="toast-box"></div>
+  <script src="register.js"></script>
+</body>
+</html>
