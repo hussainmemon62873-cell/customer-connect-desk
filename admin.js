@@ -1,53 +1,86 @@
 // ==========================================
-// SUPER-ADMIN PORTAL CONTROLLER (admin.js)
-// Zero Browser Alerts & Accurate Route Mapping
+// ENTERPRISE B2B ADMIN ENGINE (admin.js)
+// Zero Browser Alerts + Complete Master-Sheet Sync
 // ==========================================
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMtCXUFrSRSvJ04tprcN27H5zE6B3aYOq0BCrsV_VcLZrPGZkqR6KvB4dKg-yB1zKG/exec";
 const BASE_DOMAIN = "https://customer-connect-desk.pages.dev";
 
 let currentUser = { name: "", email: "" };
+let allStoresCache = [];
+let pendingDeleteSlug = null;
 
 const $ = id => document.getElementById(id);
 
-// 1. Toast Notification Engine (Zero Native Browser Alerts)
-function showToast(msg) {
-  const box = $("toast-box");
-  if (!box) return;
-  box.textContent = msg;
-  box.classList.add("show");
-  setTimeout(() => box.classList.remove("show"), 3200);
+// 1. Toast & Database Notification System
+function showDbToast(msg, isError = false) {
+  const toast = $("db-toast");
+  toast.style.borderColor = isError ? "var(--danger)" : "var(--success)";
+  toast.innerHTML = `<span>${isError ? '❌' : '✅'}</span> <span>${msg}</span>`;
+  toast.style.display = "flex";
+  setTimeout(() => { toast.style.display = "none"; }, 4200);
 }
 
-// 2. Setup Password Eye Toggle
-function togglePasswordVisibility() {
-  const p = $("admin-pass");
-  const ic = $("eye-icon");
-  if (!p || !ic) return;
+// 2. Theme Toggle (Dark / Light)
+const themeBtn = $("theme-toggle-btn");
+themeBtn.addEventListener("click", () => {
+  const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+  const newTheme = currentTheme === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem("ccd_theme", newTheme);
+  $("theme-icon").textContent = newTheme === "dark" ? "☀️ Light" : "🌙 Dark";
+});
 
-  const isPass = p.type === "password";
-  p.type = isPass ? "text" : "password";
+// Restore saved theme
+(function initTheme() {
+  const saved = localStorage.getItem("ccd_theme") || "dark";
+  document.documentElement.setAttribute("data-theme", saved);
+  $("theme-icon").textContent = saved === "dark" ? "☀️ Light" : "🌙 Dark";
+})();
 
-  ic.innerHTML = isPass
-    ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`
-    : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
-}
+// 3. Navigation & Tab Switching
+document.querySelectorAll(".nav-item").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+    btn.classList.add("active");
+    const target = btn.getAttribute("data-tab");
+    if ($(target)) $(target).classList.add("active");
+  });
+});
 
-// 3. Google OAuth JWT Parser
+$("btn-top-add").addEventListener("click", () => {
+  document.querySelector('[data-tab="tab-wizard"]').click();
+});
+
+// 4. Stepper Navigation
+window.goToStep = function(stepNum) {
+  document.querySelectorAll(".step-item").forEach(item => {
+    const num = parseInt(item.getAttribute("data-step"));
+    if (num <= stepNum) item.classList.add("active");
+    else item.classList.remove("active");
+  });
+
+  document.querySelectorAll(".wizard-section").forEach(sec => sec.classList.remove("active"));
+  $(`wizard-sec-${stepNum}`).classList.add("active");
+};
+
+// 5. Password Eye Toggle
+$("btn-toggle-eye").addEventListener("click", () => {
+  const input = $("admin-pass");
+  input.type = input.type === "password" ? "text" : "password";
+});
+
+// 6. JWT Parser
 function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
-    );
-    return JSON.parse(jsonPayload);
-  } catch (e) {
-    return null;
-  }
+    return JSON.parse(decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+  } catch (e) { return null; }
 }
 
-// 4. Centralized API Fetch
+// 7. Central API Fetch
 async function apiCall(body) {
   const res = await fetch(SCRIPT_URL, {
     method: "POST",
@@ -57,15 +90,12 @@ async function apiCall(body) {
   return res.json();
 }
 
-// 5. Super-Admin Authentication Handshake
+// 8. Super-Admin Authentication Handshake
 window.handleAdminLogin = async function(response) {
   const payload = parseJwt(response.credential);
-  if (!payload || !payload.email) {
-    showToast("Google authorization failed.");
-    return;
-  }
+  if (!payload || !payload.email) return;
 
-  const enteredPass = $("admin-pass") ? $("admin-pass").value.trim() : "";
+  const enteredPass = $("admin-pass").value.trim();
 
   try {
     const authData = await apiCall({
@@ -75,14 +105,8 @@ window.handleAdminLogin = async function(response) {
     });
 
     if (authData.status !== "success") {
-      showToast(authData.message || "Access denied.");
+      showDbToast(authData.message || "Access denied.", true);
       return;
-    }
-
-    if (authData.claimedNow) {
-      showToast("Permanent lock bound to: " + payload.email);
-    } else {
-      showToast("Welcome back, Super-Admin!");
     }
 
     currentUser.name = payload.name;
@@ -91,101 +115,177 @@ window.handleAdminLogin = async function(response) {
     $("user-name").textContent = currentUser.name;
     $("user-email").textContent = currentUser.email;
 
-    $("signin-view").classList.add("hidden");
-    $("dashboard-view").classList.remove("hidden");
+    $("auth-gate-overlay").classList.add("hidden");
+    showDbToast(`Authenticated as Super-Admin: ${currentUser.email}`);
 
     loadDashboardData();
-
   } catch (err) {
-    showToast("Authentication error: " + err.message);
+    showDbToast("Authentication failed: " + err.message, true);
   }
 };
 
-// 6. Fetch Registered Stores Directory
+// 9. Load Registry Data
 async function loadDashboardData() {
   try {
-    const data = await apiCall({
-      action: "getAdminData",
-      email: currentUser.email
-    });
-    renderStores(data.allStores || []);
+    const data = await apiCall({ action: "getAdminData", email: currentUser.email });
+    allStoresCache = data.allStores || [];
+    renderDashboard(allStoresCache);
   } catch (err) {
-    console.error("Failed to load stores:", err);
-    showToast("Error retrieving store directory.");
+    showDbToast("Error retrieving Master-Sheet data.", true);
   }
 }
 
-// 7. Render Store Management Cards
-function renderStores(stores) {
-  const container = $("all-stores-list");
-  $("store-count-badge").textContent = `${stores.length} Registered`;
-  container.innerHTML = "";
+// 10. Render Metrics & Table
+function renderDashboard(stores) {
+  $("badge-total-stores").textContent = stores.length;
+
+  const activeCount = stores.filter(s => s.registrationStatus === "ACTIVE").length;
+  const pendingCount = stores.filter(s => s.registrationStatus === "PENDING").length;
+
+  $("stat-active-stores").textContent = activeCount;
+  $("stat-pending-stores").textContent = pendingCount;
+
+  const tbody = $("store-table-body");
+  tbody.innerHTML = "";
+
+  const selector = $("qr-store-selector");
+  selector.innerHTML = `<option value="">-- Choose Store --</option>`;
 
   if (stores.length === 0) {
-    container.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted);">No stores registered yet.</p>`;
+    tbody.innerHTML = `<tr><td colspan="5" class="table-loading">No registered stores found in Master-Sheet.</td></tr>`;
     return;
   }
 
   stores.forEach(s => {
-    const isActive = (s.registrationStatus === "ACTIVE");
-    const isSuspended = (s.registrationStatus === "SUSPENDED");
-    const tagClass = isActive ? "tag-active" : (isSuspended ? "tag-suspended" : "tag-pending");
+    // Populate QR dropdown
+    const opt = document.createElement("option");
+    opt.value = s.shopId;
+    opt.textContent = `${s.shopName} (${s.shopId})`;
+    selector.appendChild(opt);
 
-    const div = document.createElement("div");
-    div.className = "store-item";
-    div.innerHTML = `
-      <div class="store-item-head">
-        <div>
-          <h5 style="font-weight:700;">${s.shopName} <small style="color:var(--text-muted);">(${s.shopId})</small></h5>
-          <span class="store-meta">Owner: ${s.ownerName || 'Merchant'} (${s.ownerEmail || 'No Email'}) | 📞 ${s.ownerMobile || 'N/A'}</span>
+    // Populate Table
+    const tr = document.createElement("tr");
+    const statusClass = (s.registrationStatus || 'PENDING').toLowerCase();
+
+    tr.innerHTML = `
+      <td>
+        <strong>${s.shopName}</strong><br/>
+        <code style="font-size:0.75rem; color:var(--text-muted);">${s.shopId}</code>
+      </td>
+      <td>
+        ${s.ownerName || 'Merchant'}<br/>
+        <span style="font-size:0.75rem; color:var(--text-muted);">📞 ${s.ownerMobile || 'N/A'} | ✉️ ${s.ownerEmail || 'N/A'}</span>
+      </td>
+      <td><span style="font-size:0.82rem;">${s.tagline || '—'}</span></td>
+      <td><span class="status-badge ${statusClass}">${s.registrationStatus}</span></td>
+      <td>
+        <div class="table-action-btns">
+          ${s.registrationStatus !== 'ACTIVE' ? `<button class="btn-table success" onclick="setStatus('${s.shopId}', 'ACTIVE')">Approve</button>` : ''}
+          ${s.registrationStatus === 'ACTIVE' ? `<button class="btn-table warning" onclick="setStatus('${s.shopId}', 'SUSPENDED')">Suspend</button>` : ''}
+          <button class="btn-table" onclick="openStudioForStore('${s.shopId}')">QR</button>
+          <button class="btn-table danger" onclick="confirmDeleteStore('${s.shopId}', '${s.shopName}')">Delete</button>
         </div>
-        <span class="status-tag ${tagClass}">${s.registrationStatus}</span>
-      </div>
-      <div class="store-action-row">
-        ${!isActive ? `<button class="btn-small btn-success" onclick="setStatus('${s.shopId}', 'ACTIVE')">Activate</button>` : ''}
-        ${isActive ? `<button class="btn-small btn-danger" onclick="setStatus('${s.shopId}', 'SUSPENDED')">Suspend</button>` : ''}
-        <button class="btn-small" onclick="generateQrSection('${s.shopId}')">Get Links & QR</button>
-      </div>
+      </td>
     `;
-    container.appendChild(div);
+    tbody.appendChild(tr);
   });
 }
 
-// 8. Lifecycle Management (Activate / Suspend)
-window.setStatus = async function(slug, newStatus) {
-  showToast(`Updating ${slug} to ${newStatus}...`);
+// 11. Search Filtering
+$("global-store-search").addEventListener("input", (e) => {
+  const query = e.target.value.toLowerCase().trim();
+  const filtered = allStoresCache.filter(s => 
+    s.shopName.toLowerCase().includes(query) ||
+    s.shopId.toLowerCase().includes(query) ||
+    (s.ownerMobile && s.ownerMobile.includes(query)) ||
+    (s.ownerEmail && s.ownerEmail.toLowerCase().includes(query))
+  );
+  renderDashboard(filtered);
+});
+
+// 12. Lifecycle Status Updates
+window.setStatus = async function(slug, status) {
   try {
     const res = await apiCall({
       action: "setStoreRegistrationStatus",
       email: currentUser.email,
       targetShopId: slug,
-      newStatus: newStatus
+      newStatus: status
     });
-    showToast(res.message || "Status updated.");
+    showDbToast(`Status updated: ${slug} is now ${status}`);
     loadDashboardData();
-  } catch (e) {
-    showToast("Failed to update status.");
+  } catch (err) {
+    showDbToast("Failed to update status", true);
   }
 };
 
-// 9. Store Creation Form Submission
-$("store-form").addEventListener("submit", async (e) => {
+// 13. Permanent Delete Confirmation Modal
+window.confirmDeleteStore = function(slug, name) {
+  pendingDeleteSlug = slug;
+  $("modal-title").textContent = `Delete Store: ${name}?`;
+  $("modal-desc").textContent = `This will permanently delete '${slug}' from Master-Sheet and remove its dedicated database tab. This cannot be undone.`;
+  $("confirm-modal").classList.add("active");
+};
+
+$("btn-modal-cancel").addEventListener("click", () => {
+  $("confirm-modal").classList.remove("active");
+  pendingDeleteSlug = null;
+});
+
+$("btn-modal-confirm").addEventListener("click", async () => {
+  if (!pendingDeleteSlug) return;
+  $("confirm-modal").classList.remove("active");
+  
+  try {
+    const res = await apiCall({
+      action: "deleteStore",
+      email: currentUser.email,
+      targetShopId: pendingDeleteSlug
+    });
+    if (res.status === "success") {
+      showDbToast(`Deleted: Store '${pendingDeleteSlug}' removed completely.`);
+      loadDashboardData();
+    } else {
+      showDbToast(res.message, true);
+    }
+  } catch (e) {
+    showDbToast("Error deleting store", true);
+  } finally {
+    pendingDeleteSlug = null;
+  }
+});
+
+// 14. Registration Wizard Form (With Duplication Checking)
+$("wizard-form").addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const slug = $("shop-id").value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+  const shopName = $("shop-name").value.trim();
+  const tagline = $("shop-tagline").value.trim();
+  const ownerName = $("owner-name").value.trim();
+  const email = $("owner-email").value.trim().toLowerCase();
+  const mobile = $("shop-mobile").value.trim().replace(/\D/g, '');
 
   if (slug.length < 3) {
-    showToast("Store slug must be at least 3 letters/numbers");
+    showDbToast("Store slug must be at least 3 letters/numbers", true);
+    goToStep(1);
+    return;
+  }
+
+  if (mobile.length !== 10) {
+    showDbToast("Valid 10-digit mobile number required", true);
+    goToStep(2);
     return;
   }
 
   const payload = {
     action: "registerStore",
     shopId: slug,
-    shopName: $("shop-name").value.trim(),
-    tagline: $("shop-tagline").value.trim(),
-    ownerName: currentUser.name,
-    email: currentUser.email,
-    ownerMobile: $("shop-mobile").value.trim().replace(/[^0-9]/g, ''),
+    shopName: shopName,
+    tagline: tagline,
+    ownerName: ownerName,
+    ownerEmail: email,
+    ownerMobile: mobile,
     primaryColor: $("col-primary").value,
     bgColor: $("col-bg").value,
     cardBg: $("col-card").value,
@@ -195,77 +295,79 @@ $("store-form").addEventListener("submit", async (e) => {
     isPublicRegister: false
   };
 
-  const btn = $("save-store-btn");
-  btn.textContent = "Saving Store...";
+  const btn = $("btn-save-store");
   btn.disabled = true;
+  btn.textContent = "Writing to Master-Sheet...";
 
   try {
-    const resp = await apiCall(payload);
-    if (resp.status === "success") {
-      showToast("Store created & activated successfully!");
+    const res = await apiCall(payload);
+    if (res.status === "success") {
+      showDbToast(`Verified: Stored in Master-Sheet Row #${res.row} with Tab '${slug}'`);
+      $("wizard-form").reset();
+      goToStep(1);
       loadDashboardData();
-      generateQrSection(slug);
+      openStudioForStore(slug);
     } else {
-      showToast("Notice: " + resp.message);
+      showDbToast(res.message, true); // Duplication error shown here
     }
   } catch (err) {
-    showToast("Store saved locally.");
-    generateQrSection(slug);
+    showDbToast("Network error syncing with Google Sheets.", true);
   } finally {
-    btn.textContent = "Save Store & Generate Stand QR";
     btn.disabled = false;
+    btn.textContent = "💾 Save to Master-Sheet & Provision Tab";
   }
 });
 
-// 10. QR Generation with Accurate 6-File System URLs
-window.generateQrSection = function(slug) {
-  // Routes accurately to desk.html and shop.html
+// 15. QR & Stand Studio Controller
+window.openStudioForStore = function(slug) {
+  document.querySelector('[data-tab="tab-qr"]').click();
+  $("qr-store-selector").value = slug;
+  renderQrStudio(slug);
+};
+
+$("qr-store-selector").addEventListener("change", (e) => {
+  renderQrStudio(e.target.value);
+});
+
+function renderQrStudio(slug) {
+  if (!slug) return;
+
   const standUrl = `${BASE_DOMAIN}/desk.html?shop=${slug}`;
   const publicUrl = `${BASE_DOMAIN}/shop.html?shop=${slug}`;
 
-  $("stand-url-chip").textContent = standUrl;
-  $("public-url-chip").textContent = publicUrl;
+  $("chip-stand-url").textContent = standUrl;
+  $("chip-public-url").textContent = publicUrl;
 
-  const standBox = $("stand-qr");
-  const publicBox = $("public-qr");
+  const standBox = $("box-stand-qr");
+  const publicBox = $("box-public-qr");
   standBox.innerHTML = "";
   publicBox.innerHTML = "";
 
   new QRCode(standBox, { text: standUrl, width: 140, height: 140 });
   new QRCode(publicBox, { text: publicUrl, width: 140, height: 140 });
+}
 
-  $("qr-output-section").classList.remove("hidden");
-  $("qr-output-section").scrollIntoView({ behavior: 'smooth' });
+window.copyStudioLink = function(type) {
+  const text = $(`chip-${type}-url`).textContent;
+  if (!text || text.includes("Select a store")) return;
+  navigator.clipboard.writeText(text);
+  showDbToast("Link copied to clipboard!");
 };
 
-// 11. Clipboard and Download Utilities
-window.copyLink = function(type) {
-  const url = $(`${type}-url-chip`).textContent;
-  if (!url) return;
-  navigator.clipboard.writeText(url).then(() => {
-    showToast("Link copied to clipboard!");
-  }).catch(() => {
-    showToast("Unable to copy link.");
-  });
-};
-
-window.downloadQr = function(type) {
-  const img = document.querySelector(`#${type}-qr img`);
+window.downloadStudioQr = function(type) {
+  const img = document.querySelector(`#box-${type}-qr img`);
   if (img && img.src) {
     const a = document.createElement("a");
     a.href = img.src;
-    a.download = `${type}-qr-code.png`;
+    a.download = `${type}-qr-stand.png`;
     a.click();
-    showToast("QR Code downloaded!");
-  } else {
-    showToast("QR image not ready yet.");
+    showDbToast("QR Code downloaded.");
   }
 };
 
-// DOM Event Bindings
-$("btn-toggle-eye").addEventListener("click", togglePasswordVisibility);
+$("btn-refresh-overview").addEventListener("click", () => {
+  showDbToast("Refreshing Master-Sheet cache...");
+  loadDashboardData();
+});
+
 $("btn-logout").addEventListener("click", () => location.reload());
-$("btn-copy-stand").addEventListener("click", () => copyLink('stand'));
-$("btn-dl-stand").addEventListener("click", () => downloadQr('stand'));
-$("btn-copy-public").addEventListener("click", () => copyLink('public'));
-$("btn-dl-public").addEventListener("click", () => downloadQr('public'));
