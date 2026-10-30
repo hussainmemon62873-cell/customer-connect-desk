@@ -1,10 +1,9 @@
 // ==========================================
 // ENTERPRISE B2B ADMIN ENGINE (admin.js)
-// Zero Browser Alerts + Complete Master-Sheet Sync
+// Zero Browser Alerts + Step Validation + Master-Sheet Sync
 // ==========================================
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyq5CbrZ5VzrFEcBh-gfs3iy5UewHoNfJT7ZtLxhHXhhW_bs7R_a0roSqYbZehydJCn/exec";
-
 const BASE_DOMAIN = "https://customer-connect-desk.pages.dev";
 
 let currentUser = { name: "", email: "" };
@@ -13,9 +12,10 @@ let pendingDeleteSlug = null;
 
 const $ = id => document.getElementById(id);
 
-// 1. Toast & Database Notification System
+// 1. Toast Notification System
 function showDbToast(msg, isError = false) {
   const toast = $("db-toast");
+  if (!toast) return;
   toast.style.borderColor = isError ? "var(--danger)" : "var(--success)";
   toast.innerHTML = `<span>${isError ? '❌' : '✅'}</span> <span>${msg}</span>`;
   toast.style.display = "flex";
@@ -24,19 +24,20 @@ function showDbToast(msg, isError = false) {
 
 // 2. Theme Toggle (Dark / Light)
 const themeBtn = $("theme-toggle-btn");
-themeBtn.addEventListener("click", () => {
-  const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
-  const newTheme = currentTheme === "dark" ? "light" : "dark";
-  document.documentElement.setAttribute("data-theme", newTheme);
-  localStorage.setItem("ccd_theme", newTheme);
-  $("theme-icon").textContent = newTheme === "dark" ? "☀️ Light" : "🌙 Dark";
-});
+if (themeBtn) {
+  themeBtn.addEventListener("click", () => {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem("ccd_theme", newTheme);
+    $("theme-icon").textContent = newTheme === "dark" ? "☀️ Light" : "🌙 Dark";
+  });
+}
 
-// Restore saved theme
 (function initTheme() {
   const saved = localStorage.getItem("ccd_theme") || "dark";
   document.documentElement.setAttribute("data-theme", saved);
-  $("theme-icon").textContent = saved === "dark" ? "☀️ Light" : "🌙 Dark";
+  if ($("theme-icon")) $("theme-icon").textContent = saved === "dark" ? "☀️ Light" : "🌙 Dark";
 })();
 
 // 3. Navigation & Tab Switching
@@ -50,29 +51,108 @@ document.querySelectorAll(".nav-item").forEach(btn => {
   });
 });
 
-$("btn-top-add").addEventListener("click", () => {
-  document.querySelector('[data-tab="tab-wizard"]').click();
-});
+if ($("btn-top-add")) {
+  $("btn-top-add").addEventListener("click", () => {
+    document.querySelector('[data-tab="tab-wizard"]').click();
+  });
+}
 
-// 4. Stepper Navigation
-window.goToStep = function(stepNum) {
+// 4. Strict Stepper Navigation with Per-Step Validation
+window.goToStep = function(targetStep) {
+  const activeSec = document.querySelector(".wizard-section.active");
+  const currentStepId = activeSec ? activeSec.id : "wizard-sec-1";
+
+  // Prevent moving past Step 1 if Identity fields are incomplete
+  if (currentStepId === "wizard-sec-1" && targetStep > 1) {
+    const slug = $("shop-id").value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    const shopName = $("shop-name").value.trim();
+    const tagline = $("shop-tagline").value.trim();
+
+    if (!slug || slug.length < 3) {
+      showDbToast("Store slug must be at least 3 letters/numbers", true);
+      $("shop-id").focus();
+      return;
+    }
+    if (!shopName) {
+      showDbToast("Store display name is required", true);
+      $("shop-name").focus();
+      return;
+    }
+    if (!tagline) {
+      showDbToast("Business tagline is required", true);
+      $("shop-tagline").focus();
+      return;
+    }
+  }
+
+  // Prevent moving past Step 2 if Contact fields are incomplete
+  if (currentStepId === "wizard-sec-2" && targetStep > 2) {
+    const ownerName = $("owner-name").value.trim();
+    const email = $("owner-email").value.trim().toLowerCase();
+    const mobile = $("shop-mobile").value.trim().replace(/\D/g, '');
+
+    if (!ownerName) {
+      showDbToast("Owner full name is required", true);
+      $("owner-name").focus();
+      return;
+    }
+    if (!email || !email.includes('@')) {
+      showDbToast("Valid owner email address is required", true);
+      $("owner-email").focus();
+      return;
+    }
+    if (mobile.length !== 10) {
+      showDbToast("Valid 10-digit mobile number required", true);
+      $("shop-mobile").focus();
+      return;
+    }
+  }
+
+  // Update indicators
   document.querySelectorAll(".step-item").forEach(item => {
     const num = parseInt(item.getAttribute("data-step"));
-    if (num <= stepNum) item.classList.add("active");
+    if (num <= targetStep) item.classList.add("active");
     else item.classList.remove("active");
   });
 
+  // Switch visible section
   document.querySelectorAll(".wizard-section").forEach(sec => sec.classList.remove("active"));
-  $(`wizard-sec-${stepNum}`).classList.add("active");
+  $(`wizard-sec-${targetStep}`).classList.add("active");
 };
 
-// 5. Password Eye Toggle
-$("btn-toggle-eye").addEventListener("click", () => {
-  const input = $("admin-pass");
-  input.type = input.type === "password" ? "text" : "password";
-});
+// 5. Intercept "Enter" Key so fields do not trigger unexpected jumps
+function handleWizardEnterKey() {
+  const wizardForm = $("wizard-form");
+  if (!wizardForm) return;
 
-// 6. JWT Parser
+  wizardForm.querySelectorAll("input").forEach(input => {
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const activeSec = document.querySelector(".wizard-section.active");
+        if (!activeSec) return;
+
+        if (activeSec.id === "wizard-sec-1") {
+          goToStep(2);
+        } else if (activeSec.id === "wizard-sec-2") {
+          goToStep(3);
+        } else if (activeSec.id === "wizard-sec-3") {
+          $("btn-save-store").click();
+        }
+      }
+    });
+  });
+}
+
+// 6. Password Eye Toggle
+if ($("btn-toggle-eye")) {
+  $("btn-toggle-eye").addEventListener("click", () => {
+    const input = $("admin-pass");
+    input.type = input.type === "password" ? "text" : "password";
+  });
+}
+
+// 7. JWT Parser
 function parseJwt(token) {
   try {
     const base64Url = token.split('.')[1];
@@ -81,7 +161,7 @@ function parseJwt(token) {
   } catch (e) { return null; }
 }
 
-// 7. Central API Fetch
+// 8. Central API Fetch
 async function apiCall(body) {
   const res = await fetch(SCRIPT_URL, {
     method: "POST",
@@ -91,7 +171,7 @@ async function apiCall(body) {
   return res.json();
 }
 
-// 8. Super-Admin Authentication Handshake
+// 9. Super-Admin Authentication Handshake
 window.handleAdminLogin = async function(response) {
   const payload = parseJwt(response.credential);
   if (!payload || !payload.email) return;
@@ -125,7 +205,7 @@ window.handleAdminLogin = async function(response) {
   }
 };
 
-// 9. Load Registry Data
+// 10. Load Registry Data
 async function loadDashboardData() {
   try {
     const data = await apiCall({ action: "getAdminData", email: currentUser.email });
@@ -136,7 +216,7 @@ async function loadDashboardData() {
   }
 }
 
-// 10. Render Metrics & Table
+// 11. Render Metrics & Table
 function renderDashboard(stores) {
   $("badge-total-stores").textContent = stores.length;
 
@@ -158,13 +238,11 @@ function renderDashboard(stores) {
   }
 
   stores.forEach(s => {
-    // Populate QR dropdown
     const opt = document.createElement("option");
     opt.value = s.shopId;
     opt.textContent = `${s.shopName} (${s.shopId})`;
     selector.appendChild(opt);
 
-    // Populate Table
     const tr = document.createElement("tr");
     const statusClass = (s.registrationStatus || 'PENDING').toLowerCase();
 
@@ -192,7 +270,7 @@ function renderDashboard(stores) {
   });
 }
 
-// 11. Search Filtering
+// 12. Search Filtering
 $("global-store-search").addEventListener("input", (e) => {
   const query = e.target.value.toLowerCase().trim();
   const filtered = allStoresCache.filter(s => 
@@ -204,7 +282,7 @@ $("global-store-search").addEventListener("input", (e) => {
   renderDashboard(filtered);
 });
 
-// 12. Lifecycle Status Updates
+// 13. Lifecycle Status Updates
 window.setStatus = async function(slug, status) {
   try {
     const res = await apiCall({
@@ -220,7 +298,7 @@ window.setStatus = async function(slug, status) {
   }
 };
 
-// 13. Permanent Delete Confirmation Modal
+// 14. Permanent Delete Confirmation Modal
 window.confirmDeleteStore = function(slug, name) {
   pendingDeleteSlug = slug;
   $("modal-title").textContent = `Delete Store: ${name}?`;
@@ -256,7 +334,7 @@ $("btn-modal-confirm").addEventListener("click", async () => {
   }
 });
 
-// 14. Registration Wizard Form (With Duplication Checking)
+// 15. Wizard Form Submission (Final Step 3 Only)
 $("wizard-form").addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -272,9 +350,13 @@ $("wizard-form").addEventListener("submit", async (e) => {
     goToStep(1);
     return;
   }
-
-  if (mobile.length !== 10) {
-    showDbToast("Valid 10-digit mobile number required", true);
+  if (!shopName || !tagline) {
+    showDbToast("Please fill all identity fields in Step 1", true);
+    goToStep(1);
+    return;
+  }
+  if (!ownerName || !email || mobile.length !== 10) {
+    showDbToast("Please verify owner contact details in Step 2", true);
     goToStep(2);
     return;
   }
@@ -309,7 +391,7 @@ $("wizard-form").addEventListener("submit", async (e) => {
       loadDashboardData();
       openStudioForStore(slug);
     } else {
-      showDbToast(res.message, true); // Duplication error shown here
+      showDbToast(res.message, true);
     }
   } catch (err) {
     showDbToast("Network error syncing with Google Sheets.", true);
@@ -319,7 +401,7 @@ $("wizard-form").addEventListener("submit", async (e) => {
   }
 });
 
-// 15. QR & Stand Studio Controller
+// 16. QR & Stand Studio Controller
 window.openStudioForStore = function(slug) {
   document.querySelector('[data-tab="tab-qr"]').click();
   $("qr-store-selector").value = slug;
@@ -366,9 +448,17 @@ window.downloadStudioQr = function(type) {
   }
 };
 
-$("btn-refresh-overview").addEventListener("click", () => {
-  showDbToast("Refreshing Master-Sheet cache...");
-  loadDashboardData();
-});
+if ($("btn-refresh-overview")) {
+  $("btn-refresh-overview").addEventListener("click", () => {
+    showDbToast("Refreshing Master-Sheet cache...");
+    loadDashboardData();
+  });
+}
 
-$("btn-logout").addEventListener("click", () => location.reload());
+if ($("btn-logout")) {
+  $("btn-logout").addEventListener("click", () => location.reload());
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  handleWizardEnterKey();
+});
