@@ -8,9 +8,11 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#0f172a" />
 
+  <!-- Google Identity Services & QRCode Library -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -19,7 +21,7 @@
 </head>
 <body>
 
-  <!-- Google Auth Overlay -->
+  <!-- 1. Google OAuth & Master Setup Gate Overlay -->
   <div id="auth-gate-overlay" class="auth-gate-shell">
     <div class="auth-gate-card">
       <div class="auth-brand-logo">🛡️</div>
@@ -30,7 +32,7 @@
         <label for="admin-pass">Master Setup Password</label>
         <div class="password-wrap">
           <input type="password" id="admin-pass" placeholder="Enter setup password (1st time only)" />
-          <button type="button" class="btn-eye" id="btn-toggle-eye">👁️</button>
+          <button type="button" class="btn-eye" id="btn-toggle-eye" aria-label="Toggle password view">👁️</button>
         </div>
         <span class="field-hint">Required on first login to link your Google Identity permanently.</span>
       </div>
@@ -46,7 +48,7 @@
     </div>
   </div>
 
-  <!-- Main B2B Console Application -->
+  <!-- 2. Main B2B Console Application -->
   <div class="app-layout" id="app-layout">
     
     <!-- Collapsible Sidebar -->
@@ -175,7 +177,7 @@
         </div>
       </section>
 
-      <!-- TAB 3: STEPPER REGISTRATION WIZARD -->
+      <!-- TAB 3: STEPPER REGISTRATION WIZARD (Only 1 Step Visible at a Time) -->
       <section class="tab-pane" id="tab-wizard">
         <div class="page-title-row">
           <div>
@@ -185,7 +187,7 @@
         </div>
 
         <div class="wizard-card card-surface">
-          <!-- Step Indicators -->
+          <!-- Step Indicator Bar -->
           <div class="stepper-bar">
             <div class="step-item active" data-step="1">
               <span class="step-num">1</span>
@@ -346,7 +348,7 @@
     </main>
   </div>
 
-  <!-- Confirmation Modal (Zero Native Browser Confirmations) -->
+  <!-- Custom Confirmation Modal (No Browser Alerts) -->
   <div class="modal-backdrop" id="confirm-modal">
     <div class="modal-card">
       <div class="modal-icon" id="modal-icon">⚠️</div>
