@@ -1,4 +1,5 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2dR05Yv9Iym9YHM9rfNypfUzeXwenigfZDMe_Dvsm7CwaZdOIIhNahKMSISW10qBS/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMtCXUFrSRSvJ04tprcN27H5zE6B3aYOq0BCrsV_VcLZrPGZkqR6KvB4dKg-yB1zKG/exec";
+
 const DEFAULT_PIN = "1234";
 
 const $ = id => document.getElementById(id);
