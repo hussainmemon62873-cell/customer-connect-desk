@@ -15,26 +15,28 @@
   <style>
     :root {
       --accent: #2563eb;
-      --bg-dark: #0b0f19;
-      --card-bg: #151c2c;
-      --input-bg: #0d121f;
-      --border: #232d42;
-      --text-main: #f8fafc;
+      --accent-glow: rgba(37, 99, 235, 0.25);
+      --bg: #0b0f19;
+      --card-bg: #131b2e;
+      --input-bg: #0a0f1d;
+      --border: #222f47;
+      --text: #ffffff;
       --text-muted: #94a3b8;
       --success: #10b981;
+      --danger: #ef4444;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: var(--bg-dark);
-      color: var(--text-main);
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -43,7 +45,60 @@
       padding: 1.25rem 1rem;
     }
 
-    .desk-wrapper {
+    /* CUSTOM TOAST NOTIFICATIONS */
+    #toast-wrap {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 400px;
+      z-index: 99999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      pointer-events: auto;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.55);
+      backdrop-filter: blur(10px);
+      animation: slideInDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      border: 1px solid;
+    }
+
+    .toast-success {
+      background: rgba(16, 185, 129, 0.95);
+      color: #ffffff;
+      border-color: #34d399;
+    }
+
+    .toast-error {
+      background: rgba(239, 68, 68, 0.95);
+      color: #ffffff;
+      border-color: #f87171;
+    }
+
+    .toast-info {
+      background: rgba(30, 41, 59, 0.95);
+      color: #93c5fd;
+      border-color: #3b82f6;
+    }
+
+    @keyframes slideInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .desk-container {
       width: 100%;
       max-width: 420px;
       margin: auto;
@@ -52,9 +107,9 @@
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 1.75rem 1.35rem;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
     }
 
     .shop-header {
@@ -66,21 +121,21 @@
       display: inline-block;
       font-size: 0.72rem;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       text-transform: uppercase;
-      padding: 0.35rem 0.75rem;
+      padding: 0.35rem 0.85rem;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.06);
       color: var(--accent);
-      margin-bottom: 0.65rem;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .shop-header h1 {
       font-size: 1.45rem;
       font-weight: 800;
-      color: var(--text-main);
       line-height: 1.25;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.4rem;
     }
 
     .shop-header p {
@@ -95,14 +150,14 @@
     label {
       display: block;
       font-size: 0.82rem;
-      font-weight: 600;
+      font-weight: 700;
       color: #cbd5e1;
       margin-bottom: 0.45rem;
     }
 
     input, select {
       width: 100%;
-      height: 50px;
+      height: 52px;
       padding: 0 1rem;
       background: var(--input-bg);
       border: 1.5px solid var(--border);
@@ -110,14 +165,15 @@
       color: #ffffff;
       font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     input:focus, select:focus {
       border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
-    .checkbox-container {
+    .checkbox-wrap {
       display: flex;
       align-items: flex-start;
       gap: 0.75rem;
@@ -125,7 +181,7 @@
       cursor: pointer;
     }
 
-    .checkbox-container input {
+    .checkbox-wrap input {
       width: 20px;
       height: 20px;
       accent-color: var(--accent);
@@ -133,7 +189,7 @@
       flex-shrink: 0;
     }
 
-    .checkbox-container span {
+    .checkbox-wrap span {
       font-size: 0.82rem;
       color: var(--text-muted);
       line-height: 1.4;
@@ -141,7 +197,7 @@
 
     .btn-submit {
       width: 100%;
-      height: 52px;
+      height: 54px;
       background: var(--accent);
       color: #ffffff;
       border: none;
@@ -153,112 +209,137 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      transition: opacity 0.2s;
+      box-shadow: 0 8px 20px var(--accent-glow);
+      transition: transform 0.15s, opacity 0.15s;
     }
 
     .btn-submit:active {
+      transform: scale(0.98);
       opacity: 0.9;
     }
 
-    .hidden {
-      display: none !important;
-    }
-
-    .state-box {
+    .state-panel {
       text-align: center;
-      padding: 2rem 1rem;
+      padding: 2.2rem 1rem;
     }
 
-    .state-box svg {
-      margin-bottom: 1rem;
+    .spinner {
+      width: 38px;
+      height: 38px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
     }
 
-    .review-action-btn {
-      display: inline-block;
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .review-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
       width: 100%;
-      height: 52px;
-      line-height: 52px;
-      text-align: center;
+      height: 54px;
       background: var(--success);
       color: #ffffff;
       text-decoration: none;
       border-radius: 14px;
       font-weight: 700;
-      margin-top: 1.25rem;
+      font-size: 1rem;
+      margin-top: 1.5rem;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.25);
+    }
+
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
 <body>
-  <div class="desk-wrapper">
+
+  <!-- FLOATING TOAST CONTAINER -->
+  <div id="toast-wrap"></div>
+
+  <div class="desk-container">
     <div class="card">
-      
-      <!-- LOADING STATE -->
-      <div id="loading-state" class="state-box">
-        <p style="color: var(--text-muted); font-size: 0.95rem;">Connecting to desk...</p>
+
+      <!-- 1. LOADING SCREEN -->
+      <div id="loading-panel" class="state-panel">
+        <div class="spinner"></div>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Connecting to desk...</p>
       </div>
 
-      <!-- ERROR / NOT FOUND STATE -->
-      <div id="error-state" class="state-box hidden">
-        <h2 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Store Unavailable</h2>
-        <p style="color: var(--text-muted); font-size: 0.88rem;" id="error-message">This store desk is inactive or invalid.</p>
+      <!-- 2. ERROR SCREEN -->
+      <div id="error-panel" class="state-panel hidden">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.75rem;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <h2 style="font-size: 1.25rem; margin-bottom: 0.4rem;">Desk Unavailable</h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem;" id="error-msg">This counter desk is inactive or not found.</p>
       </div>
 
-      <!-- MAIN CHECK-IN INTERFACE -->
-      <div id="main-content" class="hidden">
+      <!-- 3. MAIN CHECK-IN INTERFACE -->
+      <div id="desk-content" class="hidden">
         <header class="shop-header">
-          <span class="badge" id="desk-tag">Store Desk</span>
+          <span class="badge" id="desk-badge">Counter Desk</span>
           <h1 id="shop-title">Shop Name</h1>
           <p id="shop-sub">Welcome! Please check in below.</p>
         </header>
 
-        <!-- STEP 1: Google One-Tap / Button Identification -->
-        <div id="step-auth">
-          <div style="display: flex; justify-content: center; margin: 1rem 0 1.5rem;">
+        <!-- GOOGLE 1-TAP / BUTTON -->
+        <div id="auth-section">
+          <div style="display: flex; justify-content: center; margin: 1rem 0 1.25rem;">
             <div id="g_id_onload"
                  data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
                  data-callback="handleCustomerAuth"
                  data-auto_prompt="false">
             </div>
-            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-text="signin_with" data-shape="rectangular" data-width="320"></div>
+            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="rectangular" data-width="320"></div>
           </div>
-          <p style="font-size: 0.78rem; color: var(--text-muted); text-align: center;">Sign in with Google to auto-fill your profile</p>
+          <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">Tap above to auto-fill your profile instantly</p>
         </div>
 
-        <!-- STEP 2: Phone, Birthday & Intake Details -->
-        <form id="desk-form" class="hidden" onsubmit="submitCustomerCheckin(event)">
+        <!-- INTAKE FORM -->
+        <form id="checkin-form" class="hidden" onsubmit="submitVisit(event)">
           <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="cust-name" required placeholder="Your full name" />
+            <label>Full Name *</label>
+            <input type="text" id="cust-name" required placeholder="Enter full name" />
           </div>
 
           <div class="form-group">
             <label>Email Address</label>
-            <input type="text" id="cust-email" readonly style="opacity: 0.75;" />
+            <input type="email" id="cust-email" readonly style="opacity: 0.75;" />
           </div>
 
           <div class="form-group">
             <label>WhatsApp / Mobile Number *</label>
-            <input type="tel" id="cust-mobile" required placeholder="e.g. 9876543210" pattern="[0-9]{10}" title="Enter a valid 10-digit mobile number" />
+            <input type="tel" id="cust-phone" required placeholder="10-digit mobile number" pattern="[0-9]{10}" />
           </div>
 
           <div class="form-group">
-            <label>Date of Birth (Optional for Birthday Treats)</label>
+            <label>Birthday (For birthday surprise discounts)</label>
             <input type="date" id="cust-dob" />
           </div>
 
           <div class="form-group">
-            <label>Reason for Visit</label>
-            <select id="cust-visittype">
-              <option value="General Visit / Inquiry">General Visit / Inquiry</option>
+            <label>Visit Purpose</label>
+            <select id="cust-purpose">
+              <option value="General Inquiry">General Inquiry</option>
               <option value="Product Purchase">Product Purchase</option>
-              <option value="Repair / Service">Repair / Service</option>
-              <option value="Pickup / Delivery">Pickup / Delivery</option>
+              <option value="Key Making / Locksmith">Key Making / Locksmith</option>
+              <option value="Repair & Service">Repair & Service</option>
             </select>
           </div>
 
-          <label class="checkbox-container">
+          <label class="checkbox-wrap">
             <input type="checkbox" id="cust-optin" checked />
-            <span>Send me invoice updates and exclusive offers via WhatsApp.</span>
+            <span>Receive digital invoices and special offers via WhatsApp</span>
           </label>
 
           <button type="submit" id="submit-btn" class="btn-submit">
@@ -266,33 +347,52 @@
           </button>
         </form>
 
-        <!-- STEP 3: SUCCESS & GOOGLE REVIEW CALL-TO-ACTION -->
-        <div id="success-state" class="state-box hidden">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- 4. CHECK-IN COMPLETE SCREEN -->
+        <div id="success-panel" class="state-panel hidden">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 0.75rem;">
             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
-          <h2 style="font-size: 1.35rem; margin-bottom: 0.4rem;">Check-In Complete!</h2>
-          <p style="color: var(--text-muted); font-size: 0.88rem;">Thank you for visiting us today.</p>
+          <h2 style="font-size: 1.4rem; margin-bottom: 0.35rem;">Check-In Complete!</h2>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">Thank you for checking in with us today.</p>
 
-          <div id="review-container" class="hidden">
-            <a id="review-link" href="#" target="_blank" rel="noopener noreferrer" class="review-action-btn">
-              ⭐ Leave Us a 5-Star Review
+          <div id="review-cta-wrap" class="hidden">
+            <a id="review-btn" href="#" target="_blank" rel="noopener noreferrer" class="review-button">
+              ⭐ Leave a 5-Star Review
             </a>
           </div>
         </div>
 
       </div>
+
     </div>
   </div>
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2dR05Yv9Iym9YHM9rfNypfUzeXwenigfZDMe_Dvsm7CwaZdOIIhNahKMSISW10qBS/exec";
-    
-    let currentStore = null;
+
+    let storeData = null;
     let customerProfile = { name: "", email: "" };
 
     const $ = id => document.getElementById(id);
+
+    // TOAST NOTIFICATION ENGINE
+    function toast(text, type = "info") {
+      const wrap = $("toast-wrap");
+      if (!wrap) return;
+
+      const el = document.createElement("div");
+      el.className = `toast toast-${type}`;
+      el.innerHTML = `<span>${text}</span>`;
+      wrap.appendChild(el);
+
+      setTimeout(() => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(-15px)";
+        el.style.transition = "all 0.25s ease";
+        setTimeout(() => el.remove(), 250);
+      }, 3500);
+    }
 
     function parseJwt(token) {
       try {
@@ -308,11 +408,11 @@
     }
 
     async function initDesk() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const shopSlug = (urlParams.get("shop") || "").trim().toLowerCase();
+      const params = new URLSearchParams(window.location.search);
+      const slug = (params.get("shop") || "").trim().toLowerCase();
 
-      if (!shopSlug) {
-        showError("No store specified in the link.");
+      if (!slug) {
+        showError("No store slug detected in URL.");
         return;
       }
 
@@ -320,42 +420,43 @@
         const res = await fetch(SCRIPT_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "getStoreConfig", shopId: shopSlug })
+          body: JSON.stringify({ action: "getStoreConfig", shopId: slug })
         });
         const data = await res.json();
 
         if (data.status !== "success" || !data.store) {
-          showError(data.message || "Store not found or currently suspended.");
+          showError(data.message || "Store is inactive or does not exist.");
           return;
         }
 
-        currentStore = data.store;
-        applyStoreConfig(currentStore);
+        storeData = data.store;
+        setupUI(storeData);
 
       } catch (err) {
-        showError("Network error. Unable to load store details.");
+        showError("Failed to connect to desk server.");
       }
     }
 
-    function applyStoreConfig(store) {
-      document.title = `${store.shopName} | Check-In`;
+    function setupUI(store) {
+      document.title = `${store.shopName} | Desk`;
       $("shop-title").textContent = store.shopName;
       $("shop-sub").textContent = store.tagline || "Welcome! Please check in below.";
-      $("desk-tag").textContent = store.shopId;
+      $("desk-badge").textContent = store.shopId;
 
-      // Apply dynamic colors
       if (store.primaryColor) {
         document.documentElement.style.setProperty("--accent", store.primaryColor);
+        document.documentElement.style.setProperty("--accent-glow", store.primaryColor + "40");
       }
 
-      $("loading-state").classList.add("hidden");
-      $("main-content").classList.remove("hidden");
+      $("loading-panel").classList.add("hidden");
+      $("desk-content").classList.remove("hidden");
     }
 
     function showError(msg) {
-      $("loading-state").classList.add("hidden");
-      $("error-message").textContent = msg;
-      $("error-state").classList.remove("hidden");
+      $("loading-panel").classList.add("hidden");
+      $("error-msg").textContent = msg;
+      $("error-panel").classList.remove("hidden");
+      toast(msg, "error");
     }
 
     function handleCustomerAuth(response) {
@@ -368,25 +469,27 @@
       $("cust-name").value = customerProfile.name;
       $("cust-email").value = customerProfile.email;
 
-      $("step-auth").classList.add("hidden");
-      $("desk-form").classList.remove("hidden");
-      $("cust-mobile").focus();
+      $("auth-section").classList.add("hidden");
+      $("checkin-form").classList.remove("hidden");
+      $("cust-phone").focus();
+
+      toast("Google profile connected!", "success");
     }
 
-    async function submitCustomerCheckin(e) {
+    async function submitVisit(e) {
       e.preventDefault();
       const btn = $("submit-btn");
       btn.disabled = true;
-      btn.innerHTML = `<span>Checking In...</span>`;
+      btn.innerHTML = `<span>Saving Visit...</span>`;
 
       const payload = {
         action: "recordCustomerVisit",
-        shopId: currentStore.shopId,
+        shopId: storeData.shopId,
         name: $("cust-name").value.trim(),
         email: customerProfile.email || $("cust-email").value.trim(),
-        mobile: $("cust-mobile").value.trim(),
+        mobile: $("cust-phone").value.trim(),
         dob: $("cust-dob").value,
-        visitType: $("cust-visittype").value,
+        visitType: $("cust-purpose").value,
         whatsappOptIn: $("cust-optin").checked
       };
 
@@ -397,20 +500,21 @@
           body: JSON.stringify(payload)
         });
 
-        $("desk-form").classList.add("hidden");
+        $("checkin-form").classList.add("hidden");
         $("shop-title").classList.add("hidden");
         $("shop-sub").classList.add("hidden");
-        $("desk-tag").classList.add("hidden");
+        $("desk-badge").classList.add("hidden");
 
-        $("success-state").classList.remove("hidden");
+        $("success-panel").classList.remove("hidden");
+        toast("Check-in saved successfully!", "success");
 
-        if (currentStore.reviewUrl && currentStore.reviewUrl.trim().length > 5) {
-          $("review-link").href = currentStore.reviewUrl.trim();
-          $("review-container").classList.remove("hidden");
+        if (storeData.reviewUrl && storeData.reviewUrl.trim().length > 5) {
+          $("review-btn").href = storeData.reviewUrl.trim();
+          $("review-cta-wrap").classList.remove("hidden");
         }
 
       } catch (err) {
-        alert("Check-in saved locally! Thank you.");
+        toast("Network error. Saved offline.", "error");
       }
     }
 
