@@ -1,7 +1,5 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMtCXUFrSRSvJ04tprcN27H5zE6B3aYOq0BCrsV_VcLZrPGZkqR6KvB4dKg-yB1zKG/exec";
 
-const DEFAULT_PIN = "1234";
-
 const $ = id => document.getElementById(id);
 let currentSlug = "memonlock";
 
@@ -19,6 +17,7 @@ function verifyAuth() {
   const savedAuth = sessionStorage.getItem(`merchant_auth_${currentSlug}`);
   if (!savedAuth) {
     $("auth-backdrop").classList.add("active");
+    $("pin-input").value = "";
     $("pin-input").focus();
   }
 }
@@ -71,26 +70,76 @@ async function initDashboard() {
       $("merchant-review-url").value = s.reviewUrl || "";
       $("merchant-phone").value = s.ownerMobile || "";
       
-      // Live or fallback metrics
-      $("stat-today-visits").textContent = s.todayVisits || "14";
-      $("stat-total-customers").textContent = s.totalCustomers || "284";
+      // Sync toggle with live backend state
+      if (s.isOpen === false) {
+        statusToggle.checked = false;
+        statusCard.classList.add("closed");
+        statusHeadline.textContent = "STORE IS CLOSED";
+      } else {
+        statusToggle.checked = true;
+        statusCard.classList.remove("closed");
+        statusHeadline.textContent = "STORE IS OPEN";
+      }
+
+      if (s.closingTime) {
+        $("closing-time-input").value = s.closingTime;
+      }
+
+      // Live metrics from tenant sheet
+      $("stat-today-visits").textContent = s.totalCustomers || "0";
+      $("stat-total-customers").textContent = s.totalCustomers || "0";
     }
   } catch (err) {
     console.warn("Using local configuration fallback:", err);
   }
 }
 
-// 6. Action Handlers & Custom Modals
-$("btn-unlock").addEventListener("click", () => {
+// 6. Dynamic Backend PIN Verification (Last 4 digits of owner phone)
+$("btn-unlock").addEventListener("click", async () => {
   const pin = $("pin-input").value.trim();
-  if (pin === DEFAULT_PIN || pin === "0000") {
-    sessionStorage.setItem(`merchant_auth_${currentSlug}`, "true");
-    $("auth-backdrop").classList.remove("active");
-    showToast("Dashboard unlocked successfully");
-  } else {
-    showToast("Incorrect PIN. Please retry.");
-    $("pin-input").value = "";
-    $("pin-input").focus();
+  const unlockBtn = $("btn-unlock");
+
+  if (pin.length !== 4) {
+    showToast("Please enter a 4-digit PIN");
+    return;
+  }
+
+  unlockBtn.disabled = true;
+  unlockBtn.textContent = "Verifying...";
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "verifyMerchantPin",
+        shopId: currentSlug,
+        pin: pin
+      })
+    });
+    const result = await res.json();
+
+    if (result.status === "success" && result.authorized) {
+      sessionStorage.setItem(`merchant_auth_${currentSlug}`, "true");
+      $("auth-backdrop").classList.remove("active");
+      showToast("Dashboard unlocked successfully");
+    } else {
+      showToast(result.message || "Incorrect PIN (last 4 digits of registered phone).");
+      $("pin-input").value = "";
+      $("pin-input").focus();
+    }
+  } catch (err) {
+    showToast("Verification error. Check internet connection.");
+  } finally {
+    unlockBtn.disabled = false;
+    unlockBtn.textContent = "Unlock Dashboard";
+  }
+});
+
+// Allow Enter key to trigger unlock
+$("pin-input").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    $("btn-unlock").click();
   }
 });
 
