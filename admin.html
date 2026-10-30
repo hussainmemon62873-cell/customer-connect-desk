@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Store Admin & Setup Portal</title>
+  
+  <!-- Prevent Google Search from indexing the Admin Portal -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0f172a" />
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Lightweight client-side QR Code Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #16a34a;
+      --danger: #dc2626;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      margin-bottom: 1.5rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .auth-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 2rem 0;
+    }
+
+    .profile-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #0f172a;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .profile-info h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .profile-info p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .status-toggle-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 1rem;
+      border-radius: 14px;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .status-open { background: #dcfce7; color: var(--success); }
+    .status-closed { background: #fee2e2; color: var(--danger); }
+
+    .btn-toggle {
+      background: #334155;
+      color: #fff;
+      border: none;
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 0.4rem;
+    }
+
+    input[type="text"], input[type="tel"], input[type="url"] {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      background: #0f172a;
+      color: #fff;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .color-item {
+      background: #0f172a;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .color-item span {
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    input[type="color"] {
+      -webkit-appearance: none;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    input[type="color"]::-webkit-color-swatch { border-radius: 50%; border: 1px solid #fff; }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 1rem;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-size: 0.95rem;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn:active { transform: scale(0.98); }
+
+    /* Output QR Code Cards */
+    .qr-section {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .qr-card {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .qr-card h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .qr-card p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+    }
+
+    .qr-box {
+      background: #fff;
+      padding: 12px;
+      border-radius: 12px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .url-chip {
+      background: #1e293b;
+      padding: 0.6rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      color: #93c5fd;
+      word-break: break-all;
+      width: 100%;
+      margin-bottom: 0.85rem;
+      border: 1px solid var(--border);
+    }
+
+    .action-row {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .btn-small {
+      flex: 1;
+      padding: 0.65rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: #1e293b;
+      color: #fff;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <h1>Store Admin Portal</h1>
+        <p>Configure store branding, toggle live status, and generate stand QR codes</p>
+      </div>
+
+      <!-- Step 1: Owner Sign In -->
+      <div id="signin-view" class="auth-box">
+        <div id="g_id_onload"
+             data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
+             data-callback="handleAdminLogin"
+             data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue"></div>
+        <p style="font-size: 0.82rem; color: var(--text-muted);">Sign in to manage your store</p>
+      </div>
+
+      <!-- Step 2: Dashboard -->
+      <div id="dashboard-view" class="hidden">
+        <div class="profile-badge">
+          <div class="profile-info">
+            <h4 id="owner-name-display">Owner</h4>
+            <p id="owner-email-display">owner@gmail.com</p>
+          </div>
+          <button class="btn-small" onclick="location.reload()" style="max-width: 80px;">Logout</button>
+        </div>
+
+        <!-- Open / Closed Switch -->
+        <div class="status-toggle-bar">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 3px;">CURRENT STATUS</div>
+            <div id="status-pill" class="status-pill status-open">🟢 OPEN</div>
+          </div>
+          <button class="btn-toggle" onclick="toggleStoreStatus()">Flip Status</button>
+        </div>
+
+        <!-- Store Setup Form -->
+        <form id="store-form" onsubmit="saveStoreSettings(event)">
+          <div class="form-group">
+            <label>Shop Slug / ID * (Letters only, e.g., memonlock, blinkit)</label>
+            <input type="text" id="shop-id" required placeholder="e.g. memonlock" />
+          </div>
+
+          <div class="form-group">
+            <label>Shop Display Name *</label>
+            <input type="text" id="shop-name" required placeholder="e.g. Memon Lock Center" />
+          </div>
+
+          <div class="form-group">
+            <label>Tagline / Category</label>
+            <input type="text" id="shop-tagline" placeholder="e.g. Computerized Keys & Locksmith" />
+          </div>
+
+          <div class="form-group">
+            <label>Owner Mobile / WhatsApp Number *</label>
+            <input type="tel" id="shop-mobile" required placeholder="e.g. 9979955386" />
+          </div>
+
+          <div class="form-group">
+            <label>Google Review Link (Optional)</label>
+            <input type="url" id="shop-review-url" placeholder="https://g.page/r/..." />
+          </div>
+
+          <!-- Theme Color Pickers -->
+          <label>Theme & Branding Colors</label>
+          <div class="color-grid">
+            <div class="color-item">
+              <span>Primary</span>
+              <input type="color" id="col-primary" value="#2563eb" />
+            </div>
+            <div class="color-item">
+              <span>Background</span>
+              <input type="color" id="col-bg" value="#0f172a" />
+            </div>
+            <div class="color-item">
+              <span>Card Base</span>
+              <input type="color" id="col-card" value="#ffffff" />
+            </div>
+            <div class="color-item">
+              <span>Text Color</span>
+              <input type="color" id="col-text" value="#0f172a" />
+            </div>
+          </div>
+
+          <button type="submit" id="save-btn" class="btn btn-primary">Save & Generate QR Codes</button>
+        </form>
+
+        <!-- Dynamic Output QR Codes Section -->
+        <div id="qr-output-section" class="qr-section hidden">
+          <!-- Stand QR -->
+          <div class="qr-card">
+            <h4>1. Counter Check-In Stand (NFC & QR)</h4>
+            <p>Customers tap or scan this stand at the counter to check in</p>
+            <div id="stand-qr" class="qr-box"></div>
+            <div id="stand-url-chip" class="url-chip"></div>
+            <div class="action-row">
+              <button class="btn-small" onclick="copyLink('stand')">Copy Link</button>
+              <button class="btn-small" onclick="downloadQr('stand')">Download QR</button>
+            </div>
+          </div>
+
+          <!-- Public Web QR -->
+          <div class="qr-card">
+            <h4>2. Google Search & Map Profile Link</h4>
+            <p>Add this link to your Google Business Profile & Instagram</p>
+            <div id="public-qr" class="qr-box"></div>
+            <div id="public-url-chip" class="url-chip"></div>
+            <div class="action-row">
+              <button class="btn-small" onclick="copyLink('public')">Copy Link</button>
+              <button class="btn-small" onclick="downloadQr('public')">Download QR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4aac8UybOJCYk4ermw3_24_eHYOwdhx4TvDaE1ZF91l77k5wknyLHT0TkMWY6h8Ef/exec";
+    const BASE_DOMAIN = "https://customer-connect-desk.pages.dev";
+
+    let currentOwner = { name: "", email: "" };
+    let currentStoreStatus = "OPEN";
+
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+        );
+        return JSON.parse(jsonPayload);
+      } catch (e) { return null; }
+    }
+
+    async function handleAdminLogin(response) {
+      const payload = parseJwt(response.credential);
+      if (!payload || !payload.email) return;
+
+      currentOwner.name = payload.name;
+      currentOwner.email = payload.email.toLowerCase();
+
+      document.getElementById("owner-name-display").textContent = currentOwner.name;
+      document.getElementById("owner-email-display").textContent = currentOwner.email;
+
+      document.getElementById("signin-view").classList.add("hidden");
+      document.getElementById("dashboard-view").classList.remove("hidden");
+
+      // Check if store already exists for this owner
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "getOwnerStore", email: currentOwner.email })
+        });
+        const data = await res.json();
+        if (data && data.exists) {
+          populateForm(data.store);
+        }
+      } catch (e) {
+        console.warn("New store registration mode.");
+      }
+    }
+
+    function populateForm(s) {
+      document.getElementById("shop-id").value = s.shopId;
+      document.getElementById("shop-id").readOnly = true; // Lock slug once created
+      document.getElementById("shop-name").value = s.shopName;
+      document.getElementById("shop-tagline").value = s.tagline || "";
+      document.getElementById("shop-mobile").value = s.ownerMobile || "";
+      document.getElementById("shop-review-url").value = s.reviewUrl || "";
+
+      if (s.primaryColor) document.getElementById("col-primary").value = s.primaryColor;
+      if (s.bgColor) document.getElementById("col-bg").value = s.bgColor;
+      if (s.cardBg) document.getElementById("col-card").value = s.cardBg;
+      if (s.textColor) document.getElementById("col-text").value = s.textColor;
+
+      currentStoreStatus = s.shopStatus || "OPEN";
+      renderStatusPill();
+      generateQrBoxes(s.shopId);
+    }
+
+    function renderStatusPill() {
+      const pill = document.getElementById("status-pill");
+      const isOpen = currentStoreStatus === "OPEN";
+      pill.className = isOpen ? "status-pill status-open" : "status-pill status-closed";
+      pill.textContent = isOpen ? "🟢 OPEN" : "🔴 CLOSED";
+    }
+
+    async function toggleStoreStatus() {
+      const slug = document.getElementById("shop-id").value.trim().toLowerCase();
+      if (!slug) {
+        alert("Please save your store first.");
+        return;
+      }
+      currentStoreStatus = currentStoreStatus === "OPEN" ? "CLOSED" : "OPEN";
+      renderStatusPill();
+
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ 
+          action: "updateStoreStatus", 
+          email: currentOwner.email, 
+          shopId: slug, 
+          newStatus: currentStoreStatus 
+        })
+      });
+    }
+
+    async function saveStoreSettings(e) {
+      e.preventDefault();
+      const slug = document.getElementById("shop-id").value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      const payload = {
+        action: "saveStore",
+        shopId: slug,
+        shopName: document.getElementById("shop-name").value.trim(),
+        tagline: document.getElementById("shop-tagline").value.trim(),
+        ownerEmail: currentOwner.email,
+        ownerMobile: document.getElementById("shop-mobile").value.trim(),
+        primaryColor: document.getElementById("col-primary").value,
+        bgColor: document.getElementById("col-bg").value,
+        cardBg: document.getElementById("col-card").value,
+        textColor: document.getElementById("col-text").value,
+        reviewUrl: document.getElementById("shop-review-url").value.trim(),
+        shopStatus: currentStoreStatus
+      };
+
+      const btn = document.getElementById("save-btn");
+      btn.textContent = "Saving to Google Sheet...";
+      btn.disabled = true;
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+        alert("Store settings saved successfully!");
+        generateQrBoxes(slug);
+      } catch (err) {
+        alert("Saved! Generating links...");
+        generateQrBoxes(slug);
+      }
+      btn.textContent = "Save & Update Store";
+      btn.disabled = false;
+    }
+
+    let standQrObj = null;
+    let publicQrObj = null;
+
+    function generateQrBoxes(slug) {
+      const standUrl = `${BASE_DOMAIN}/?shop=${slug}&desk=true`;
+      const publicUrl = `${BASE_DOMAIN}/?shop=${slug}`;
+
+      document.getElementById("stand-url-chip").textContent = standUrl;
+      document.getElementById("public-url-chip").textContent = publicUrl;
+
+      const standBox = document.getElementById("stand-qr");
+      const publicBox = document.getElementById("public-qr");
+      standBox.innerHTML = "";
+      publicBox.innerHTML = "";
+
+      standQrObj = new QRCode(standBox, { text: standUrl, width: 140, height: 140 });
+      publicQrObj = new QRCode(publicBox, { text: publicUrl, width: 140, height: 140 });
+
+      document.getElementById("qr-output-section").classList.remove("hidden");
+    }
+
+    function copyLink(type) {
+      const el = document.getElementById(`${type}-url-chip`);
+      navigator.clipboard.writeText(el.textContent);
+      alert("Link copied to clipboard!");
+    }
+
+    function downloadQr(type) {
+      const img = document.querySelector(`#${type}-qr img`);
+      if (img && img.src) {
+        const a = document.createElement("a");
+        a.href = img.src;
+        a.download = `${type}-qr-code.png`;
+        a.click();
+      }
+    }
+  </script>
+</body>
+</html>
