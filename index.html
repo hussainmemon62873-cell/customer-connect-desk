@@ -3,11 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Customer Connect Desk</title>
+  
+  <!-- Primary Google Search Meta Tags -->
+  <title>Customer Connect Desk - Memon Lock Center</title>
+  <meta name="title" content="Customer Connect Desk - Memon Lock Center" />
+  <meta name="description" content="Official Customer Connect Desk for Memon Lock Center. Register your check-in, key duplication requests, and lock service online." />
+  <meta name="keywords" content="Memon Lock Center, Customer Connect Desk, Locksmith, Key Maker, Digital Check-in, Lock Repair, Smart Locks" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://customer-connect-desk.pages.dev/" />
+  <meta name="theme-color" content="#2563eb" />
+
+  <!-- Browser Tab Icons & Search Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="https://customer-connect-desk.pages.dev/favicon.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="https://customer-connect-desk.pages.dev/favicon.png" />
+
+  <!-- Open Graph & WhatsApp / Social Previews -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://customer-connect-desk.pages.dev/" />
+  <meta property="og:site_name" content="Customer Connect Desk" />
+  <meta property="og:title" content="Customer Connect Desk - Memon Lock Center" />
+  <meta property="og:description" content="Quick digital service desk and visit check-in for customers." />
+  <meta property="og:image" content="https://customer-connect-desk.pages.dev/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <!-- Twitter / X Card Preview -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://customer-connect-desk.pages.dev/" />
+  <meta name="twitter:title" content="Customer Connect Desk - Memon Lock Center" />
+  <meta name="twitter:description" content="Quick digital service desk and visit check-in for customers." />
+  <meta name="twitter:image" content="https://customer-connect-desk.pages.dev/og-image.png" />
+
+  <!-- Google Rich Snippets / Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Memon Lock Center - Customer Connect Desk",
+    "url": "https://customer-connect-desk.pages.dev/",
+    "logo": "https://customer-connect-desk.pages.dev/favicon.png",
+    "image": "https://customer-connect-desk.pages.dev/og-image.png",
+    "description": "Digital service check-in desk for lock repairs, key duplications, and customer support.",
+    "telephone": "+919979955386"
+  }
+  </script>
+
+  <!-- External Resources -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --primary: #2563eb;
@@ -41,14 +87,13 @@
       padding: 1rem;
     }
 
-    /* Fixed, comfortable viewport card sizing across all phone displays */
     .card {
       background: var(--card-bg);
       border-radius: var(--radius);
       padding: 2.25rem 1.75rem;
       width: 100%;
       max-width: 440px;
-      min-height: 480px;
+      min-height: 520px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -195,8 +240,7 @@
       color: #334155;
     }
 
-    /* Premium high-legibility inputs (16px font-size prevents unwanted iOS auto-zoom) */
-    input {
+    input, select {
       width: 100%;
       padding: 0.88rem 1rem;
       border: 2px solid var(--border);
@@ -209,29 +253,30 @@
       font-weight: 600;
     }
 
-    input:focus {
+    input:focus, select:focus {
       border-color: var(--border-focus);
       background: #ffffff;
       box-shadow: 0 0 0 4px var(--primary-glow);
     }
 
-    .phone-wrapper {
-      position: relative;
+    .phone-row {
       display: flex;
-      align-items: center;
+      gap: 0.5rem;
     }
 
-    .phone-prefix {
-      position: absolute;
-      left: 1rem;
-      font-weight: 800;
-      color: #64748b;
-      font-size: 1rem;
-      pointer-events: none;
+    .country-select-wrapper {
+      flex: 0 0 115px;
     }
 
-    #user-phone {
-      padding-left: 3.5rem;
+    .country-select {
+      cursor: pointer;
+      padding: 0.88rem 0.5rem;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .phone-input-wrapper {
+      flex: 1;
     }
 
     .input-error {
@@ -315,7 +360,6 @@
       transform: none;
     }
 
-    /* Modal Overlay & Card */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -419,11 +463,10 @@
       <div class="user-avatar" id="returning-avatar">M</div>
       <div class="user-meta">
         <h4 id="returning-name">Customer</h4>
-        <p>Verified Customer</p>
+        <p id="returning-email">customer@gmail.com</p>
       </div>
     </div>
 
-    <!-- Review is optional; complete button is directly available -->
     <button type="button" class="btn btn-review" onclick="openReviewLink()">
       ⭐ Leave a Google Review (Optional)
     </button>
@@ -443,17 +486,29 @@
       </div>
     </div>
 
-    <!-- 10-digit WhatsApp Number with prefix -->
+    <!-- International WhatsApp Number Input -->
     <div class="form-group">
       <label>WhatsApp / Mobile Number *</label>
-      <div class="phone-wrapper">
-        <span class="phone-prefix">+91</span>
-        <input type="tel" id="user-phone" maxlength="10" placeholder="10-digit number" oninput="sanitizePhoneNumber(this)" />
+      <div class="phone-row">
+        <div class="country-select-wrapper">
+          <select id="country-code" class="country-select" onchange="onCountryCodeChange()">
+            <option value="+91" selected>🇮🇳 +91</option>
+            <option value="+1">🇺🇸 +1</option>
+            <option value="+1-CA">🇨🇦 +1</option>
+            <option value="+44">🇬🇧 +44</option>
+            <option value="+61">🇦🇺 +61</option>
+            <option value="+971">🇦🇪 +971</option>
+            <option value="+966">🇸🇦 +966</option>
+          </select>
+        </div>
+        <div class="phone-input-wrapper">
+          <input type="tel" id="user-phone" placeholder="98765 43210" oninput="formatAndValidatePhone(this)" />
+        </div>
       </div>
-      <div id="phone-err" class="field-msg">Please enter a valid 10-digit mobile number (starting with 6-9).</div>
+      <div id="phone-err" class="field-msg">Please enter a valid phone number.</div>
     </div>
 
-    <!-- Date of Birth: Smooth auto-jump & single backspace across inputs -->
+    <!-- Date of Birth: Auto-jump forward and single-touch backspace backwards -->
     <div class="row">
       <div class="form-group" style="flex: 2.2;">
         <label>Date of Birth (DD / MM / YYYY) *</label>
@@ -468,7 +523,7 @@
                  oninput="handleDobInput(this, null)"
                  onkeydown="handleDobBackspace(event, this, 'dob-month')" />
         </div>
-        <div id="dob-err" class="field-msg">Please enter a valid past birth date.</div>
+        <div id="dob-err" class="field-msg">Please enter a valid date.</div>
       </div>
       <div class="form-group" style="flex: 1; max-width: 90px;">
         <label>Age</label>
@@ -476,7 +531,7 @@
       </div>
     </div>
 
-    <!-- Optional Review Link (Always allows check-in without forcing review) -->
+    <!-- Optional Google Review -->
     <div class="form-group" style="margin-top: 0.25rem;">
       <label>Support Us (Optional)</label>
       <button type="button" class="btn btn-review" onclick="openReviewLink()">
@@ -491,7 +546,7 @@
   </div>
 </div>
 
-<!-- Modal Popup for Errors and Confirmations -->
+<!-- Modal Dialog -->
 <div id="app-modal" class="modal-overlay hidden">
   <div class="modal-card">
     <div id="modal-icon" class="modal-icon error">!</div>
@@ -528,21 +583,103 @@
   }
 
   function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-    return JSON.parse(jsonPayload);
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (e) {
+      console.error("JWT Decode Error:", e);
+      return null;
+    }
   }
 
-  function sanitizePhoneNumber(input) {
-    let clean = input.value.replace(/\D/g, '');
-    if (clean.startsWith('0')) {
-      clean = clean.replace(/^0+/, '');
+  function onCountryCodeChange() {
+    const code = document.getElementById("country-code").value;
+    const phoneInput = document.getElementById("user-phone");
+    phoneInput.value = "";
+    
+    if (code === "+1" || code === "+1-CA") {
+      phoneInput.placeholder = "(555) 000-0000";
+    } else if (code === "+91") {
+      phoneInput.placeholder = "98765 43210";
+    } else if (code === "+44") {
+      phoneInput.placeholder = "(020) 7946 0991";
+    } else if (code === "+61") {
+      phoneInput.placeholder = "(02) 1234 5678";
+    } else {
+      phoneInput.placeholder = "Mobile number";
     }
-    input.value = clean.slice(0, 10);
+    formatAndValidatePhone(phoneInput);
+  }
 
+  function formatAndValidatePhone(input) {
+    const code = document.getElementById("country-code").value;
+    let digits = input.value.replace(/\D/g, '');
+
+    if (digits.startsWith('0')) {
+      digits = digits.replace(/^0+/, '');
+    }
+
+    let formatted = digits;
+    let isValid = false;
     const err = document.getElementById("phone-err");
-    if (input.value.length > 0 && (input.value.length < 10 || !/^[6-9]/.test(input.value))) {
+
+    if (code === "+1" || code === "+1-CA") {
+      digits = digits.slice(0, 10);
+      if (digits.length > 6) {
+        formatted = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+      } else if (digits.length > 3) {
+        formatted = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+      } else if (digits.length > 0) {
+        formatted = `(${digits}`;
+      }
+      isValid = digits.length === 10;
+      err.textContent = "Please enter a 10-digit North American number.";
+    } else if (code === "+91") {
+      digits = digits.slice(0, 10);
+      if (digits.length > 5) {
+        formatted = `${digits.slice(0, 5)} ${digits.slice(5)}`;
+      } else {
+        formatted = digits;
+      }
+      isValid = digits.length === 10 && /^[6-9]/.test(digits);
+      err.textContent = "Please enter a valid 10-digit number (starts with 6-9).";
+    } else if (code === "+44") {
+      digits = digits.slice(0, 10);
+      if (digits.length > 3) {
+        formatted = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+      } else if (digits.length > 0) {
+        formatted = `(${digits}`;
+      }
+      isValid = digits.length >= 7 && digits.length <= 10;
+      err.textContent = "Please enter a valid UK number.";
+    } else if (code === "+61") {
+      digits = digits.slice(0, 9);
+      if (digits.length > 5) {
+             formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 5)} ${digits.slice(5)}`;
+      } else if (digits.length > 2) {
+        formatted = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+      } else if (digits.length > 0) {
+        formatted = `(${digits}`;
+      }
+      isValid = digits.length === 9;
+      err.textContent = "Please enter a valid Australian number.";
+    } else {
+      digits = digits.slice(0, 12);
+      formatted = digits;
+      isValid = digits.length >= 7 && digits.length <= 12;
+      err.textContent = "Please enter a valid mobile number.";
+    }
+
+    input.value = formatted;
+
+    if (digits.length > 0 && !isValid) {
       input.classList.add("input-error");
       err.style.display = "block";
     } else {
@@ -551,7 +688,6 @@
     }
   }
 
-  /* Seamless typing and single-backspace auto-jump across date inputs */
   function handleDobInput(el, nextId) {
     el.value = el.value.replace(/\D/g, '');
     const max = parseInt(el.getAttribute("maxlength"), 10);
@@ -568,7 +704,6 @@
       const prevEl = document.getElementById(prevId);
       if (prevEl) {
         prevEl.focus();
-        // Remove trailing digit in previous field with single backspace
         prevEl.value = prevEl.value.slice(0, -1);
         validateAndCalculateAge();
       }
@@ -577,8 +712,22 @@
 
   async function handleCredentialResponse(response) {
     const payload = parseJwt(response.credential);
-    currentUser.name = payload.name;
+    if (!payload || !payload.email) {
+      showModal("Sign-In Error", "Unable to retrieve Google Profile data. Please try again.");
+      return;
+    }
+
+    currentUser.name = payload.name || "Customer";
     currentUser.email = payload.email;
+
+    // Immediately display verified customer details
+    document.getElementById("new-name").textContent = currentUser.name;
+    document.getElementById("new-email").textContent = currentUser.email;
+    document.getElementById("new-avatar").textContent = (currentUser.name[0] || "C").toUpperCase();
+
+    document.getElementById("returning-name").textContent = currentUser.name;
+    document.getElementById("returning-email").textContent = currentUser.email;
+    document.getElementById("returning-avatar").textContent = (currentUser.name[0] || "C").toUpperCase();
 
     document.getElementById("signin-view").classList.add("hidden");
     document.getElementById("loading-view").classList.remove("hidden");
@@ -595,21 +744,17 @@
       if (data && data.exists) {
         currentUser.phone = data.phone || "";
         document.getElementById("returning-name").textContent = data.name || currentUser.name;
-        document.getElementById("returning-avatar").textContent = (currentUser.name || "C")[0].toUpperCase();
         document.getElementById("returning-view").classList.remove("hidden");
       } else {
-        document.getElementById("new-name").textContent = currentUser.name;
-        document.getElementById("new-email").textContent = currentUser.email;
-        document.getElementById("new-avatar").textContent = (currentUser.name || "C")[0].toUpperCase();
         document.getElementById("new-user-form").classList.remove("hidden");
       }
     } catch (err) {
+      console.warn("Backend check failed, presenting new user onboarding form.", err);
       document.getElementById("loading-view").classList.add("hidden");
       document.getElementById("new-user-form").classList.remove("hidden");
     }
   }
 
-  /* Validates calendar dates strictly; blocks future dates, 2200, invalid months/days */
   function validateAndCalculateAge() {
     const dayInput = document.getElementById("dob-day");
     const monthInput = document.getElementById("dob-month");
@@ -620,7 +765,6 @@
     const m = parseInt(monthInput.value, 10);
     const y = parseInt(yearInput.value, 10);
 
-    // Clear state if inputs are incomplete
     if (!d || !m || !y || yearInput.value.length < 4) {
       document.getElementById("user-age").value = "";
       dobErr.style.display = "none";
@@ -630,7 +774,6 @@
     const today = new Date();
     const currentYear = today.getFullYear();
 
-    // Check year sanity (must not be greater than current year, nor unrealistically old)
     if (y > currentYear || y < 1900) {
       document.getElementById("user-age").value = "";
       dobErr.textContent = `Year must be between 1900 and ${currentYear}.`;
@@ -638,23 +781,22 @@
       return false;
     }
 
-    if (m < 1 || m > 12 || d < 1 || d > 31) {
+    if (m < 1 || m > 12) {
       document.getElementById("user-age").value = "";
-      dobErr.textContent = "Please enter a valid month (1-12) and day (1-31).";
+      dobErr.textContent = "Month must be between 01 and 12.";
       dobErr.style.display = "block";
       return false;
     }
 
-    // Verify day validity according to leap years and calendar days
+    const daysInMonth = new Date(y, m, 0).getDate();
+    if (d < 1 || d > daysInMonth) {
+      document.getElementById("user-age").value = "";
+      dobErr.textContent = `Invalid date! Month ${String(m).padStart(2, '0')} has only ${daysInMonth} days.`;
+      dobErr.style.display = "block";
+      return false;
+    }
+
     const birthDate = new Date(y, m - 1, d);
-    if (birthDate.getFullYear() !== y || birthDate.getMonth() !== (m - 1) || birthDate.getDate() !== d) {
-      document.getElementById("user-age").value = "";
-      dobErr.textContent = "Invalid date for the selected month.";
-      dobErr.style.display = "block";
-      return false;
-    }
-
-    // Must be in the past
     if (birthDate > today) {
       document.getElementById("user-age").value = "";
       dobErr.textContent = "Birth date cannot be in the future.";
@@ -664,14 +806,12 @@
 
     dobErr.style.display = "none";
 
-    // Exact calendar age calculation
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
 
-       // Accepts any age (minors included)
     if (age >= 0) {
       document.getElementById("user-age").value = age;
       currentUser.age = age;
@@ -687,19 +827,32 @@
   }
 
   async function validateAndSubmitNewUser() {
+    const rawCode = document.getElementById("country-code").value;
+    const countryCode = rawCode.replace("-CA", "");
     const phoneInput = document.getElementById("user-phone");
-    const phoneVal = phoneInput.value.trim();
+    const rawPhoneDigits = phoneInput.value.replace(/\D/g, '');
+    const formattedPhone = phoneInput.value.trim();
+
     const isDobValid = validateAndCalculateAge();
     const ageVal = document.getElementById("user-age").value;
 
-    if (!phoneVal || phoneVal.length !== 10 || !/^[6-9]/.test(phoneVal)) {
+    let isPhoneValid = false;
+    if (countryCode === "+91") {
+      isPhoneValid = rawPhoneDigits.length === 10 && /^[6-9]/.test(rawPhoneDigits);
+    } else if (countryCode === "+1") {
+      isPhoneValid = rawPhoneDigits.length === 10;
+    } else {
+      isPhoneValid = rawPhoneDigits.length >= 7 && rawPhoneDigits.length <= 12;
+    }
+
+    if (!isPhoneValid) {
       phoneInput.classList.add("input-error");
-      showModal("Invalid Phone Number", "Please enter a valid 10-digit mobile number.");
+      showModal("Invalid Phone Number", "Please enter a complete, valid phone number.");
       return;
     }
 
     if (!isDobValid || !ageVal) {
-      showModal("Invalid Date of Birth", "Please enter a valid birth date (DD / MM / YYYY). Future dates and invalid years are not permitted.");
+      showModal("Invalid Date of Birth", "Please enter a valid calendar date of birth (DD / MM / YYYY).");
       return;
     }
 
@@ -707,13 +860,23 @@
     btn.disabled = true;
     btn.textContent = "Saving...";
 
-    currentUser.phone = phoneVal;
+    const payload = {
+      action: "saveUser",
+      name: currentUser.name,
+      email: currentUser.email,
+      countryCode: countryCode,
+      rawPhone: rawPhoneDigits,
+      formattedPhone: formattedPhone,
+      fullPhoneWithCode: `${countryCode} ${rawPhoneDigits}`,
+      dob: currentUser.dob,
+      age: currentUser.age
+    };
 
     try {
       await fetch(SCRIPT_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "saveUser", ...currentUser })
+        body: JSON.stringify(payload)
       });
       showModal("Check-In Successful", "Your check-in is complete. Thank you!", false);
       setTimeout(() => location.reload(), 1600);
