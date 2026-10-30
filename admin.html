@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Store Admin & Setup Portal</title>
+  <title>Admin & Store Management Portal | Customer Connect Desk</title>
   
-  <!-- Prevent Google Search from indexing the Admin Portal -->
+  <!-- Prevent Search Engines from Indexing the Private Admin Portal -->
   <meta name="robots" content="noindex, nofollow" />
   <meta name="theme-color" content="#0f172a" />
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <!-- Lightweight client-side QR Code Engine -->
+  <!-- Client-side QR Code Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,6 +27,7 @@
       --text-muted: #94a3b8;
       --success: #16a34a;
       --danger: #dc2626;
+      --warning: #d97706;
     }
 
     * {
@@ -49,7 +50,7 @@
 
     .container {
       width: 100%;
-      max-width: 520px;
+      max-width: 600px;
     }
 
     .card {
@@ -87,16 +88,16 @@
       flex-direction: column;
       align-items: center;
       gap: 1.25rem;
-      padding: 2rem 0;
+      padding: 2.5rem 0;
     }
 
-    .profile-badge {
+    .profile-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       background: #0f172a;
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
+      padding: 0.85rem 1.2rem;
+      border-radius: 14px;
       margin-bottom: 1.5rem;
       border: 1px solid var(--border);
     }
@@ -111,40 +112,59 @@
       color: var(--text-muted);
     }
 
-    .status-toggle-bar {
+    .role-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      margin-top: 0.2rem;
+      text-transform: uppercase;
+    }
+    .badge-super { background: #3b82f6; color: #fff; }
+    .badge-owner { background: #64748b; color: #fff; }
+
+    /* Super Admin Approvals Section */
+    .admin-section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.85rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(255, 255, 255, 0.04);
-      padding: 1rem;
-      border-radius: 14px;
-      margin-bottom: 1.5rem;
+    }
+
+    .store-item {
+      background: #0f172a;
       border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
     }
 
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 800;
-      text-transform: uppercase;
+    .store-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
     }
 
-    .status-open { background: #dcfce7; color: var(--success); }
-    .status-closed { background: #fee2e2; color: var(--danger); }
-
-    .btn-toggle {
-      background: #334155;
-      color: #fff;
-      border: none;
-      padding: 0.55rem 1rem;
-      border-radius: 8px;
-      font-size: 0.82rem;
+    .store-item-head h5 {
+      font-size: 1rem;
       font-weight: 700;
-      cursor: pointer;
+    }
+
+    .store-item-head span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .store-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
     }
 
     .form-group {
@@ -225,19 +245,37 @@
       transition: opacity 0.2s;
     }
 
-    .btn-primary {
-      background: var(--primary);
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-small {
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid var(--border);
+      background: #1e293b;
       color: #fff;
+      cursor: pointer;
     }
 
-    .btn:active { transform: scale(0.98); }
+    .status-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .tag-active { background: #dcfce7; color: var(--success); }
+    .tag-pending { background: #fef3c7; color: var(--warning); }
+    .tag-suspended { background: #fee2e2; color: var(--danger); }
 
-    /* Output QR Code Cards */
-    .qr-section {
+    /* QR Code Display Grid */
+    .qr-grid {
       margin-top: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
 
     .qr-card {
@@ -282,24 +320,6 @@
       margin-bottom: 0.85rem;
       border: 1px solid var(--border);
     }
-
-    .action-row {
-      display: flex;
-      gap: 0.5rem;
-      width: 100%;
-    }
-
-    .btn-small {
-      flex: 1;
-      padding: 0.65rem;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      border: 1px solid var(--border);
-      background: #1e293b;
-      color: #fff;
-      cursor: pointer;
-    }
   </style>
 </head>
 <body>
@@ -307,11 +327,11 @@
   <div class="container">
     <div class="card">
       <div class="header">
-        <h1>Store Admin Portal</h1>
-        <p>Configure store branding, toggle live status, and generate stand QR codes</p>
+        <h1>Customer Connect Desk</h1>
+        <p>Store Admin & Super-Admin Management Control</p>
       </div>
 
-      <!-- Step 1: Owner Sign In -->
+      <!-- STEP 1: Google Login Screen -->
       <div id="signin-view" class="auth-box">
         <div id="g_id_onload"
              data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
@@ -319,105 +339,114 @@
              data-auto_prompt="false">
         </div>
         <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue"></div>
-        <p style="font-size: 0.82rem; color: var(--text-muted);">Sign in to manage your store</p>
+        <p style="font-size: 0.82rem; color: var(--text-muted);">Sign in to access your admin dashboard</p>
       </div>
 
-      <!-- Step 2: Dashboard -->
+      <!-- STEP 2: Authenticated View -->
       <div id="dashboard-view" class="hidden">
-        <div class="profile-badge">
+        <div class="profile-bar">
           <div class="profile-info">
-            <h4 id="owner-name-display">Owner</h4>
-            <p id="owner-email-display">owner@gmail.com</p>
+            <h4 id="user-name">Admin</h4>
+            <p id="user-email">email@gmail.com</p>
+            <div id="user-role" class="role-badge badge-owner">Shop Owner</div>
           </div>
-          <button class="btn-small" onclick="location.reload()" style="max-width: 80px;">Logout</button>
+          <button class="btn-small" onclick="location.reload()">Logout</button>
         </div>
 
-        <!-- Open / Closed Switch -->
-        <div class="status-toggle-bar">
-          <div>
-            <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 3px;">CURRENT STATUS</div>
-            <div id="status-pill" class="status-pill status-open">🟢 OPEN</div>
+        <!-- SUPER ADMIN APPROVAL PANEL (Visible only to you) -->
+        <div id="super-admin-panel" class="hidden" style="margin-bottom: 2rem;">
+          <div class="admin-section-title">
+            <span>Store Applications & Master Control</span>
+            <span id="store-count-badge" style="font-size: 0.8rem; color: var(--text-muted);">0 Stores</span>
           </div>
-          <button class="btn-toggle" onclick="toggleStoreStatus()">Flip Status</button>
+          <div id="all-stores-list"></div>
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0;" />
         </div>
 
-        <!-- Store Setup Form -->
-        <form id="store-form" onsubmit="saveStoreSettings(event)">
-          <div class="form-group">
-            <label>Shop Slug / ID * (Letters only, e.g., memonlock, blinkit)</label>
-            <input type="text" id="shop-id" required placeholder="e.g. memonlock" />
+        <!-- STORE CREATION / CONFIGURATION FORM -->
+        <div id="store-config-panel">
+          <div class="admin-section-title">
+            <span id="form-heading">Register New Store</span>
+            <span id="store-status-pill" class="status-tag tag-pending hidden">Pending</span>
           </div>
 
-          <div class="form-group">
-            <label>Shop Display Name *</label>
-            <input type="text" id="shop-name" required placeholder="e.g. Memon Lock Center" />
-          </div>
-
-          <div class="form-group">
-            <label>Tagline / Category</label>
-            <input type="text" id="shop-tagline" placeholder="e.g. Computerized Keys & Locksmith" />
-          </div>
-
-          <div class="form-group">
-            <label>Owner Mobile / WhatsApp Number *</label>
-            <input type="tel" id="shop-mobile" required placeholder="e.g. 9979955386" />
-          </div>
-
-          <div class="form-group">
-            <label>Google Review Link (Optional)</label>
-            <input type="url" id="shop-review-url" placeholder="https://g.page/r/..." />
-          </div>
-
-          <!-- Theme Color Pickers -->
-          <label>Theme & Branding Colors</label>
-          <div class="color-grid">
-            <div class="color-item">
-              <span>Primary</span>
-              <input type="color" id="col-primary" value="#2563eb" />
+          <form id="store-form" onsubmit="handleStoreSubmit(event)">
+            <div class="form-group">
+              <label>Store Slug / ID * (Letters/numbers only, e.g. memonlock, blinkit)</label>
+              <input type="text" id="shop-id" required placeholder="e.g. memonlock" />
             </div>
-            <div class="color-item">
-              <span>Background</span>
-              <input type="color" id="col-bg" value="#0f172a" />
-            </div>
-            <div class="color-item">
-              <span>Card Base</span>
-              <input type="color" id="col-card" value="#ffffff" />
-            </div>
-            <div class="color-item">
-              <span>Text Color</span>
-              <input type="color" id="col-text" value="#0f172a" />
-            </div>
-          </div>
 
-          <button type="submit" id="save-btn" class="btn btn-primary">Save & Generate QR Codes</button>
-        </form>
+            <div class="form-group">
+              <label>Store Display Name *</label>
+              <input type="text" id="shop-name" required placeholder="e.g. Memon Lock Center" />
+            </div>
 
-        <!-- Dynamic Output QR Codes Section -->
-        <div id="qr-output-section" class="qr-section hidden">
-          <!-- Stand QR -->
+            <div class="form-group">
+              <label>Tagline / Category</label>
+              <input type="text" id="shop-tagline" placeholder="e.g. Computerized Key Making & Locksmith" />
+            </div>
+
+            <div class="form-group">
+              <label>Owner WhatsApp / Contact Number *</label>
+              <input type="tel" id="shop-mobile" required placeholder="e.g. 9979955386" />
+            </div>
+
+            <div class="form-group">
+              <label>Google Review Link</label>
+              <input type="url" id="shop-review-url" placeholder="https://g.page/r/..." />
+            </div>
+
+            <label>Branding & Theme Colors</label>
+            <div class="color-grid">
+              <div class="color-item">
+                <span>Primary</span>
+                <input type="color" id="col-primary" value="#2563eb" />
+              </div>
+              <div class="color-item">
+                <span>Background</span>
+                <input type="color" id="col-bg" value="#0f172a" />
+              </div>
+              <div class="color-item">
+                <span>Card Base</span>
+                <input type="color" id="col-card" value="#ffffff" />
+              </div>
+              <div class="color-item">
+                <span>Text Color</span>
+                <input type="color" id="col-text" value="#0f172a" />
+              </div>
+            </div>
+
+            <button type="submit" id="save-store-btn" class="btn btn-primary">Save Store & Generate Stand QR</button>
+          </form>
+        </div>
+
+        <!-- QR CODES AND DESK LINKS SECTION -->
+        <div id="qr-output-section" class="qr-grid hidden">
+          <!-- 1. Physical Counter Stand QR -->
           <div class="qr-card">
-            <h4>1. Counter Check-In Stand (NFC & QR)</h4>
-            <p>Customers tap or scan this stand at the counter to check in</p>
+            <h4>1. In-Store Counter Stand (NFC & QR)</h4>
+            <p>Burn this URL into your NFC tag or print this QR for your acrylic counter stand</p>
             <div id="stand-qr" class="qr-box"></div>
             <div id="stand-url-chip" class="url-chip"></div>
-            <div class="action-row">
-              <button class="btn-small" onclick="copyLink('stand')">Copy Link</button>
-              <button class="btn-small" onclick="downloadQr('stand')">Download QR</button>
+            <div style="display: flex; gap: 0.5rem; width: 100%;">
+              <button class="btn-small" style="flex:1;" onclick="copyLink('stand')">Copy Link</button>
+              <button class="btn-small" style="flex:1;" onclick="downloadQr('stand')">Download QR PNG</button>
             </div>
           </div>
 
-          <!-- Public Web QR -->
+          <!-- 2. Public Google Search / Social Link -->
           <div class="qr-card">
-            <h4>2. Google Search & Map Profile Link</h4>
-            <p>Add this link to your Google Business Profile & Instagram</p>
+            <h4>2. Google Business Profile & Social Link</h4>
+            <p>Add this link to your Google Maps "Website" button and Instagram bio</p>
             <div id="public-qr" class="qr-box"></div>
             <div id="public-url-chip" class="url-chip"></div>
-            <div class="action-row">
-              <button class="btn-small" onclick="copyLink('public')">Copy Link</button>
-              <button class="btn-small" onclick="downloadQr('public')">Download QR</button>
+            <div style="display: flex; gap: 0.5rem; width: 100%;">
+              <button class="btn-small" style="flex:1;" onclick="copyLink('public')">Copy Link</button>
+              <button class="btn-small" style="flex:1;" onclick="downloadQr('public')">Download QR PNG</button>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
@@ -426,8 +455,8 @@
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4aac8UybOJCYk4ermw3_24_eHYOwdhx4TvDaE1ZF91l77k5wknyLHT0TkMWY6h8Ef/exec";
     const BASE_DOMAIN = "https://customer-connect-desk.pages.dev";
 
-    let currentOwner = { name: "", email: "" };
-    let currentStoreStatus = "OPEN";
+    let currentUser = { name: "", email: "" };
+    let isSuperAdmin = false;
 
     function parseJwt(token) {
       try {
@@ -444,34 +473,107 @@
       const payload = parseJwt(response.credential);
       if (!payload || !payload.email) return;
 
-      currentOwner.name = payload.name;
-      currentOwner.email = payload.email.toLowerCase();
+      currentUser.name = payload.name;
+      currentUser.email = payload.email.toLowerCase();
 
-      document.getElementById("owner-name-display").textContent = currentOwner.name;
-      document.getElementById("owner-email-display").textContent = currentOwner.email;
+      document.getElementById("user-name").textContent = currentUser.name;
+      document.getElementById("user-email").textContent = currentUser.email;
 
       document.getElementById("signin-view").classList.add("hidden");
       document.getElementById("dashboard-view").classList.remove("hidden");
 
-      // Check if store already exists for this owner
+      loadAdminData();
+    }
+
+    async function loadAdminData() {
       try {
         const res = await fetch(SCRIPT_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "getOwnerStore", email: currentOwner.email })
+          body: JSON.stringify({ action: "getAdminData", email: currentUser.email })
         });
         const data = await res.json();
-        if (data && data.exists) {
-          populateForm(data.store);
+
+        isSuperAdmin = data.isSuperAdmin;
+
+        if (isSuperAdmin) {
+          const roleBadge = document.getElementById("user-role");
+          roleBadge.textContent = "SUPER-ADMIN";
+          roleBadge.className = "role-badge badge-super";
+          document.getElementById("super-admin-panel").classList.remove("hidden");
+          renderSuperAdminList(data.allStores || []);
         }
-      } catch (e) {
-        console.warn("New store registration mode.");
+
+        if (data.myStore) {
+          populateMyStore(data.myStore);
+        }
+      } catch (err) {
+        console.error("Failed to load admin data:", err);
       }
     }
 
-    function populateForm(s) {
+    function renderSuperAdminList(stores) {
+      const container = document.getElementById("all-stores-list");
+      document.getElementById("store-count-badge").textContent = `${stores.length} Registered`;
+      container.innerHTML = "";
+
+      if (stores.length === 0) {
+        container.innerHTML = `<p style="font-size:0.85rem; color:var(--text-muted);">No stores registered yet.</p>`;
+        return;
+      }
+
+      stores.forEach(s => {
+        const isSuspended = (s.registrationStatus === "SUSPENDED");
+        const isPending = (s.registrationStatus === "PENDING");
+        const isActive = (s.registrationStatus === "ACTIVE");
+
+        let tagClass = "tag-pending";
+        if (isActive) tagClass = "tag-active";
+        if (isSuspended) tagClass = "tag-suspended";
+
+        const div = document.createElement("div");
+        div.className = "store-item";
+        div.innerHTML = `
+          <div class="store-item-head">
+            <div>
+              <h5>${s.shopName} <small style="color:var(--text-muted); font-size:0.8rem;">(${s.shopId})</small></h5>
+              <span>Owner: ${s.ownerName} (${s.ownerEmail}) | 📞 ${s.ownerMobile}</span>
+            </div>
+            <span class="status-tag ${tagClass}">${s.registrationStatus}</span>
+          </div>
+          <div class="store-actions">
+            ${isPending ? `<button class="btn-small btn-success" onclick="updateStoreStatus('${s.shopId}', 'ACTIVE')">Approve & Activate</button>` : ''}
+            ${isActive ? `<button class="btn-small btn-danger" onclick="updateStoreStatus('${s.shopId}', 'SUSPENDED')">Suspend Store</button>` : ''}
+            ${isSuspended ? `<button class="btn-small btn-success" onclick="updateStoreStatus('${s.shopId}', 'ACTIVE')">Reactivate Store</button>` : ''}
+            <button class="btn-small" onclick="previewStoreUrls('${s.shopId}')">View Links & QR</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function updateStoreStatus(targetSlug, newStatus) {
+      if (!confirm(`Are you sure you want to change ${targetSlug} to ${newStatus}?`)) return;
+
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "setStoreRegistrationStatus",
+          email: currentUser.email,
+          targetShopId: targetSlug,
+          newStatus: newStatus
+        })
+      });
+
+      alert(`Store ${targetSlug} updated to ${newStatus}`);
+      loadAdminData();
+    }
+
+    function populateMyStore(s) {
+      document.getElementById("form-heading").textContent = "Your Store Settings";
       document.getElementById("shop-id").value = s.shopId;
-      document.getElementById("shop-id").readOnly = true; // Lock slug once created
+      document.getElementById("shop-id").readOnly = true;
       document.getElementById("shop-name").value = s.shopName;
       document.getElementById("shop-tagline").value = s.tagline || "";
       document.getElementById("shop-mobile").value = s.ownerMobile || "";
@@ -482,82 +584,71 @@
       if (s.cardBg) document.getElementById("col-card").value = s.cardBg;
       if (s.textColor) document.getElementById("col-text").value = s.textColor;
 
-      currentStoreStatus = s.shopStatus || "OPEN";
-      renderStatusPill();
-      generateQrBoxes(s.shopId);
-    }
+      const pill = document.getElementById("store-status-pill");
+      pill.classList.remove("hidden");
+      pill.textContent = s.registrationStatus;
+      pill.className = `status-tag tag-${s.registrationStatus.toLowerCase()}`;
 
-    function renderStatusPill() {
-      const pill = document.getElementById("status-pill");
-      const isOpen = currentStoreStatus === "OPEN";
-      pill.className = isOpen ? "status-pill status-open" : "status-pill status-closed";
-      pill.textContent = isOpen ? "🟢 OPEN" : "🔴 CLOSED";
-    }
-
-    async function toggleStoreStatus() {
-      const slug = document.getElementById("shop-id").value.trim().toLowerCase();
-      if (!slug) {
-        alert("Please save your store first.");
-        return;
+      if (s.registrationStatus === "ACTIVE") {
+        generateQrSection(s.shopId);
       }
-      currentStoreStatus = currentStoreStatus === "OPEN" ? "CLOSED" : "OPEN";
-      renderStatusPill();
-
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ 
-          action: "updateStoreStatus", 
-          email: currentOwner.email, 
-          shopId: slug, 
-          newStatus: currentStoreStatus 
-        })
-      });
     }
 
-    async function saveStoreSettings(e) {
+    async function handleStoreSubmit(e) {
       e.preventDefault();
       const slug = document.getElementById("shop-id").value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
 
       const payload = {
-        action: "saveStore",
+        action: "registerStore",
         shopId: slug,
         shopName: document.getElementById("shop-name").value.trim(),
         tagline: document.getElementById("shop-tagline").value.trim(),
-        ownerEmail: currentOwner.email,
+        ownerName: currentUser.name,
+        email: currentUser.email,
         ownerMobile: document.getElementById("shop-mobile").value.trim(),
         primaryColor: document.getElementById("col-primary").value,
         bgColor: document.getElementById("col-bg").value,
         cardBg: document.getElementById("col-card").value,
         textColor: document.getElementById("col-text").value,
-        reviewUrl: document.getElementById("shop-review-url").value.trim(),
-        shopStatus: currentStoreStatus
+        reviewUrl: document.getElementById("shop-review-url").value.trim()
       };
 
-      const btn = document.getElementById("save-btn");
-      btn.textContent = "Saving to Google Sheet...";
+      const btn = document.getElementById("save-store-btn");
+      btn.textContent = "Saving to Master Database...";
       btn.disabled = true;
 
       try {
-        await fetch(SCRIPT_URL, {
+                const res = await fetch(SCRIPT_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
-        alert("Store settings saved successfully!");
-        generateQrBoxes(slug);
+        const resp = await res.json();
+
+        if (resp.status === "success") {
+          alert(isSuperAdmin ? "Store created and activated!" : "Store application submitted! Awaiting Super-Admin approval.");
+          loadAdminData();
+          if (resp.initialStatus === "ACTIVE") {
+            generateQrSection(slug);
+          }
+        } else {
+          alert("Notice: " + resp.message);
+        }
       } catch (err) {
-        alert("Saved! Generating links...");
-        generateQrBoxes(slug);
+        alert("Saved. Loading codes...");
+        generateQrSection(slug);
       }
-      btn.textContent = "Save & Update Store";
+
+      btn.textContent = "Save Store & Update";
       btn.disabled = false;
     }
 
-    let standQrObj = null;
-    let publicQrObj = null;
+    function previewStoreUrls(slug) {
+      generateQrSection(slug);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
 
-    function generateQrBoxes(slug) {
+    function generateQrSection(slug) {
       const standUrl = `${BASE_DOMAIN}/?shop=${slug}&desk=true`;
       const publicUrl = `${BASE_DOMAIN}/?shop=${slug}`;
 
@@ -569,15 +660,15 @@
       standBox.innerHTML = "";
       publicBox.innerHTML = "";
 
-      standQrObj = new QRCode(standBox, { text: standUrl, width: 140, height: 140 });
-      publicQrObj = new QRCode(publicBox, { text: publicUrl, width: 140, height: 140 });
+      new QRCode(standBox, { text: standUrl, width: 140, height: 140 });
+      new QRCode(publicBox, { text: publicUrl, width: 140, height: 140 });
 
       document.getElementById("qr-output-section").classList.remove("hidden");
     }
 
     function copyLink(type) {
-      const el = document.getElementById(`${type}-url-chip`);
-      navigator.clipboard.writeText(el.textContent);
+      const text = document.getElementById(`${type}-url-chip`).textContent;
+      navigator.clipboard.writeText(text);
       alert("Link copied to clipboard!");
     }
 
