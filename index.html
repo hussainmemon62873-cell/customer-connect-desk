@@ -4,33 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   
-  <!-- Primary Google Search Meta Tags -->
-  <title>Customer Connect Desk - Memon Lock Center</title>
-  <meta name="title" content="Customer Connect Desk - Memon Lock Center" />
-  <meta name="description" content="Official Customer Connect Desk for Memon Lock Center. Register your check-in, key duplication requests, and lock service online." />
-  <meta name="keywords" content="Memon Lock Center, Customer Connect Desk, Locksmith, Key Maker, Digital Check-in, Lock Repair, Smart Locks" />
+  <title id="meta-title">Customer Connect Desk | Smart Digital NFC Counter & Check-In Desk</title>
+  <meta id="meta-desc" name="description" content="Digital customer check-in desk, instant Google review booster, and smart NFC counter system for retail stores and local service businesses." />
+  <meta name="keywords" content="Digital check in desk, NFC customer counter, Google review stand, retail CRM, customer connect desk" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://customer-connect-desk.pages.dev/" />
-  <meta name="theme-color" content="#2563eb" />
 
-  <!-- Browser Tab Icons & Search Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="https://customer-connect-desk.pages.dev/favicon.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="https://customer-connect-desk.pages.dev/favicon.png" />
 
-  <!-- Google Rich Snippets / Structured Data (No Image) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Memon Lock Center - Customer Connect Desk",
-    "url": "https://customer-connect-desk.pages.dev/",
-    "logo": "https://customer-connect-desk.pages.dev/favicon.png",
-    "description": "Digital service check-in desk for lock repairs, key duplications, and customer support.",
-    "telephone": "+919979955386"
-  }
-  </script>
-
-  <!-- External Resources -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,34 +21,36 @@
   <style>
     :root {
       --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --primary-glow: rgba(37, 99, 235, 0.2);
-      --bg-gradient: radial-gradient(circle at 50% 0%, #1e293b 0%, #0f172a 100%);
+      --bg: #0f172a;
       --card-bg: #ffffff;
       --text: #0f172a;
       --text-muted: #64748b;
       --border: #e2e8f0;
-      --border-focus: #3b82f6;
       --radius: 24px;
       --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+      --success: #16a34a;
+      --danger: #dc2626;
+      --warning: #d97706;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: var(--bg-gradient);
+      background: var(--bg);
       color: var(--text);
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 1rem;
+      padding: 1.5rem 1rem;
+      transition: background 0.3s ease;
     }
 
     .card {
@@ -75,14 +59,12 @@
       padding: 2.25rem 1.75rem;
       width: 100%;
       max-width: 440px;
-      min-height: 520px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
       box-shadow: var(--shadow);
       position: relative;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 1.5rem;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .card::before {
@@ -92,801 +74,468 @@
       left: 0;
       right: 0;
       height: 6px;
-      background: linear-gradient(90deg, #2563eb, #38bdf8, #f59e0b);
+      background: var(--primary);
     }
 
     .brand-header {
       text-align: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.25rem;
     }
 
-    .brand-badge {
+    .status-badge {
       display: inline-flex;
       align-items: center;
-      padding: 0.35rem 0.9rem;
-      background: #eff6ff;
-      color: var(--primary);
+      gap: 0.4rem;
+      padding: 0.35rem 0.85rem;
       border-radius: 999px;
       font-size: 0.78rem;
       font-weight: 700;
-      letter-spacing: 0.5px;
       text-transform: uppercase;
+      letter-spacing: 0.5px;
       margin-bottom: 0.6rem;
     }
+
+    .status-open { background: #dcfce7; color: var(--success); }
+    .status-closed { background: #fee2e2; color: var(--danger); }
+    .status-platform { background: #dbeafe; color: var(--primary); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 
     h1 {
       font-size: 1.55rem;
       font-weight: 800;
       letter-spacing: -0.02em;
-      color: #0f172a;
+      color: inherit;
     }
 
     .subtitle {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-muted);
       margin-top: 0.25rem;
       font-weight: 500;
     }
 
-    .hidden {
-      display: none !important;
-    }
-
-    .auth-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-grow: 1;
-      gap: 1.25rem;
-      padding: 2rem 0;
-    }
-
-    .auth-hint {
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      font-weight: 500;
-      text-align: center;
-    }
-
-    .loading-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-grow: 1;
-      padding: 3rem 0;
-    }
-
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(37, 99, 235, 0.15);
-      border-radius: 50%;
-      border-top-color: var(--primary);
-      animation: spin 0.8s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-      margin-bottom: 1rem;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 0.85rem;
-      background: linear-gradient(135deg, #f0f7ff 0%, #f8fafc 100%);
-      padding: 0.9rem 1.15rem;
-      border-radius: 16px;
-      margin-bottom: 1.5rem;
-      border: 1px solid #dbeafe;
-    }
-
-    .user-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 1.15rem;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
-      flex-shrink: 0;
-    }
-
-    .user-meta h4 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .user-meta p {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      word-break: break-all;
-    }
-
+    .hidden { display: none !important; }
+    /* Dynamic Form & Input Elements */
     .form-group {
-      margin-bottom: 1.35rem;
+      margin-bottom: 1.15rem;
+      text-align: left;
     }
 
     label {
       display: block;
-      font-size: 0.88rem;
+      font-size: 0.8rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
-      color: #334155;
+      margin-bottom: 0.35rem;
+      color: inherit;
+      opacity: 0.85;
     }
 
-    input, select {
+    .phone-input-wrapper {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    select, input[type="tel"], input[type="date"], input[type="text"] {
       width: 100%;
-      padding: 0.88rem 1rem;
-      border: 2px solid var(--border);
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
       border-radius: 12px;
-      font-size: 1rem;
+      font-size: 0.95rem;
+      background: rgba(0, 0, 0, 0.03);
+      color: inherit;
       outline: none;
-      background: #f8fafc;
-      color: #0f172a;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      transition: all 0.2s ease;
+    }
+
+    select {
+      width: 35%;
+      cursor: pointer;
       font-weight: 600;
     }
 
     input:focus, select:focus {
-      border-color: var(--border-focus);
-      background: #ffffff;
-      box-shadow: 0 0 0 4px var(--primary-glow);
-    }
-
-    .phone-row {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .country-select-wrapper {
-      flex: 0 0 115px;
-    }
-
-    .country-select {
-      cursor: pointer;
-      padding: 0.88rem 0.5rem;
-      text-align: center;
-      font-weight: 700;
-    }
-
-    .phone-input-wrapper {
-      flex: 1;
-    }
-
-    .input-error {
-      border-color: #ef4444 !important;
-      background: #fff8f8 !important;
-      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15) !important;
-    }
-
-    .field-msg {
-      font-size: 0.78rem;
-      margin-top: 0.4rem;
-      color: #ef4444;
-      font-weight: 600;
-      display: none;
-    }
-
-    .row {
-      display: flex;
-      gap: 0.85rem;
-    }
-
-    .dob-inputs {
-      display: flex;
-      gap: 0.45rem;
-    }
-
-    .dob-inputs input {
-      text-align: center;
-      padding: 0.88rem 0.2rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
     }
 
     .btn {
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      width: 100%;
-      padding: 1rem;
-      border-radius: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      border: none;
-      font-size: 1rem;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.15s ease, opacity 0.2s ease;
+      text-decoration: none;
     }
 
     .btn:active {
       transform: scale(0.98);
     }
 
-    .btn-review {
-      background: linear-gradient(135deg, #fef08a 0%, #facc15 100%);
-      color: #713f12;
-      font-weight: 800;
-      border: 1px solid #eab308;
-      box-shadow: 0 4px 14px rgba(234, 179, 8, 0.25);
-      margin-bottom: 0.85rem;
-    }
-
-    .btn-review:hover {
-      background: linear-gradient(135deg, #fde047 0%, #eab308 100%);
-    }
-
     .btn-primary {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
-      color: #fff;
-      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.35);
-      margin-top: 0.5rem;
+      background: var(--primary);
+      color: #ffffff;
     }
 
-    .btn-primary:hover {
-      box-shadow: 0 6px 22px rgba(37, 99, 235, 0.45);
-      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    .btn-secondary {
+      background: rgba(0, 0, 0, 0.06);
+      color: inherit;
+      margin-top: 0.75rem;
     }
 
-    .btn-primary:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(6px);
+    /* Platform Showcase Elements (Root / View) */
+    .feature-list {
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 1.25rem 0;
+      text-align: left;
+    }
+
+    .feature-item {
+      display: flex;
       align-items: center;
-      padding: 1.25rem;
-      z-index: 999;
-      animation: modalFade 0.2s ease;
+      gap: 0.65rem;
+      font-size: 0.88rem;
+      font-weight: 600;
     }
 
-    @keyframes modalFade {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    .modal-card {
-      background: #ffffff;
-      border-radius: 22px;
-      padding: 2rem 1.75rem;
-      width: 100%;
-      max-width: 360px;
-      text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
-      animation: modalScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes modalScale {
-      from { transform: scale(0.94); }
-      to { transform: scale(1); }
-    }
-
-    .modal-icon {
-      width: 56px;
-      height: 56px;
+    .feature-icon {
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
-      margin: 0 auto 1.15rem;
+      background: #dbeafe;
+      color: var(--primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.6rem;
+      font-size: 0.75rem;
       font-weight: 800;
+      flex-shrink: 0;
     }
 
-    .modal-icon.error {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    .modal-icon.success {
-      background: #dcfce7;
-      color: #16a34a;
-    }
-
-    .modal-title {
-      font-size: 1.2rem;
-      font-weight: 800;
-      margin-bottom: 0.4rem;
-      color: #0f172a;
-    }
-
-    .modal-desc {
+    /* Center Alert Box */
+    .alert-box {
+      padding: 1.25rem;
+      border-radius: 14px;
+      text-align: center;
       font-size: 0.9rem;
-      color: var(--text-muted);
-      line-height: 1.45;
-      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .alert-suspended {
+      background: #fee2e2;
+      color: var(--danger);
+      border: 1px solid #fca5a5;
+    }
+
+    /* Footer Navigation */
+    footer {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: auto;
+      padding: 1rem 0;
+    }
+
+    footer a {
+      color: #cbd5e1;
+      text-decoration: none;
+      margin: 0 0.4rem;
     }
   </style>
 </head>
 <body>
-
-<div class="card">
-  <div class="brand-header">
-    <div class="brand-badge">⚡ Quick Check-In</div>
-    <h1>Memon Lock Center</h1>
-    <p class="subtitle">Digital Service Desk & Registration</p>
-  </div>
-
-  <!-- Step 1: Google Sign-In -->
-  <div id="signin-view" class="auth-section">
-    <div id="g_id_onload"
-         data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
-         data-callback="handleCredentialResponse"
-         data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="continue_with"></div>
-    <p class="auth-hint">Sign in with Google to check existing records</p>
-  </div>
-
-  <!-- Loading State -->
-  <div id="loading-view" class="loading-container hidden">
-    <div class="loading-spinner"></div>
-    <p style="font-weight: 600; font-size: 0.95rem; color: var(--text-muted);">Checking records, please wait...</p>
-  </div>
-
-  <!-- Step 2A: Returning Customer Screen -->
-  <div id="returning-view" class="hidden">
-    <div class="user-profile">
-      <div class="user-avatar" id="returning-avatar">M</div>
-      <div class="user-meta">
-        <h4 id="returning-name">Customer</h4>
-        <p id="returning-email">customer@gmail.com</p>
+  <main class="card">
+    <!-- Brand / Store Title Header -->
+    <header class="brand-header">
+      <div id="status-pill" class="status-badge status-platform">
+        <span class="status-dot"></span>
+        <span id="status-text">Platform Active</span>
       </div>
-    </div>
+      <h1 id="brand-title">Customer Connect Desk</h1>
+      <p id="brand-tagline" class="subtitle">Smart NFC In-Store Customer Counter System</p>
+    </header>
 
-    <button type="button" class="btn btn-review" onclick="openReviewLink()">
-      ⭐ Leave a Google Review (Optional)
-    </button>
-
-    <button id="returning-complete-btn" class="btn btn-primary" onclick="completeQuickVisit()">
-      Complete Check-In
-    </button>
-  </div>
-
-  <!-- Step 2B: New Customer Onboarding Form -->
-  <div id="new-user-form" class="hidden">
-    <div class="user-profile">
-      <div class="user-avatar" id="new-avatar">M</div>
-      <div class="user-meta">
-        <h4 id="new-name">Customer Name</h4>
-        <p id="new-email">customer@gmail.com</p>
+    <!-- VIEW 1: Platform Root (No ?shop parameter given) -->
+    <section id="view-platform-root">
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="feature-icon">✓</span>
+          <span>Instant 1-Tap Google Review Stand</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">✓</span>
+          <span>Zero-App NFC Customer Registration</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">✓</span>
+          <span>Automated WhatsApp & Birthday Retention</span>
+        </div>
       </div>
-    </div>
+      <a href="/admin.html" class="btn btn-primary" style="margin-top: 1.5rem;">Register Your Business / Admin Login</a>
+    </section>
 
-    <!-- International WhatsApp Number Input -->
-    <div class="form-group">
-      <label>WhatsApp / Mobile Number *</label>
-      <div class="phone-row">
-        <div class="country-select-wrapper">
-          <select id="country-code" class="country-select" onchange="onCountryCodeChange()">
+    <!-- VIEW 2: Suspended / De-registered Store Notice -->
+    <section id="view-suspended" class="hidden">
+      <div class="alert-box alert-suspended">
+        <strong>Store Temporarily Unavailable</strong>
+        <p style="margin-top: 0.5rem; font-size: 0.82rem;">This customer desk has been paused or de-registered by the administrator.</p>
+      </div>
+    </section>
+
+    <!-- VIEW 3: Google Identity Sign-In Gate -->
+    <section id="view-auth" class="hidden">
+      <p style="font-size: 0.88rem; color: var(--text-muted); text-align: center; margin-bottom: 1.25rem;">
+        Tap below with your Google account to check in:
+      </p>
+      <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+        <div id="g_id_onload"
+             data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
+             data-callback="handleCustomerLogin"
+             data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: New Customer Details Form -->
+    <form id="view-register" class="hidden" onsubmit="handleRegistrationSubmit(event)">
+      <div class="form-group">
+        <label>WhatsApp Number</label>
+        <div class="phone-input-wrapper">
+          <select id="country-code">
             <option value="+91" selected>🇮🇳 +91</option>
             <option value="+1">🇺🇸 +1</option>
-            <option value="+1-CA">🇨🇦 +1</option>
             <option value="+44">🇬🇧 +44</option>
-            <option value="+61">🇦🇺 +61</option>
             <option value="+971">🇦🇪 +971</option>
-            <option value="+966">🇸🇦 +966</option>
           </select>
-        </div>
-        <div class="phone-input-wrapper">
-          <input type="tel" id="user-phone" placeholder="98765 43210" oninput="formatAndValidatePhone(this)" />
+          <input type="tel" id="user-phone" required placeholder="98765 43210" maxlength="10" />
         </div>
       </div>
-      <div id="phone-err" class="field-msg">Please enter a valid phone number.</div>
-    </div>
 
-    <!-- Date of Birth: Auto-jump forward and single-touch backspace backwards -->
-    <div class="row">
-      <div class="form-group" style="flex: 2.2;">
-        <label>Date of Birth (DD / MM / YYYY) *</label>
-        <div class="dob-inputs">
-          <input type="tel" id="dob-day" placeholder="DD" maxlength="2"
-                 oninput="handleDobInput(this, 'dob-month')"
-                 onkeydown="handleDobBackspace(event, this, null)" />
-          <input type="tel" id="dob-month" placeholder="MM" maxlength="2"
-                 oninput="handleDobInput(this, 'dob-year')"
-                 onkeydown="handleDobBackspace(event, this, 'dob-day')" />
-          <input type="tel" id="dob-year" placeholder="YYYY" maxlength="4"
-                 oninput="handleDobInput(this, null)"
-                 onkeydown="handleDobBackspace(event, this, 'dob-month')" />
-        </div>
-        <div id="dob-err" class="field-msg">Please enter a valid date.</div>
+      <div class="form-group">
+        <label>Date of Birth (For Birthday Offers)</label>
+        <input type="date" id="user-dob" required />
       </div>
-      <div class="form-group" style="flex: 1; max-width: 90px;">
-        <label>Age</label>
-        <input type="text" id="user-age" readonly placeholder="Auto" style="background: #f1f5f9; text-align: center; font-weight: 700;" />
+
+      <button type="submit" id="btn-submit-reg" class="btn btn-primary">Complete Check-In & Get Offers</button>
+    </form>
+
+    <!-- VIEW 5: Returning Customer (1-Tap Check-In Screen) -->
+    <section id="view-returning" class="hidden">
+      <p style="text-align: center; font-size: 0.95rem; margin-bottom: 1.25rem;">
+        Welcome back, <strong id="returning-name">Friend</strong>!
+      </p>
+      <button onclick="handleReturningSubmit()" id="btn-returning-checkin" class="btn btn-primary">Check In & Review Us</button>
+    </section>
+
+    <!-- VIEW 6: Success / Direct Google Review Forwarder -->
+    <section id="view-success" class="hidden">
+      <div style="text-align: center; padding: 1rem 0;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
+        <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.35rem;">You're Checked In!</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+          Thank you for visiting us today. Please take 5 seconds to share your review on Google.
+        </p>
+        <a id="btn-google-review" href="#" target="_blank" class="btn btn-primary">⭐ Rate & Review on Google</a>
       </div>
-    </div>
+    </section>
+  </main>
 
-    <!-- Optional Google Review -->
-    <div class="form-group" style="margin-top: 0.25rem;">
-      <label>Support Us (Optional)</label>
-      <button type="button" class="btn btn-review" onclick="openReviewLink()">
-        ⭐ Rate Us On Google
-      </button>
-    </div>
+  <footer>
+    Powered by <a href="/">Customer Connect Desk</a>
+  </footer>
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4aac8UybOJCYk4ermw3_24_eHYOwdhx4TvDaE1ZF91l77k5wknyLHT0TkMWY6h8Ef/exec";
 
-    <!-- Final Check-In Button -->
-    <button type="button" id="new-complete-btn" class="btn btn-primary" onclick="validateAndSubmitNewUser()">
-      Complete Check-In
-    </button>
-  </div>
-</div>
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentShopSlug = (urlParams.get("shop") || "").trim().toLowerCase();
+    const isDeskMode = (urlParams.get("desk") === "true");
 
-<!-- Modal Dialog -->
-<div id="app-modal" class="modal-overlay hidden">
-  <div class="modal-card">
-    <div id="modal-icon" class="modal-icon error">!</div>
-    <div id="modal-title" class="modal-title">Notice</div>
-    <div id="modal-desc" class="modal-desc">Message content goes here.</div>
-    <button class="btn btn-primary" onclick="closeModal()">Got it</button>
-  </div>
-</div>
+    let currentStore = null;
+    let customerUser = { name: "", email: "" };
 
-<script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz4aac8UybOJCYk4ermw3_24_eHYOwdhx4TvDaE1ZF91l77k5wknyLHT0TkMWY6h8Ef/exec";
-  const GOOGLE_REVIEW_URL = "https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review";
-
-  let currentUser = { name: "", email: "", phone: "", age: "", dob: "" };
-
-  function showModal(title, message, isError = true) {
-    const modal = document.getElementById("app-modal");
-    const icon = document.getElementById("modal-icon");
-    document.getElementById("modal-title").textContent = title;
-    document.getElementById("modal-desc").textContent = message;
-
-    if (isError) {
-      icon.className = "modal-icon error";
-      icon.textContent = "✕";
-    } else {
-      icon.className = "modal-icon success";
-      icon.textContent = "✓";
-    }
-    modal.classList.remove("hidden");
-  }
-
-  function closeModal() {
-    document.getElementById("app-modal").classList.add("hidden");
-  }
-
-  function parseJwt(token) {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split('')
-          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
-      );
-      return JSON.parse(jsonPayload);
-    } catch (e) {
-      console.error("JWT Decode Error:", e);
-      return null;
-    }
-  }
-
-  function onCountryCodeChange() {
-    const code = document.getElementById("country-code").value;
-    const phoneInput = document.getElementById("user-phone");
-    phoneInput.value = "";
-    
-    if (code === "+1" || code === "+1-CA") {
-      phoneInput.placeholder = "(555) 000-0000";
-    } else if (code === "+91") {
-      phoneInput.placeholder = "98765 43210";
-    } else if (code === "+44") {
-      phoneInput.placeholder = "(020) 7946 0991";
-    } else if (code === "+61") {
-      phoneInput.placeholder = "(02) 1234 5678";
-    } else {
-      phoneInput.placeholder = "Mobile number";
-    }
-    formatAndValidatePhone(phoneInput);
-  }
-
-  function formatAndValidatePhone(input) {
-    const code = document.getElementById("country-code").value;
-    let digits = input.value.replace(/\D/g, '');
-
-    if (digits.startsWith('0')) {
-      digits = digits.replace(/^0+/, '');
+    function parseJwt(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+        );
+        return JSON.parse(jsonPayload);
+      } catch (e) { return null; }
     }
 
-    let formatted = digits;
-    let isValid = false;
-    const err = document.getElementById("phone-err");
+    function switchView(viewId) {
+      ['view-platform-root', 'view-suspended', 'view-auth', 'view-register', 'view-returning', 'view-success'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+      const target = document.getElementById(viewId);
+      if (target) target.classList.remove('hidden');
+    }
 
-    if (code === "+1" || code === "+1-CA") {
-      digits = digits.slice(0, 10);
-      if (digits.length > 6) {
-        formatted = `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-      } else if (digits.length > 3) {
-        formatted = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-      } else if (digits.length > 0) {
-        formatted = `(${digits}`;
+    async function initPage() {
+      if (!currentShopSlug) {
+        switchView("view-platform-root");
+        return;
       }
-      isValid = digits.length === 10;
-      err.textContent = "Please enter a 10-digit North American number.";
-    } else if (code === "+91") {
-      digits = digits.slice(0, 10);
-      if (digits.length > 5) {
-        formatted = `${digits.slice(0, 5)} ${digits.slice(5)}`;
+
+      try {
+        const res = await fetch(`${SCRIPT_URL}?shop=${encodeURIComponent(currentShopSlug)}`);
+        const data = await res.json();
+
+        if (!data.found || !data.store) {
+          document.getElementById("brand-title").textContent = "Store Not Found";
+          document.getElementById("brand-tagline").textContent = "The requested counter desk link does not exist.";
+          return;
+        }
+
+        currentStore = data.store;
+
+        if (currentStore.registrationStatus === "SUSPENDED") {
+          switchView("view-suspended");
+          return;
+        }
+
+        applyStoreTheming(currentStore);
+        switchView("view-auth");
+
+      } catch (err) {
+        console.error("Failed to load store data:", err);
+      }
+    }
+
+    function applyStoreTheming(store) {
+      document.title = `${store.shopName} | Customer Connect Desk`;
+      document.getElementById("brand-title").textContent = store.shopName;
+      document.getElementById("brand-tagline").textContent = store.tagline || "Welcome to our customer desk";
+
+      const root = document.documentElement;
+      if (store.primaryColor) root.style.setProperty('--primary', store.primaryColor);
+      if (store.bgColor) root.style.setProperty('--bg', store.bgColor);
+      if (store.cardBg) root.style.setProperty('--card-bg', store.cardBg);
+      if (store.textColor) root.style.setProperty('--text', store.textColor);
+
+      const pill = document.getElementById("status-pill");
+      pill.className = "status-badge status-open";
+      document.getElementById("status-text").textContent = "Desk Open";
+    }
+
+    async function handleCustomerLogin(response) {
+      const payload = parseJwt(response.credential);
+      if (!payload || !payload.email) return;
+
+      customerUser.name = payload.name;
+      customerUser.email = payload.email.toLowerCase();
+
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "checkUser",
+            email: customerUser.email,
+            shopId: currentShopSlug
+          })
+        });
+        const result = await res.json();
+
+        if (result.exists) {
+          document.getElementById("returning-name").textContent = customerUser.name;
+          switchView("view-returning");
+        } else {
+          switchView("view-register");
+        }
+      } catch (err) {
+        switchView("view-register");
+      }
+    }
+
+    async function handleRegistrationSubmit(e) {
+      e.preventDefault();
+      const rawPhone = document.getElementById("user-phone").value.trim().replace(/\D/g, '');
+      const countryCode = document.getElementById("country-code").value;
+      const dob = document.getElementById("user-dob").value;
+
+      if (rawPhone.length < 10) {
+        alert("Please enter a valid 10-digit WhatsApp number.");
+        return;
+      }
+
+      const btn = document.getElementById("btn-submit-reg");
+      btn.textContent = "Checking you in...";
+      btn.disabled = true;
+
+      const birthYear = new Date(dob).getFullYear();
+      const currentYear = new Date().getFullYear();
+      const age = birthYear ? (currentYear - birthYear) : "";
+
+      const payload = {
+        action: "saveUser",
+        shopId: currentShopSlug,
+        name: customerUser.name,
+        email: customerUser.email,
+        countryCode: countryCode,
+        rawPhone: rawPhone,
+        formattedPhone: `${countryCode} ${rawPhone}`,
+        fullPhoneWithCode: `${countryCode}${rawPhone}`,
+        dob: dob,
+        age: age
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        console.error("Save error:", err);
+      }
+
+      showSuccessScreen();
+    }
+
+    async function handleReturningSubmit() {
+      const btn = document.getElementById("btn-returning-checkin");
+      btn.textContent = "Logging visit...";
+      btn.disabled = true;
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            action: "logReviewOnly",
+            shopId: currentShopSlug,
+            email: customerUser.email,
+            name: customerUser.name
+          })
+        });
+      } catch (err) {
+        console.error("Check-in error:", err);
+      }
+
+      showSuccessScreen();
+    }
+
+    function showSuccessScreen() {
+      if (currentStore && currentStore.reviewUrl) {
+        document.getElementById("btn-google-review").href = currentStore.reviewUrl;
       } else {
-        formatted = digits;
+        document.getElementById("btn-google-review").classList.add("hidden");
       }
-      isValid = digits.length === 10 && /^[6-9]/.test(digits);
-      err.textContent = "Please enter a valid 10-digit number (starts with 6-9).";
-    } else if (code === "+44") {
-      digits = digits.slice(0, 10);
-      if (digits.length > 3) {
-        formatted = `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-      } else if (digits.length > 0) {
-        formatted = `(${digits}`;
-      }
-      isValid = digits.length >= 7 && digits.length <= 10;
-      err.textContent = "Please enter a valid UK number.";
-    } else if (code === "+61") {
-      digits = digits.slice(0, 9);
-      if (digits.length > 5) {
-        formatted = `(${digits.slice(0, 2)}) ${digits.slice(2, 5)} ${digits.slice(5)}`;
-      } else if (digits.length > 2) {
-        formatted = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
-      } else if (digits.length > 0) {
-        formatted = `(${digits}`;
-      }
-      isValid = digits.length === 9;
-      err.textContent = "Please enter a valid Australian number.";
-    } else {
-      digits = digits.slice(0, 12);
-      formatted = digits;
-      isValid = digits.length >= 7 && digits.length <= 12;
-      err.textContent = "Please enter a valid mobile number.";
+      switchView("view-success");
     }
 
-    input.value = formatted;
-
-    if (digits.length > 0 && !isValid) {
-      input.classList.add("input-error");
-      err.style.display = "block";
-    } else {
-      input.classList.remove("input-error");
-      err.style.display = "none";
-    }
-  }
-
-  function handleDobInput(el, nextId) {
-    el.value = el.value.replace(/\D/g, '');
-    const max = parseInt(el.getAttribute("maxlength"), 10);
-    
-    if (el.value.length >= max && nextId) {
-      const nextEl = document.getElementById(nextId);
-      if (nextEl) nextEl.focus();
-    }
-    validateAndCalculateAge();
-  }
-
-  function h
-  function handleDobBackspace(e, el, prevId) {
-    if (e.key === "Backspace" && el.value.length === 0 && prevId) {
-      const prevEl = document.getElementById(prevId);
-      if (prevEl) {
-        prevEl.focus();
-        prevEl.value = prevEl.value.slice(0, -1);
-        validateAndCalculateAge();
-      }
-    }
-  }
-
-  async function handleCredentialResponse(response) {
-    const payload = parseJwt(response.credential);
-    if (!payload || !payload.email) {
-      showModal("Sign-In Error", "Unable to retrieve Google Profile data. Please try again.");
-      return;
-    }
-
-    currentUser.name = payload.name || "Customer";
-    currentUser.email = payload.email;
-
-    // Immediately display verified customer details
-    document.getElementById("new-name").textContent = currentUser.name;
-    document.getElementById("new-email").textContent = currentUser.email;
-    document.getElementById("new-avatar").textContent = (currentUser.name[0] || "C").toUpperCase();
-
-    document.getElementById("returning-name").textContent = currentUser.name;
-    document.getElementById("returning-email").textContent = currentUser.email;
-    document.getElementById("returning-avatar").textContent = (currentUser.name[0] || "C").toUpperCase();
-
-    document.getElementById("signin-view").classList.add("hidden");
-    document.getElementById("loading-view").classList.remove("hidden");
-
-    try {
-      const res = await fetch(SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "checkUser", email: currentUser.email })
-      });
-      const data = await res.json();
-      document.getElementById("loading-view").classList.add("hidden");
-
-      if (data && data.exists) {
-        currentUser.phone = data.phone || "";
-        document.getElementById("returning-name").textContent = data.name || currentUser.name;
-        document.getElementById("returning-view").classList.remove("hidden");
-      } else {
-        document.getElementById("new-user-form").classList.remove("hidden");
-      }
-    } catch (err) {
-      console.warn("Backend check failed, presenting new user onboarding form.", err);
-      document.getElementById("loading-view").classList.add("hidden");
-      document.getElementById("new-user-form").classList.remove("hidden");
-    }
-  }
-
-  function validateAndCalculateAge() {
-    const dayInput = document.getElementById("dob-day");
-    const monthInput = document.getElementById("dob-month");
-    const yearInput = document.getElementById("dob-year");
-    const dobErr = document.getElementById("dob-err");
-
-    const d = parseInt(dayInput.value, 10);
-    const m = parseInt(monthInput.value, 10);
-    const y = parseInt(yearInput.value, 10);
-
-    if (!d || !m || !y || yearInput.value.length < 4) {
-      document.getElementById("user-age").value = "";
-      dobErr.style.display = "none";
-      return false;
-    }
-
-    const today = new Date();
-    const currentYear = today.getFullYear();
-
-    if (y > currentYear || y < 1900) {
-      document.getElementById("user-age").value = "";
-      dobErr.textContent = `Year must be between 1900 and ${currentYear}.`;
-      dobErr.style.display = "block";
-      return false;
-    }
-
-    if (m < 1 || m > 12) {
-      document.getElementById("user-age").value = "";
-      dobErr.textContent = "Month must be between 01 and 12.";
-      dobErr.style.display = "block";
-      return false;
-    }
-
-    const daysInMonth = new Date(y, m, 0).getDate();
-    if (d < 1 || d > daysInMonth) {
-      document.getElementById("user-age").value = "";
-      dobErr.textContent = `Invalid date! Month ${String(m).padStart(2, '0')} has only ${daysInMonth} days.`;
-      dobErr.style.display = "block";
-      return false;
-    }
-
-    const birthDate = new Date(y, m - 1, d);
-    if (birthDate > today) {
-      document.getElementById("user-age").value = "";
-      dobErr.textContent = "Birth date cannot be in the future.";
-      dobErr.style.display = "block";
-      return false;
-    }
-
-    dobErr.style.display = "none";
-
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-
-    if (age >= 0) {
-      document.getElementById("user-age").value = age;
-      currentUser.age = age;
-      currentUser.dob = `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}/${y}`;
-      return true;
-    }
-
-    return false;
-  }
-
-  function openReviewLink() {
-    window.open(GOOGLE_REVIEW_URL, '_blank');
-  }
-
-  async function validateAndSubmitNewUser() {
-    const rawCode = document.getElementById("country-code").value;
-    const countryCode = rawCode.replace("-CA", "");
-    const phoneInput = document.getElementById("user-phone");
-    const rawPhoneDigits = phoneInput.value.replace(/\D/g, '');
-    const formattedPhone = phoneInput.value.trim();
-
-    const isDobValid = validateAndCalculateAge();
-    const ageVal = document.getElementById("user-age").value;
-
-    let isPhoneValid = false;
-    if (countryCode === "+91") {
-      isPhoneValid = rawPhoneDigits.length === 10 && /^[6-9]/.test(rawPhoneDigits);
-    } else if (countryCode === "+1") {
-      isPhoneValid = rawPhoneDigits.length === 10;
-    } else {
-      isPhoneValid = rawPhoneDigits.length >= 7 && rawPhoneDigits.length <= 12;
-    }
-
-    if (!isPhoneValid) {
-      phoneInput.classList.add("input-error");
-      showModal("Invalid Phone Number", "Please enter a complete, valid phone number.");
-      return;
-    }
-
-    if (!isDobValid || !ageVal) {
-      showModal("Invalid Date of Birth", "Please enter a valid calendar date of birth (DD / MM / YYYY).");
-      return;
-    }
-
-    const btn = document.getElementById("new-complete-btn");
-    btn.disabled = true;
-    btn.textContent = "Saving...";
-
-    const payload = {
-      action: "saveUser",
-      name: currentUser.name,
-      email: currentUser.email,
-      countryCode: countryCode,
-      rawPhone: rawPhoneDigits,
-      formattedPhone: formattedPhone,
-      fullPhoneWithCode: `${countryCode} ${rawPhoneDigits}`,
-      dob: currentUser.dob,
-      age: currentUser.age
-    };
-
-    try {
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      });
-      showModal("Check-In Successful", "Your check-in is complete. Thank you!", false);
-      setTimeout(() => location.reload(), 1600);
-    } catch (err) {
-      showModal("Network Error", "Submission failed. Please check your connection and try again.");
-      btn.disabled = false;
-      btn.textContent = "Complete Check-In";
-    }
-  }
-
-  async function completeQuickVisit() {
-    const btn = document.getElementById("returning-complete-btn");
-    btn.disabled = true;
-    btn.textContent = "Saving...";
-
-    try {
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action: "logReviewOnly", name: currentUser.name, email: currentUser.email })
-      });
-    } catch (e) {}
-
-    showModal("Check-In Complete", "Thank you for visiting us again!", false);
-    setTimeout(() => location.reload(), 1600);
-  }
-</script>
-
+    window.addEventListener("DOMContentLoaded", initPage);
+  </script>
 </body>
 </html>
