@@ -6,13 +6,12 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyq5CbrZ5VzrFEcBh-gf
 
 const $ = id => document.getElementById(id);
 
-// Get shop slug from URL parameters (e.g. desk.html?shop=memonlock)
 const urlParams = new URLSearchParams(window.location.search);
 const currentShopId = urlParams.get("shop") || "memonlock";
 
 let cachedStoreData = null;
 
-// 1. On Page Load: Check browser memory & fetch store branding
+// 📅 1. On Page Load: Check browser memory & fetch store branding
 window.addEventListener("DOMContentLoaded", async () => {
   await fetchStoreThemeAndConfig();
 
@@ -22,7 +21,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     checkCustomerLookup(savedPhone);
   }
 
-  // Setup segmented DOB auto-jumping
   setupDobInputs();
 });
 
@@ -49,7 +47,6 @@ function applyStoreTheme(store) {
     document.documentElement.style.setProperty('--accent', store.primaryColor);
   }
 
-  // Display Google Review banner immediately upon NFC/QR scan if reviewUrl is present
   if (store.reviewUrl) {
     $("direct-review-link").href = store.reviewUrl;
     $("direct-review-box").style.display = "block";
@@ -58,7 +55,7 @@ function applyStoreTheme(store) {
   }
 }
 
-// 2. Real-time Lookup when 10 digits are entered
+// 📱 2. Real-time Lookup when 10 digits are entered
 $("customer-phone").addEventListener("input", (e) => {
   const phone = e.target.value.replace(/\D/g, '');
   if (phone.length === 10) {
@@ -84,7 +81,6 @@ async function checkCustomerLookup(phone) {
         $("customer-name").value = data.customer.name || "";
         $("customer-email").value = data.customer.email || "";
         
-        // Populate segmented DOB if present
         if (data.customer.dob) {
           parseAndSetDob(data.customer.dob);
         }
@@ -102,7 +98,7 @@ async function checkCustomerLookup(phone) {
   }
 }
 
-// 3. Segmented DOB logic & auto-tabbing
+// 🗓️ 3. Segmented DOB logic & robust date parsing
 function setupDobInputs() {
   const dd = $("dob-dd");
   const mm = $("dob-mm");
@@ -135,38 +131,63 @@ function updateHiddenDob() {
 function parseAndSetDob(dobStr) {
   try {
     if (!dobStr) return;
-    // Strip ISO timestamp part (e.g. "2008-04-11T18:30:00.000Z" -> "2008-04-11")
     const cleanDate = String(dobStr).split('T')[0];
     const parts = cleanDate.split(/[-/]/);
     
     if (parts.length === 3) {
+      let year = parts[0];
+      let month = parts[1];
+      let day = parts[2];
+
       if (parts[0].length === 4) {
-        $("dob-yy").value = parts[0];
-        $("dob-mm").value = parts[1];
-        $("dob-dd").value = parts[2];
+        year = parts[0];
+        month = parts[1];
+        day = parts[2];
       } else {
-        $("dob-dd").value = parts[0];
-        $("dob-mm").value = parts[1];
-        $("dob-yy").value = parts[2];
+        day = parts[0];
+        month = parts[1];
+        year = parts[2];
       }
-      $("customer-dob").value = cleanDate;
+
+      if (day && day !== '00' && day !== '0') $("dob-dd").value = day.padStart(2, '0');
+      else $("dob-dd").value = "";
+
+      if (month && month !== '00' && month !== '0') $("dob-mm").value = month.padStart(2, '0');
+      else $("dob-mm").value = "";
+
+      if (year && year !== '0000') $("dob-yy").value = year;
+      else $("dob-yy").value = "";
+
+      if (day && month && year && day !== '00' && month !== '00') {
+        $("customer-dob").value = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+      }
     }
   } catch (e) {
     console.error("DOB parse error", e);
   }
 }
 
-// 4. Handle Check-in Submission
+// 📝 4. Handle Check-in Submission with Strict Required Validation
 $("checkin-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const phone = $("customer-phone").value.replace(/\D/g, '');
   const name = $("customer-name").value.trim();
   const email = $("customer-email").value.trim();
+  
   updateHiddenDob();
+  const dd = $("dob-dd").value.trim();
+  const mm = $("dob-mm").value.trim();
+  const yy = $("dob-yy").value.trim();
   const dob = $("customer-dob").value.trim();
 
   if (phone.length !== 10) {
     showToast("Please enter a valid 10-digit mobile number.", "error");
+    return;
+  }
+
+  // Enforce required validation across all fields including segmented DOB
+  if (!name || !email || !dd || !mm || !yy || dd.length < 2 || mm.length < 2 || yy.length < 4 || !dob) {
+    showToast("All fields are required. Please enter a valid Date of Birth.", "error");
     return;
   }
 
