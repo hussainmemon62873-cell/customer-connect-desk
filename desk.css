@@ -1,3 +1,7 @@
+/* ==========================================
+   MSGS CUSTOMER DESK STYLESHEET (desk.css)
+   ========================================== */
+
 :root {
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
@@ -68,22 +72,6 @@ body {
 }
 .shop-header p { font-size: 0.88rem; color: var(--text-muted); }
 
-.g-btn-wrap { display: flex; justify-content: center; margin: 0.75rem 0 0.5rem; }
-.auth-caption { font-size: 0.78rem; color: var(--text-muted); text-align: center; }
-
-.auth-divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin: 1.15rem 0 0.9rem;
-}
-.auth-divider::before, .auth-divider::after {
-  content: ''; flex: 1; border-bottom: 1px solid var(--border);
-}
-.auth-divider span {
-  padding: 0 10px; font-size: 0.72rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.06em;
-}
-
 .form-group {
   margin-bottom: 1rem;
   display: flex;
@@ -138,13 +126,6 @@ label { font-size: 0.82rem; font-weight: 700; color: #334155; }
 .dob-box.dob-year { flex: 1.4; width: auto; }
 .dob-sep { font-size: 1.1rem; font-weight: 800; color: #94a3b8; }
 
-.checkbox-wrap {
-  display: flex; align-items: flex-start; gap: 0.75rem;
-  margin: 1.1rem 0 1.35rem; cursor: pointer; text-align: left;
-}
-.checkbox-wrap input { width: 19px; height: 19px; accent-color: var(--accent); margin-top: 2px; flex-shrink: 0; }
-.checkbox-wrap span { font-size: 0.8rem; color: #475569; line-height: 1.45; }
-
 .btn-submit {
   width: 100%; height: 52px; background: var(--accent); color: #ffffff;
   border: none; border-radius: var(--radius-md); font-size: 0.98rem; font-weight: 800;
@@ -155,16 +136,6 @@ label { font-size: 0.82rem; font-weight: 700; color: #334155; }
 .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; }
 
 .state-panel { text-align: center; padding: 2rem 1rem; }
-.spinner {
-  width: 36px; height: 36px; border: 3px solid #e2e8f0; border-top-color: var(--accent);
-  border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 0.85rem;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-.state-text, .error-sub, .success-sub { font-size: 0.88rem; color: var(--text-muted); }
-.error-icon { font-size: 38px; margin-bottom: 0.5rem; }
-.error-title { font-size: 1.25rem; font-weight: 800; color: var(--danger); margin-bottom: 0.35rem; }
-
 .success-badge {
   width: 54px; height: 54px; background: var(--success); color: #ffffff;
   border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -172,6 +143,7 @@ label { font-size: 0.82rem; font-weight: 700; color: #334155; }
   box-shadow: 0 8px 20px rgba(22, 163, 74, 0.25);
 }
 .success-title { font-size: 1.4rem; font-weight: 800; color: #0f172a; margin-bottom: 0.35rem; }
+.success-sub { font-size: 0.88rem; color: var(--text-muted); }
 
 .cta-wrap { display: flex; flex-direction: column; gap: 10px; margin-top: 1.5rem; }
 .btn-storefront {
@@ -189,8 +161,7 @@ label { font-size: 0.82rem; font-weight: 700; color: #334155; }
 }
 .btn-review:hover { background: #fef3c7; }
 
-.hidden { display: none !important; }
-
+/* Toast Notifications */
 #toast-wrap {
   position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
   width: calc(100% - 32px); max-width: 400px; z-index: 99999;
@@ -204,7 +175,6 @@ label { font-size: 0.82rem; font-weight: 700; color: #334155; }
 }
 .toast-success { background: #ffffff; color: var(--success); border-color: #bbf7d0; }
 .toast-error { background: #ffffff; color: var(--danger); border-color: #fecdd3; }
-.toast-info { background: #ffffff; color: var(--accent); border-color: #bfdbfe; }
 
 @keyframes slideInDown {
   from { opacity: 0; transform: translateY(-20px); }
