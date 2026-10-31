@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-  <title>Store Profile | Customer Connect Desk</title>
+  <title>Memon Lock Center | Official Store & Services</title>
+  <meta name="description" content="Verified local store profile, computerized key making, sensor lock solutions, live timings, and counter desk." />
   <meta name="robots" content="index, follow" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,11 +13,103 @@
 </head>
 <body>
 
-  <main class="store-container" id="store-app">
-    <div class="loading-state" id="loading-box">
-      Checking store timings & availability…
+  <!-- 1. Mandatory Google Ads Compliant Header Navigation -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="#hero" class="brand-link">
+        <span class="brand-mark">🔑</span>
+        <span class="nav-store-name" id="nav-brand">Memon Lock Center</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#hero">Home</a>
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
     </div>
+  </header>
+
+  <!-- 2. Main Content Container -->
+  <main class="store-container" id="hero">
+    
+    <!-- Hero / Live Storefront Card -->
+    <section class="brand-card" id="store-app">
+      <div class="loading-state" id="loading-box">
+        Checking store timings & availability…
+      </div>
+    </section>
+
+    <!-- Services Section (Required for Content Depth) -->
+    <section class="section-card" id="services">
+      <h2 class="section-title">Services Offered</h2>
+      <div class="services-grid">
+        <div class="service-item">
+          <div class="service-icon">🔑</div>
+          <div class="service-meta">
+            <h3>Computerized Key Making</h3>
+            <p>High-precision laser and electronic duplication for homes, shutters, and vehicles.</p>
+          </div>
+        </div>
+        <div class="service-item">
+          <div class="service-icon">🚗</div>
+          <div class="service-meta">
+            <h3>Automotive Remote & Sensor Keys</h3>
+            <p>Chip transponder programming, sensor key replacement, and battery service.</p>
+          </div>
+        </div>
+        <div class="service-item">
+          <div class="service-icon">🛡️</div>
+          <div class="service-meta">
+            <h3>Lock Fitting & Emergency Service</h3>
+            <p>Commercial lock systems, brass cylinders, and door master-key setups.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Us Section (Required for Google Policy) -->
+    <section class="section-card" id="about">
+      <h2 class="section-title">About Our Business</h2>
+      <p class="about-text" id="about-content">
+        Memon Lock Center is a verified local retail desk and master key specialist serving the local community. We offer computerized duplicate key cutting, car key sensor programming, and advanced mechanical security hardware.
+      </p>
+    </section>
+
+    <!-- Contact & Map Section -->
+    <section class="section-card" id="contact">
+      <h2 class="section-title">Location & Contact</h2>
+      <div class="contact-details">
+        <p><strong>Store Address:</strong> <span id="contact-address">Station Road, Nadiad, Gujarat, India</span></p>
+        <p><strong>Primary Contact:</strong> <span id="contact-phone">+91 9979955386</span></p>
+        <p><strong>Operating Hours:</strong> <span id="contact-hours">Daily, Closes at 9:00 PM</span></p>
+      </div>
+    </section>
+
   </main>
+
+  <!-- 3. Mandatory Footer with Legal Policies (AdSense/Ads Requirement) -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-links">
+        <button type="button" class="policy-btn" onclick="openPolicy('privacy')">Privacy Policy</button>
+        <button type="button" class="policy-btn" onclick="openPolicy('terms')">Terms of Service</button>
+        <button type="button" class="policy-btn" onclick="openPolicy('disclaimer')">Disclaimer</button>
+      </div>
+      <p class="footer-copy">© <span id="current-year"></span> <span id="footer-brand">Memon Lock Center</span>. All rights reserved.</p>
+      <p class="footer-sub">Verified Merchant on Customer Connect Desk Network.</p>
+    </div>
+  </footer>
+
+  <!-- 4. Legal Policy Modal Dialog -->
+  <div class="modal-backdrop" id="policy-modal" role="dialog" aria-modal="true" hidden>
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modal-policy-title">Policy</h3>
+        <button type="button" class="modal-close" onclick="closePolicy()" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-policy-body"></div>
+    </div>
+  </div>
 
   <script src="shop.js"></script>
 </body>
