@@ -48,6 +48,14 @@ function applyStoreTheme(store) {
   if (store.primaryColor) {
     document.documentElement.style.setProperty('--accent', store.primaryColor);
   }
+
+  // Display Google Review banner immediately upon NFC/QR scan if reviewUrl is present
+  if (store.reviewUrl) {
+    $("direct-review-link").href = store.reviewUrl;
+    $("direct-review-box").style.display = "block";
+  } else {
+    $("direct-review-box").style.display = "none";
+  }
 }
 
 // 2. Real-time Lookup when 10 digits are entered
@@ -125,9 +133,12 @@ function updateHiddenDob() {
 }
 
 function parseAndSetDob(dobStr) {
-  // Expected format YYYY-MM-DD or similar
   try {
-    const parts = dobStr.split(/[-/]/);
+    if (!dobStr) return;
+    // Strip ISO timestamp part (e.g. "2008-04-11T18:30:00.000Z" -> "2008-04-11")
+    const cleanDate = String(dobStr).split('T')[0];
+    const parts = cleanDate.split(/[-/]/);
+    
     if (parts.length === 3) {
       if (parts[0].length === 4) {
         $("dob-yy").value = parts[0];
@@ -138,10 +149,10 @@ function parseAndSetDob(dobStr) {
         $("dob-mm").value = parts[1];
         $("dob-yy").value = parts[2];
       }
-      $("customer-dob").value = dobStr;
+      $("customer-dob").value = cleanDate;
     }
   } catch (e) {
-    console.error("DOB parse error");
+    console.error("DOB parse error", e);
   }
 }
 
