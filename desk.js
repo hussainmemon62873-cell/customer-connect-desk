@@ -3,7 +3,8 @@
 // Fast Walk-in Check-in + Direct Review Capture
 // ==========================================
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyq5CbrZ5VzrFEcBh-gfs3iy5UewHoNfJT7ZtLxhHXhhW_bs7R_a0roSqYbZehydJCn/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNt9UcAPPSRYP5M9pXhqcBy9gLlqK1-DDajTrcoC-FfCa1psTwlhmSQRygCvxgXUJb/exec";
+
 
 const $ = id => document.getElementById(id);
 
