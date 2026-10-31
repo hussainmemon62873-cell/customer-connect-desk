@@ -1,71 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" name="viewport"/>
   <meta content="#ffffff" name="theme-color"/>
   <title>Customer Hub | Verified Visits & Rewards</title>
+  <script>
+    /* Apply saved (or system) theme before first paint */
+    (function () {
+      var t;
+      try { t = localStorage.getItem("ccd_customer_theme"); } catch (e) {}
+      if (!t) t = window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", t);
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", t === "dark" ? "#000000" : "#ffffff");
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="customer.css"/>
 </head>
 <body>
 
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></symbol>
+      <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></symbol>
+      <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M3 8a2 2 0 002-2h14a2 2 0 002 2v2a2 2 0 000 4v2a2 2 0 00-2 2H5a2 2 0 00-2-2v-2a2 2 0 000-4z"/><path d="M14 6v12" stroke-dasharray="2 3"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18v.01"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="topbar">
+    <div class="wordmark"><span class="wordmark-mark"><svg class="i"><use href="#i-ticket"/></svg></span> Customer Connect Desk</div>
+    <button type="button" class="btn-theme" id="btn-theme" aria-label="Switch theme">
+      <svg class="i icon-sun"><use href="#i-sun"/></svg>
+      <svg class="i icon-moon"><use href="#i-moon"/></svg>
+    </button>
+  </header>
+
   <main class="cust-shell">
 
     <!-- Auth / Login Card -->
-    <section class="card" id="login-card">
-      <div class="card-icon">🎁</div>
-      <h1 class="card-title">Customer Rewards Hub</h1>
-      <p class="card-sub">Access your verified counter visits & loyalty status</p>
+    <section class="card" id="login-card" aria-labelledby="login-title">
+      <h1 class="card-title" id="login-title">Customer Rewards Hub</h1>
+      <p class="card-sub">Access your verified counter visits and loyalty status.</p>
 
-      <div class="form-group">
-        <label class="field-label" for="cust-phone">Your 10-Digit Mobile Number</label>
-        <input type="tel" id="cust-phone" class="text-input" maxlength="10" placeholder="e.g. 9876543210"/>
-      </div>
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label class="field-label" for="cust-phone">Your 10-digit mobile number</label>
+          <input type="tel" id="cust-phone" class="text-input" maxlength="10" placeholder="e.g. 9876543210" inputmode="numeric" autocomplete="tel-national" required />
+        </div>
 
-      <div class="form-group">
-        <label class="field-label" for="cust-pin">Security PIN (Last 4 Digits of Mobile)</label>
-        <input type="password" id="cust-pin" class="text-input" maxlength="4" placeholder="••••"/>
-      </div>
+        <div class="form-group">
+          <label class="field-label" for="cust-pin">Security PIN (last 4 digits of mobile)</label>
+          <div class="pin-wrap">
+            <input type="password" id="cust-pin" class="text-input" maxlength="4" placeholder="••••" inputmode="numeric" autocomplete="current-password" required />
+            <button type="button" class="btn-eye" id="btn-pin-eye" aria-label="Show PIN" aria-pressed="false">
+              <svg class="i i-show"><use href="#i-eye"/></svg><svg class="i i-hide"><use href="#i-eye-off"/></svg>
+            </button>
+          </div>
+        </div>
 
-      <button type="button" class="btn-primary" id="btn-cust-login">
-        <span>Verify & View Rewards</span>
-      </button>
+        <p class="form-error" id="login-error" role="alert" hidden></p>
+
+        <button type="submit" class="btn-primary" id="btn-cust-login">
+          <span>Verify &amp; view rewards</span>
+        </button>
+      </form>
+
+      <p class="trust-note"><svg class="i"><use href="#i-lock"/></svg> Your details are only used to look up your visit history.</p>
     </section>
 
-    <!-- Profile & Rewards Dashboard (Hidden until PIN verified) -->
-    <section class="card profile-card" id="profile-card">
-      <div class="profile-header">
-        <div>
-          <h2 class="profile-name" id="cust-welcome">Welcome!</h2>
-          <p class="profile-sub" id="cust-phone-display"></p>
+    <!-- Profile & Rewards Dashboard (hidden until PIN verified) -->
+    <section class="profile-card" id="profile-card" hidden aria-labelledby="cust-welcome">
+      <article class="member-pass">
+        <div class="pass-top">
+          <span class="pass-brand">Customer Connect Desk</span>
+          <span class="badge-vip" id="stat-cust-tier">Verified Member</span>
         </div>
-        <span class="badge-vip" id="stat-cust-tier">Verified Member</span>
-      </div>
+        <h2 class="profile-name" id="cust-welcome" tabindex="-1">Welcome!</h2>
+        <p class="profile-sub" id="cust-phone-display"></p>
+      </article>
 
       <div class="stats-row">
         <div class="stat-box">
-          <div class="stat-num emerald" id="stat-cust-visits">0</div>
-          <div class="stat-label">Total Visits</div>
+          <div class="stat-num" id="stat-cust-visits">0</div>
+          <div class="stat-label">Total visits</div>
         </div>
         <div class="stat-box">
-          <div class="stat-num indigo" id="stat-cust-store">--</div>
-          <div class="stat-label">First Store</div>
+          <div class="stat-num stat-store" id="stat-cust-store">--</div>
+          <div class="stat-label">First store</div>
         </div>
       </div>
 
       <div class="privilege-box">
-        <div class="privilege-title">🎁 Next Counter Visit Privilege</div>
-        <p class="privilege-text">Show this active badge screen at the shop counter for priority service and instant repeat-customer savings.</p>
+        <span class="privilege-icon"><svg class="i"><use href="#i-shield"/></svg></span>
+        <div>
+          <div class="privilege-title">Next counter visit privilege</div>
+          <p class="privilege-text">Show this screen at the shop counter for priority service and instant repeat-customer savings.</p>
+        </div>
       </div>
 
       <button type="button" class="btn-dark" id="btn-cust-logout">
-        <span>🔒 Secure Logout</span>
+        <svg class="i"><use href="#i-lock"/></svg><span>Secure logout</span>
       </button>
     </section>
 
   </main>
 
-  <div class="toast-box" id="toast-box"></div>
+  <div class="toast-box" id="toast-box" role="status" aria-live="polite"></div>
   <script src="customer.js"></script>
 </body>
 </html>
