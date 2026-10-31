@@ -12,16 +12,18 @@ const currentShopId = urlParams.get("shop") || "memonlock";
 
 let cachedStoreData = null;
 
-// 1. On Page Load: Check if browser remembers last used phone number (Cross-Shop Memory)
+// 1. On Page Load: Check browser memory & fetch store branding
 window.addEventListener("DOMContentLoaded", async () => {
   await fetchStoreThemeAndConfig();
 
   const savedPhone = localStorage.getItem("ccd_last_phone");
   if (savedPhone && savedPhone.length === 10) {
     $("customer-phone").value = savedPhone;
-    // Automatically trigger lookup to see if data exists
     checkCustomerLookup(savedPhone);
   }
+
+  // Setup segmented DOB auto-jumping
+  setupDobInputs();
 });
 
 async function fetchStoreThemeAndConfig() {
@@ -42,8 +44,10 @@ async function fetchStoreThemeAndConfig() {
 
 function applyStoreTheme(store) {
   $("shop-title").textContent = store.shopName;
-  $("shop-tagline").textContent = store.tagline;
-  if (store.primaryColor) document.documentElement.style.setProperty('--primary', store.primaryColor);
+  $("shop-tagline").textContent = store.tagline || "Welcome! Quick check-in counter.";
+  if (store.primaryColor) {
+    document.documentElement.style.setProperty('--accent', store.primaryColor);
+  }
 }
 
 // 2. Real-time Lookup when 10 digits are entered
@@ -51,6 +55,8 @@ $("customer-phone").addEventListener("input", (e) => {
   const phone = e.target.value.replace(/\D/g, '');
   if (phone.length === 10) {
     checkCustomerLookup(phone);
+  } else {
+    $("system-notice").style.display = "none";
   }
 });
 
@@ -64,23 +70,23 @@ async function checkCustomerLookup(phone) {
 
     if (data.status === "success") {
       if (data.exists) {
-        // Customer exists in system (either at this shop or another shop)
         $("system-notice").style.display = "block";
-        $("system-notice").textContent = "Your data exists in our system";
+        $("system-notice").textContent = "Welcome back! Your data exists in our system.";
         
-        // Prefill hidden/visible fields
         $("customer-name").value = data.customer.name || "";
         $("customer-email").value = data.customer.email || "";
-        $("customer-dob").value = data.customer.dob || "";
-
-        // Optional: Hide extra fields if you want 1-tap checkin for returning users
-        // $("extra-fields-container").style.display = "none";
+        
+        // Populate segmented DOB if present
+        if (data.customer.dob) {
+          parseAndSetDob(data.customer.dob);
+        }
       } else {
         $("system-notice").style.display = "none";
-        // New customer: clear fields so they can enter info
         $("customer-name").value = "";
         $("customer-email").value = "";
-        $("customer-dob").value = "";
+        $("dob-dd").value = "";
+        $("dob-mm").value = "";
+        $("dob-yy").value = "";
       }
     }
   } catch (err) {
@@ -88,20 +94,71 @@ async function checkCustomerLookup(phone) {
   }
 }
 
-// 3. Handle Check-in Submission
+// 3. Segmented DOB logic & auto-tabbing
+function setupDobInputs() {
+  const dd = $("dob-dd");
+  const mm = $("dob-mm");
+  const yy = $("dob-yy");
+
+  dd.addEventListener("input", () => {
+    if (dd.value.length === 2) mm.focus();
+    updateHiddenDob();
+  });
+  mm.addEventListener("input", () => {
+    if (mm.value.length === 2) yy.focus();
+    updateHiddenDob();
+  });
+  yy.addEventListener("input", () => {
+    updateHiddenDob();
+  });
+}
+
+function updateHiddenDob() {
+  const d = $("dob-dd").value.padStart(2, '0');
+  const m = $("dob-mm").value.padStart(2, '0');
+  const y = $("dob-yy").value;
+  if (d.length === 2 && m.length === 2 && y.length === 4) {
+    $("customer-dob").value = `${y}-${m}-${d}`;
+  } else {
+    $("customer-dob").value = "";
+  }
+}
+
+function parseAndSetDob(dobStr) {
+  // Expected format YYYY-MM-DD or similar
+  try {
+    const parts = dobStr.split(/[-/]/);
+    if (parts.length === 3) {
+      if (parts[0].length === 4) {
+        $("dob-yy").value = parts[0];
+        $("dob-mm").value = parts[1];
+        $("dob-dd").value = parts[2];
+      } else {
+        $("dob-dd").value = parts[0];
+        $("dob-mm").value = parts[1];
+        $("dob-yy").value = parts[2];
+      }
+      $("customer-dob").value = dobStr;
+    }
+  } catch (e) {
+    console.error("DOB parse error");
+  }
+}
+
+// 4. Handle Check-in Submission
 $("checkin-form").addEventListener("submit", async (e) => {
   e.preventDefault();
   const phone = $("customer-phone").value.replace(/\D/g, '');
   const name = $("customer-name").value.trim();
   const email = $("customer-email").value.trim();
+  updateHiddenDob();
   const dob = $("customer-dob").value.trim();
 
   if (phone.length !== 10) {
-    alert("Please enter a valid 10-digit mobile number.");
+    showToast("Please enter a valid 10-digit mobile number.", "error");
     return;
   }
 
-  // Save phone to browser localStorage for cross-shop memory
   localStorage.setItem("ccd_last_phone", phone);
 
   const payload = {
@@ -114,6 +171,10 @@ $("checkin-form").addEventListener("submit", async (e) => {
     dob: dob
   };
 
+  const submitBtn = $("submit-btn");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Processing...";
+
   try {
     const res = await fetch(SCRIPT_URL, {
       method: "POST",
@@ -124,10 +185,14 @@ $("checkin-form").addEventListener("submit", async (e) => {
     if (data.status === "success") {
       showSuccessScreen(data);
     } else {
-      alert(data.message);
+      showToast(data.message || "Check-in failed", "error");
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Complete Check-In";
     }
   } catch (err) {
-    alert("Network error during check-in.");
+    showToast("Network error during check-in.", "error");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Complete Check-In";
   }
 });
 
@@ -137,7 +202,6 @@ function showSuccessScreen(data) {
   
   $("visit-counter").textContent = `Total Visits: ${data.totalVisits}`;
 
-  // Display Google Review Button if review link exists for this store
   if (data.store && data.store.reviewUrl) {
     $("review-btn-wrap").innerHTML = `
       <a href="${data.store.reviewUrl}" target="_blank" class="btn-review">
@@ -145,4 +209,13 @@ function showSuccessScreen(data) {
       </a>
     `;
   }
+}
+
+function showToast(message, type = "success") {
+  const wrap = $("toast-wrap");
+  const toast = document.createElement("div");
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  wrap.appendChild(toast);
+  setTimeout(() => toast.remove(), 3500);
 }
