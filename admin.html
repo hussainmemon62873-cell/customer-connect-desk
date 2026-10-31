@@ -4,9 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
   <title>B2B Super-Admin Console | Customer Connect Desk</title>
-  
   <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="theme-color" content="#000000" />
+  <script>
+    (function () {
+      var t = "dark";
+      try { t = localStorage.getItem("ccd_theme") || "dark"; } catch (e) {}
+      document.documentElement.setAttribute("data-theme", t);
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.setAttribute("content", t === "dark" ? "#000000" : "#ffffff");
+    })();
+  </script>
 
   <!-- Google Identity Services & QRCode Library -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -15,26 +23,63 @@
   <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="admin.css" />
 </head>
 <body>
 
+  <!-- Icon sprite -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-overview" viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6V11h-6zM14 4h6v4h-6zM4 17h6v3H4z"/></symbol>
+      <symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9l1.5-5h15L21 9M3 9a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0M5 12v8h14v-8M10 20v-4h4v4"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM20 14v6h-6"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 00-14-4L4 9M4 4v5h5M4 13a8 8 0 0014 4l2-2M20 20v-5h-5"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="3"/></symbol>
+      <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
+      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18v.01"/></symbol>
+      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h8"/></symbol>
+      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+      <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></symbol>
+      <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
+      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0114 0"/></symbol>
+      <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+      <symbol id="i-arrow-l" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+    </defs>
+  </svg>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
   <!-- 1. Google OAuth & Master Setup Gate Overlay -->
   <div id="auth-gate-overlay" class="auth-gate-shell">
+    <div class="auth-aside" aria-hidden="true">
+      <div class="auth-aside-brand"><svg class="i"><use href="#i-store"/></svg> CCD CORE</div>
+      <p class="auth-aside-copy">Register stores, approve merchants and issue NFC and QR stands from one console.</p>
+    </div>
     <div class="auth-gate-card">
-      <div class="auth-brand-logo">🛡️</div>
-      <h2>Enterprise Console</h2>
-      <p class="auth-sub">Super-Admin Identity Verification</p>
+      <div class="auth-brand-logo"><svg class="i"><use href="#i-shield"/></svg></div>
+      <h2>Sign in to the console</h2>
+      <p class="auth-sub">Super-admin identity verification</p>
 
-      <div class="form-group" style="text-align: left; margin: 1.25rem 0 0.5rem;">
-        <label for="admin-pass">Master Setup Password</label>
+      <div class="form-group">
+        <label for="admin-pass">Master setup password</label>
         <div class="password-wrap">
-          <input type="password" id="admin-pass" placeholder="Enter setup password (1st time only)" />
-          <button type="button" class="btn-eye" id="btn-toggle-eye" aria-label="Toggle password view">👁️</button>
+          <input type="password" id="admin-pass" placeholder="Enter setup password (1st time only)" autocomplete="current-password" />
+          <button type="button" class="btn-eye" id="btn-toggle-eye" aria-label="Show password" aria-pressed="false">
+            <svg class="i i-show"><use href="#i-eye"/></svg>
+            <svg class="i i-hide"><use href="#i-eye-off"/></svg>
+          </button>
         </div>
-        <span class="field-hint">Required on first login to link your Google Identity permanently.</span>
+        <span class="field-hint">Required on first login to link your Google identity permanently.</span>
       </div>
 
       <div class="g-signin-wrap">
@@ -45,269 +90,274 @@
         </div>
         <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="rectangular"></div>
       </div>
+      <div class="auth-status" id="auth-status" role="status" aria-live="polite" hidden><span class="spinner"></span> Verifying your identity…</div>
     </div>
   </div>
 
   <!-- 2. Main B2B Console Application -->
   <div class="app-layout" id="app-layout">
-    
-    <!-- Collapsible Sidebar -->
+
+    <!-- Sidebar (desktop) / bottom tab bar (mobile) -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <div class="brand-badge">🏪 CCD CORE</div>
+        <div class="brand-badge"><span class="brand-mark"><svg class="i"><use href="#i-store"/></svg></span> CCD CORE</div>
         <span class="version-tag">v2.6 PRO</span>
       </div>
 
-      <nav class="sidebar-nav">
-        <button class="nav-item active" data-tab="tab-overview">
-          <span class="nav-icon">📊</span>
-          <span>Overview</span>
+      <nav class="sidebar-nav" aria-label="Main">
+        <button class="nav-item active" data-tab="tab-overview" title="Overview">
+          <span class="nav-icon"><svg class="i"><use href="#i-overview"/></svg></span>
+          <span class="nav-label">Overview</span>
         </button>
-        <button class="nav-item" data-tab="tab-stores">
-          <span class="nav-icon">🏢</span>
-          <span>Stores Directory</span>
+        <button class="nav-item" data-tab="tab-stores" title="Stores Directory">
+          <span class="nav-icon"><svg class="i"><use href="#i-store"/></svg></span>
+          <span class="nav-label">Stores</span>
           <span class="nav-count-badge" id="badge-total-stores">0</span>
         </button>
-        <button class="nav-item" data-tab="tab-wizard">
-          <span class="nav-icon">➕</span>
-          <span>Register Store</span>
+        <button class="nav-item" data-tab="tab-wizard" title="Register Store">
+          <span class="nav-icon"><svg class="i"><use href="#i-plus"/></svg></span>
+          <span class="nav-label">Register</span>
         </button>
-        <button class="nav-item" data-tab="tab-qr">
-          <span class="nav-icon">📱</span>
-          <span>NFC & Stand Studio</span>
+        <button class="nav-item" data-tab="tab-qr" title="NFC & Stand Studio">
+          <span class="nav-icon"><svg class="i"><use href="#i-qr"/></svg></span>
+          <span class="nav-label">Studio</span>
         </button>
       </nav>
-
-      <div class="sidebar-footer">
-        <div class="admin-pill">
-          <div class="admin-avatar">👤</div>
-          <div class="admin-info">
-            <span class="admin-name" id="user-name">Super Admin</span>
-            <span class="admin-email" id="user-email">admin@ccd.internal</span>
-          </div>
-        </div>
-        <button class="btn-logout" id="btn-logout" title="Exit Console">🚪 Logout</button>
-      </div>
     </aside>
 
     <!-- Main Workspace Area -->
-    <main class="main-content">
-      
-      <!-- Top Action Bar -->
+    <div class="main-content">
+
       <header class="topbar">
+        <div class="topbar-brand"><span class="brand-mark"><svg class="i"><use href="#i-store"/></svg></span> CCD CORE</div>
+
         <div class="topbar-search">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="global-store-search" placeholder="Search by Store Name, Slug, Phone, or Owner..." />
+          <svg class="i search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <input type="search" id="global-store-search" placeholder="Search store, slug, phone or owner" aria-label="Search stores" autocomplete="off" />
         </div>
 
         <div class="topbar-actions">
-          <button class="btn-theme-toggle" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
-            <span id="theme-icon">☀️ Light</span>
+          <button class="btn-theme-toggle" id="theme-toggle-btn" title="Toggle light/dark theme" aria-label="Toggle light or dark theme">
+            <svg class="i icon-sun"><use href="#i-sun"/></svg>
+            <svg class="i icon-moon"><use href="#i-moon"/></svg>
+            <span id="theme-icon">Light</span>
           </button>
-          <button class="btn-quick-add" id="btn-top-add">+ New Store</button>
+          <button class="btn-quick-add" id="btn-top-add"><svg class="i"><use href="#i-plus"/></svg><span>New store</span></button>
+
+          <div class="account">
+            <button class="btn-account" id="btn-account" aria-haspopup="true" aria-expanded="false" aria-label="Account menu">
+              <svg class="i"><use href="#i-user"/></svg>
+            </button>
+            <div class="account-menu" id="account-menu" hidden>
+              <div class="admin-pill">
+                <div class="admin-info">
+                  <span class="admin-name" id="user-name">Super Admin</span>
+                  <span class="admin-email" id="user-email">admin@ccd.internal</span>
+                </div>
+              </div>
+              <button class="btn-logout" id="btn-logout" title="Exit console"><svg class="i"><use href="#i-logout"/></svg> Log out</button>
+            </div>
+          </div>
         </div>
       </header>
+
+      <main id="main">
 
       <!-- TAB 1: OVERVIEW & ANALYTICS -->
       <section class="tab-pane active" id="tab-overview">
         <div class="page-title-row">
           <div>
-            <h1>Platform Performance</h1>
-            <p class="subtitle">System health, active stands, and database telemetry.</p>
+            <h1>Platform performance</h1>
+            <p class="subtitle">Store status and database connection, from your Master-Sheet.</p>
           </div>
-          <button class="btn-refresh" id="btn-refresh-overview">🔄 Refresh Data</button>
+          <button class="btn-refresh" id="btn-refresh-overview"><svg class="i"><use href="#i-refresh"/></svg> Refresh data</button>
         </div>
 
         <div class="stats-metric-grid">
           <div class="metric-card">
-            <div class="metric-top">
-              <span class="metric-title">TOTAL REGISTERED</span>
-              <span class="metric-pill">Active</span>
-            </div>
+            <div class="metric-top"><span class="metric-title">Active stores</span><span class="metric-pill">Live</span></div>
             <div class="metric-val emerald" id="stat-active-stores">0</div>
             <div class="metric-footer">Live merchant endpoints</div>
           </div>
-
           <div class="metric-card">
-            <div class="metric-top">
-              <span class="metric-title">PENDING APPROVAL</span>
-              <span class="metric-pill warning">Review</span>
-            </div>
+            <div class="metric-top"><span class="metric-title">Pending approval</span><span class="metric-pill warning">Review</span></div>
             <div class="metric-val amber" id="stat-pending-stores">0</div>
             <div class="metric-footer">Self-registered applications</div>
           </div>
-
           <div class="metric-card">
-            <div class="metric-top">
-              <span class="metric-title">DATABASE SYNC</span>
-              <span class="metric-pill info">Google Sheets</span>
-            </div>
-            <div class="metric-val blue">100%</div>
-            <div class="metric-footer">Master-Sheet connection live</div>
+            <div class="metric-top"><span class="metric-title">Suspended</span><span class="metric-pill danger">Paused</span></div>
+            <div class="metric-val rose" id="stat-suspended-stores">0</div>
+            <div class="metric-footer">Stores switched off by an admin</div>
           </div>
+          <div class="metric-card">
+            <div class="metric-top"><span class="metric-title">Database sync</span><span class="metric-pill info">Google Sheets</span></div>
+            <div class="metric-val blue sync-val" id="stat-sync-state">Waiting</div>
+            <div class="metric-footer" id="stat-sync-time">No sync yet this session</div>
+          </div>
+        </div>
+
+        <div class="card-surface breakdown">
+          <div class="breakdown-head">
+            <h2>Store status breakdown</h2>
+            <span class="subtitle" id="breakdown-total">0 stores</span>
+          </div>
+          <div class="status-bar" id="status-bar" role="img" aria-label="Share of stores by status">
+            <span class="seg active" id="seg-active"></span><span class="seg pending" id="seg-pending"></span><span class="seg suspended" id="seg-suspended"></span>
+          </div>
+          <ul class="legend">
+            <li><i class="dot active"></i>Active</li>
+            <li><i class="dot pending"></i>Pending</li>
+            <li><i class="dot suspended"></i>Suspended</li>
+          </ul>
         </div>
       </section>
 
-      <!-- TAB 2: STORES DIRECTORY (Table with Filter & Actions) -->
+      <!-- TAB 2: STORES DIRECTORY -->
       <section class="tab-pane" id="tab-stores">
         <div class="page-title-row">
           <div>
-            <h1>Stores Directory</h1>
-            <p class="subtitle">Manage store registrations, approvals, status controls, and data deletion.</p>
+            <h1>Stores directory</h1>
+            <p class="subtitle">Approve, suspend, generate QR codes for, or delete store registrations.</p>
           </div>
+        </div>
+
+        <div class="filter-bar">
+          <div class="filter-chips" role="group" aria-label="Filter by status">
+            <button type="button" class="chip active" data-filter="ALL">All</button>
+            <button type="button" class="chip" data-filter="ACTIVE">Active</button>
+            <button type="button" class="chip" data-filter="PENDING">Pending</button>
+            <button type="button" class="chip" data-filter="SUSPENDED">Suspended</button>
+          </div>
+          <span class="result-count" id="store-result-count" aria-live="polite"></span>
         </div>
 
         <div class="table-container card-surface">
           <table class="b2b-table">
             <thead>
               <tr>
-                <th>STORE & SLUG</th>
-                <th>OWNER / CONTACT</th>
-                <th>TAGLINE</th>
-                <th>STATUS</th>
-                <th>MANAGEMENT ACTIONS</th>
+                <th scope="col">Store</th>
+                <th scope="col">Owner / contact</th>
+                <th scope="col">Tagline</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody id="store-table-body">
-              <tr>
-                <td colspan="5" class="table-loading">Loading store registry...</td>
-              </tr>
+              <tr><td colspan="5" class="table-loading"><span class="spinner"></span> Loading store registry…</td></tr>
             </tbody>
           </table>
         </div>
       </section>
 
-      <!-- TAB 3: STEPPER REGISTRATION WIZARD (Only 1 Step Visible at a Time) -->
+      <!-- TAB 3: STEPPER REGISTRATION WIZARD -->
       <section class="tab-pane" id="tab-wizard">
         <div class="page-title-row">
           <div>
-            <h1 id="wizard-heading">Register New Store</h1>
-            <p class="subtitle">Complete the fields below. Unique email and mobile guards are enforced.</p>
+            <h1 id="wizard-heading">Register new store</h1>
+            <p class="subtitle">Email and mobile number must be unique across all stores.</p>
           </div>
         </div>
 
         <div class="wizard-card card-surface">
-          <!-- Step Indicator Bar -->
-          <div class="stepper-bar">
-            <div class="step-item active" data-step="1">
-              <span class="step-num">1</span>
-              <span class="step-lbl">Identity</span>
-            </div>
+          <div class="stepper-bar" aria-label="Registration progress">
+            <div class="step-item active current" data-step="1"><span class="step-num">1</span><span class="step-lbl">Identity</span></div>
             <div class="step-line"></div>
-            <div class="step-item" data-step="2">
-              <span class="step-num">2</span>
-              <span class="step-lbl">Contact & Owner</span>
-            </div>
+            <div class="step-item" data-step="2"><span class="step-num">2</span><span class="step-lbl">Contact &amp; Owner</span></div>
             <div class="step-line"></div>
-            <div class="step-item" data-step="3">
-              <span class="step-num">3</span>
-              <span class="step-lbl">Google Links & Theme</span>
-            </div>
+            <div class="step-item" data-step="3"><span class="step-num">3</span><span class="step-lbl">Google Links &amp; Theme</span></div>
           </div>
 
           <form id="wizard-form" novalidate>
             <!-- SECTION 1: IDENTITY -->
             <div class="wizard-section active" id="wizard-sec-1">
               <div class="form-group">
-                <label for="shop-id">Store Slug / Identifier * (URL key)</label>
+                <label for="shop-id">Store slug (URL key) *</label>
                 <div class="slug-input-wrapper">
                   <span class="slug-prefix">desk.html?shop=</span>
-                  <input type="text" id="shop-id" class="text-input" placeholder="e.g. memonlock" required />
+                  <input type="text" id="shop-id" class="text-input" placeholder="memonlock" required autocapitalize="none" autocorrect="off" spellcheck="false" />
                 </div>
-                <span class="field-hint">Alphanumeric only. Min 3 chars. Must be unique across database.</span>
+                <span class="field-hint">Letters and numbers only, at least 3. Must be unique in the database.</span>
               </div>
-
               <div class="form-group">
-                <label for="shop-name">Store Display Name *</label>
-                <input type="text" id="shop-name" class="text-input" placeholder="e.g. Memon Lock Center" required />
+                <label for="shop-name">Store display name *</label>
+                <input type="text" id="shop-name" class="text-input" placeholder="e.g. Memon Lock Center" required autocomplete="off" />
               </div>
-
               <div class="form-group">
-                <label for="shop-tagline">Business Tagline / Specialty *</label>
-                <input type="text" id="shop-tagline" class="text-input" placeholder="e.g. Computerized Key Making & Sensor Locks" required />
+                <label for="shop-tagline">Business tagline / specialty *</label>
+                <input type="text" id="shop-tagline" class="text-input" placeholder="e.g. Computerized key making &amp; sensor locks" required autocomplete="off" />
               </div>
-
               <div class="wizard-nav-btns">
                 <div></div>
-                <button type="button" class="btn-step-next" onclick="goToStep(2)">Proceed to Step 2 →</button>
+                <button type="button" class="btn-step-next" onclick="goToStep(2)">Continue <svg class="i"><use href="#i-arrow-r"/></svg></button>
               </div>
             </div>
 
             <!-- SECTION 2: CONTACT & OWNER -->
             <div class="wizard-section" id="wizard-sec-2">
               <div class="form-group">
-                <label for="owner-name">Owner Full Name *</label>
-                <input type="text" id="owner-name" class="text-input" placeholder="e.g. Hussain Memon" required />
+                <label for="owner-name">Owner full name *</label>
+                <input type="text" id="owner-name" class="text-input" placeholder="e.g. Hussain Memon" required autocomplete="off" />
               </div>
-
               <div class="form-group">
-                <label for="owner-email">Owner Email Address * (Duplication Protected)</label>
-                <input type="email" id="owner-email" class="text-input" placeholder="merchant@gmail.com" required />
+                <label for="owner-email">Owner email address *</label>
+                <input type="email" id="owner-email" class="text-input" placeholder="merchant@gmail.com" required inputmode="email" autocapitalize="none" autocomplete="off" />
+                <span class="field-hint">Duplicate emails are rejected.</span>
               </div>
-
               <div class="form-group">
-                <label for="shop-mobile">Owner WhatsApp / Mobile * (Duplication Protected)</label>
-                <input type="tel" id="shop-mobile" class="text-input" placeholder="10-digit mobile number" maxlength="10" required />
-                <span class="field-hint">Used for merchant dashboard security PIN (last 4 digits).</span>
+                <label for="shop-mobile">Owner WhatsApp / mobile *</label>
+                <input type="tel" id="shop-mobile" class="text-input" placeholder="10-digit mobile number" maxlength="10" required inputmode="numeric" autocomplete="off" />
+                <span class="field-hint">Duplicates are rejected. The last 4 digits are the merchant dashboard PIN.</span>
               </div>
-
               <div class="wizard-nav-btns">
-                <button type="button" class="btn-step-prev" onclick="goToStep(1)">← Back to Step 1</button>
-                <button type="button" class="btn-step-next" onclick="goToStep(3)">Proceed to Step 3 →</button>
+                <button type="button" class="btn-step-prev" onclick="goToStep(1)"><svg class="i"><use href="#i-arrow-l"/></svg> Back</button>
+                <button type="button" class="btn-step-next" onclick="goToStep(3)">Continue <svg class="i"><use href="#i-arrow-r"/></svg></button>
               </div>
             </div>
 
             <!-- SECTION 3: LINKS & BRAND THEME -->
             <div class="wizard-section" id="wizard-sec-3">
               <div class="form-group">
-                <label for="shop-review-url">Google 5-Star Review Link</label>
-                <input type="url" id="shop-review-url" class="text-input" placeholder="https://g.page/r/your-review-id" />
+                <label for="shop-review-url">Google 5-star review link</label>
+                <input type="url" id="shop-review-url" class="text-input" placeholder="https://g.page/r/your-review-id" inputmode="url" autocapitalize="none" />
               </div>
-
               <div class="form-group">
-                <label for="shop-map-url">Google Maps Embed URL</label>
-                <input type="url" id="shop-map-url" class="text-input" placeholder="https://www.google.com/maps/embed?pb=..." />
+                <label for="shop-map-url">Google Maps embed URL</label>
+                <input type="url" id="shop-map-url" class="text-input" placeholder="https://www.google.com/maps/embed?pb=..." inputmode="url" autocapitalize="none" />
+              </div>
+              <div class="form-group">
+                <label for="shop-closing-time">Closing time</label>
+                <input type="text" id="shop-closing-time" class="text-input" placeholder="e.g. 9:00 PM" value="9:00 PM" autocomplete="off" />
+                <span class="field-hint">Default is 9:00 PM if left blank.</span>
               </div>
 
-              <label style="margin-top: 1rem; display: block; font-weight: 700;">Theme Colors</label>
-              <div class="color-grid">
-                <div class="color-box">
-                  <span>Primary</span>
-                  <input type="color" id="col-primary" value="#2563eb" />
+              <fieldset class="theme-fieldset">
+                <legend>Theme colors</legend>
+                <div class="color-grid">
+                  <label class="color-box"><span>Primary</span><input type="color" id="col-primary" value="#2563eb" /></label>
+                  <label class="color-box"><span>Background</span><input type="color" id="col-bg" value="#0f172a" /></label>
+                  <label class="color-box"><span>Card base</span><input type="color" id="col-card" value="#ffffff" /></label>
+                  <label class="color-box"><span>Text color</span><input type="color" id="col-text" value="#0f172a" /></label>
                 </div>
-                <div class="color-box">
-                  <span>Background</span>
-                  <input type="color" id="col-bg" value="#0f172a" />
-                </div>
-                <div class="color-box">
-                  <span>Card Base</span>
-                  <input type="color" id="col-card" value="#ffffff" />
-                </div>
-                <div class="color-box">
-                  <span>Text Color</span>
-                  <input type="color" id="col-text" value="#0f172a" />
-                </div>
-              </div>
+              </fieldset>
 
               <div class="wizard-nav-btns">
-                <button type="button" class="btn-step-prev" onclick="goToStep(2)">← Back to Step 2</button>
-                <button type="submit" class="btn-save" id="btn-save-store">
-                  <span>💾 Save to Master-Sheet & Provision Tab</span>
-                </button>
+                <button type="button" class="btn-step-prev" onclick="goToStep(2)"><svg class="i"><use href="#i-arrow-l"/></svg> Back</button>
+                <button type="submit" class="btn-save" id="btn-save-store"><span>Save &amp; provision store</span></button>
               </div>
             </div>
           </form>
         </div>
       </section>
 
-      <!-- TAB 4: NFC & STAND STUDIO (QR Code Generator) -->
+      <!-- TAB 4: NFC & STAND STUDIO -->
       <section class="tab-pane" id="tab-qr">
         <div class="page-title-row">
           <div>
-            <h1>NFC & Stand Studio</h1>
-            <p class="subtitle">Generate in-store counter stand QR codes and Google Business listings.</p>
+            <h1>NFC &amp; Stand Studio</h1>
+            <p class="subtitle">Generate counter stand and storefront QR codes for a store.</p>
           </div>
           <div class="store-select-wrap">
+            <label for="qr-store-selector" class="sr-only">Store</label>
             <select id="qr-store-selector" class="dropdown-select">
               <option value="">-- Choose Store --</option>
             </select>
@@ -315,54 +365,53 @@
         </div>
 
         <div class="qr-studio-grid">
-          <!-- Stand QR -->
           <div class="qr-panel card-surface">
             <div class="qr-panel-head">
-              <h3>In-Store Counter Stand (NFC & QR)</h3>
+              <h3>In-store counter stand (NFC &amp; QR)</h3>
               <p>Scan target for walk-in customer check-ins</p>
             </div>
             <div id="box-stand-qr" class="qr-canvas-box"></div>
             <div class="url-chip" id="chip-stand-url">Select a store to view URL</div>
             <div class="qr-actions">
-              <button class="btn-small" onclick="copyStudioLink('stand')">📋 Copy URL</button>
-              <button class="btn-small" onclick="downloadStudioQr('stand')">💾 Download PNG</button>
+              <button class="btn-small" id="btn-copy-stand" onclick="copyStudioLink('stand')" disabled><svg class="i"><use href="#i-copy"/></svg> Copy URL</button>
+              <button class="btn-small" id="btn-dl-stand" onclick="downloadStudioQr('stand')" disabled><svg class="i"><use href="#i-download"/></svg> Download PNG</button>
             </div>
           </div>
 
-          <!-- Public Storefront QR -->
           <div class="qr-panel card-surface">
             <div class="qr-panel-head">
-              <h3>Public Storefront / Google Maps QR</h3>
-              <p>Direct link for business cards, ads, and flyers</p>
+              <h3>Public storefront / Google Maps QR</h3>
+              <p>Direct link for business cards, ads and flyers</p>
             </div>
             <div id="box-public-qr" class="qr-canvas-box"></div>
             <div class="url-chip" id="chip-public-url">Select a store to view URL</div>
             <div class="qr-actions">
-              <button class="btn-small" onclick="copyStudioLink('public')">📋 Copy URL</button>
-              <button class="btn-small" onclick="downloadStudioQr('public')">💾 Download PNG</button>
+              <button class="btn-small" id="btn-copy-public" onclick="copyStudioLink('public')" disabled><svg class="i"><use href="#i-copy"/></svg> Copy URL</button>
+              <button class="btn-small" id="btn-dl-public" onclick="downloadStudioQr('public')" disabled><svg class="i"><use href="#i-download"/></svg> Download PNG</button>
             </div>
           </div>
         </div>
       </section>
 
-    </main>
+      </main>
+    </div>
   </div>
 
-  <!-- Custom Confirmation Modal (No Browser Alerts) -->
+  <!-- Confirmation Modal -->
   <div class="modal-backdrop" id="confirm-modal">
-    <div class="modal-card">
-      <div class="modal-icon" id="modal-icon">⚠️</div>
-      <h3 id="modal-title">Confirm Action</h3>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
+      <div class="modal-icon" id="modal-icon"><svg class="i"><use href="#i-alert"/></svg></div>
+      <h3 id="modal-title">Confirm action</h3>
       <p id="modal-desc">Are you sure you want to proceed?</p>
       <div class="modal-btns">
         <button class="btn-modal-cancel" id="btn-modal-cancel">Cancel</button>
-        <button class="btn-modal-confirm" id="btn-modal-confirm">Confirm</button>
+        <button class="btn-modal-confirm" id="btn-modal-confirm">Delete store</button>
       </div>
     </div>
   </div>
 
-  <!-- Database Sync Success Toast -->
-  <div class="db-toast" id="db-toast"></div>
+  <!-- Database Sync Toast -->
+  <div class="db-toast" id="db-toast" role="status" aria-live="polite"></div>
 
   <script src="admin.js"></script>
 </body>
