@@ -1,120 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-  <title id="desk-page-title">Counter Check-In Desk</title>
-  
-  <meta name="theme-color" content="#ffffff" />
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="desk.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSGS - Customer Check-In Desk</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="desk.css">
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-  <div id="toast-wrap"></div>
+  <!-- Horizontal Clean Navbar -->
+  <header class="w-full bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between sticky top-0 z-50 shadow-md">
+    <div class="flex items-center space-x-3">
+      <div id="navLogoBox" class="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-lg bg-blue-600 text-white shadow">M</div>
+      <div>
+        <h1 id="navShopName" class="font-bold text-sm leading-tight text-white">MSGS Portal</h1>
+        <p id="navClosingTime" class="text-xs text-emerald-400 font-medium hidden">Open • Closes</p>
+      </div>
+    </div>
+    <!-- Horizontal Quick Nav Actions -->
+    <div class="flex items-center space-x-2">
+      <a href="admin.html" class="px-3 py-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-md transition">Admin</a>
+      <button onclick="location.reload()" class="px-3 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-md transition shadow">Reset</button>
+    </div>
+  </header>
 
-  <main class="desk-container">
-    <div class="card">
-
-      <!-- Loading State -->
-      <div id="loading-panel" class="state-panel">
-        <div class="spinner"></div>
-        <p class="state-text">Connecting to counter desk...</p>
+  <!-- Main Container -->
+  <main class="flex-1 flex flex-col items-center justify-center p-4 max-w-md mx-auto w-full">
+    
+    <!-- Store Header Card (Conditional Display) -->
+    <div id="storeCard" class="w-full bg-white text-slate-900 rounded-2xl shadow-xl p-6 mb-4 transition-all">
+      <div class="flex items-center space-x-4 mb-4">
+        <div id="storeAvatar" class="w-14 h-14 rounded-xl bg-blue-600 text-white flex items-center justify-center text-2xl font-black shadow-inner">⚡</div>
+        <div>
+          <h2 id="storeTitle" class="text-xl font-black text-slate-900">Loading Store...</h2>
+          <p id="storeTagline" class="text-xs text-slate-500 font-medium hidden"></p>
+        </div>
       </div>
 
-      <!-- Error State -->
-      <div id="error-panel" class="state-panel hidden">
-        <div class="error-icon">⚠️</div>
-        <h2 class="error-title">Desk Unavailable</h2>
-        <p class="error-sub" id="error-msg">This counter desk is inactive or does not exist.</p>
-      </div>
-
-      <!-- Main Desk View -->
-      <div id="desk-content" class="hidden">
-        <header class="shop-header">
-          <span class="badge" id="desk-badge">Counter Desk</span>
-          <h1 id="shop-title">Memon Lock Center</h1>
-          <p id="shop-sub">Quick 1-Tap Counter Check-In & Rewards</p>
-        </header>
-
-        <!-- Google 1-Tap Authentication -->
-        <div id="auth-section">
-          <div class="g-btn-wrap">
-            <div id="g_id_onload"
-                 data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
-                 data-callback="handleCustomerAuth"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="rectangular" data-width="320"></div>
+      <!-- Step 1: Phone Number Input Screen -->
+      <div id="stepPhone" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1 uppercase tracking-wider">Enter 10-Digit Mobile Number</label>
+          <div class="flex items-center bg-slate-100 rounded-xl border border-slate-300 overflow-hidden focus-within:border-blue-600">
+            <span class="px-3 text-slate-500 font-bold text-sm bg-slate-200 py-3">+91</span>
+            <input type="tel" id="inputPhone" maxlength="10" placeholder="9876543210" class="w-full px-3 py-3 bg-transparent text-slate-900 font-bold tracking-widest outline-none">
           </div>
-          <p class="auth-caption">Tap above to auto-fill your profile instantly</p>
-          <div class="auth-divider"><span>OR ENTER DETAILS</span></div>
+        </div>
+        <button onclick="lookupCustomer()" class="w-full py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition active:scale-95">
+          Continue
+        </button>
+      </div>
+
+      <!-- Step 2: Details Form Screen -->
+      <div id="stepDetails" class="space-y-3 hidden">
+        <div class="p-2.5 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg mb-2">
+          New visitor detected! Please complete your profile.
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
+          <input type="text" id="inputName" placeholder="Enter Full Name" class="w-full px-3 py-2.5 bg-slate-100 rounded-xl border border-slate-300 text-slate-900 text-sm font-semibold outline-none focus:border-blue-600">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Email Address</label>
+          <input type="email" id="inputEmail" placeholder="name@example.com" class="w-full px-3 py-2.5 bg-slate-100 rounded-xl border border-slate-300 text-slate-900 text-sm font-semibold outline-none focus:border-blue-600">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Date of Birth</label>
+          <input type="date" id="inputDob" class="w-full px-3 py-2.5 bg-slate-100 rounded-xl border border-slate-300 text-slate-900 text-sm font-semibold outline-none focus:border-blue-600">
+        </div>
+        <button onclick="submitCheckin(false)" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg transition">
+          Complete Check-In
+        </button>
+      </div>
+
+      <!-- Step 3: Success & Dashboard View -->
+      <div id="stepSuccess" class="space-y-4 hidden text-center">
+        <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">✓</div>
+        <div>
+          <h3 class="text-lg font-black text-slate-900">Check-In Successful!</h3>
+          <p id="customerBadgeId" class="text-xs font-mono bg-slate-100 text-slate-700 px-2 py-1 rounded inline-block mt-1 font-bold"></p>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-left">
+          <p class="text-xs text-slate-500 font-semibold">Total Visits: <span id="statVisits" class="text-slate-900 font-black">1</span></p>
         </div>
 
-        <!-- Fast Intake Form (Visit Purpose Removed for Speed) -->
-        <form id="checkin-form" novalidate>
-          <div class="form-group">
-            <label for="cust-name">Full Name *</label>
-            <input type="text" id="cust-name" class="text-input" required placeholder="Your full name" autocomplete="name" />
+        <!-- Conditional Google Review Button -->
+        <a id="btnReview" href="#" target="_blank" class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-md flex items-center justify-center space-x-2 hidden">
+          <span>⭐ Leave a 5-Star Google Review</span>
+        </a>
+
+        <!-- Conditional Coupon Section (One-Time Use Enforcement) -->
+        <div id="couponBox" class="border border-dashed border-red-400 bg-red-50 p-4 rounded-xl text-left hidden">
+          <div class="flex justify-between items-center mb-1">
+            <span class="text-xs font-black uppercase tracking-wider text-red-600 bg-red-200 px-2 py-0.5 rounded">Special Offer</span>
+            <span id="couponStatusText" class="text-xs font-bold text-emerald-600">Available</span>
           </div>
-
-          <div class="form-group">
-            <label for="cust-phone">WhatsApp / Mobile Number *</label>
-            <div class="phone-wrap">
-              <span class="phone-prefix">+91</span>
-              <input type="tel" id="cust-phone" class="phone-input" required placeholder="10-digit mobile" maxlength="10" inputmode="numeric" />
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="cust-email">Email Address (Optional)</label>
-            <input type="email" id="cust-email" class="text-input" placeholder="name@email.com" autocomplete="email" />
-          </div>
-
-          <!-- Smart 3-Box DOB with Single-Digit Backspace Deletion -->
-          <div class="form-group">
-            <label>Birthday (For Loyalty Treats & Offers)</label>
-            <div class="dob-row">
-              <input type="tel" id="dob-day" class="dob-box" maxlength="2" placeholder="DD" inputmode="numeric" />
-              <span class="dob-sep">/</span>
-              <input type="tel" id="dob-month" class="dob-box" maxlength="2" placeholder="MM" inputmode="numeric" />
-              <span class="dob-sep">/</span>
-              <input type="tel" id="dob-year" class="dob-box dob-year" maxlength="4" placeholder="YYYY" inputmode="numeric" />
-            </div>
-            <span class="field-hint">Day / Month / Year (Optional)</span>
-          </div>
-
-          <label class="checkbox-wrap">
-            <input type="checkbox" id="cust-optin" checked />
-            <span>Receive digital service invoices & loyalty discounts on WhatsApp</span>
-          </label>
-
-          <button type="submit" id="submit-btn" class="btn-submit">
-            <span>Complete Check-In →</span>
+          <h4 id="couponTitleText" class="font-bold text-sm text-slate-900 mb-3"></h4>
+          <button id="btnRedeemCoupon" onclick="submitCheckin(true)" class="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg shadow transition">
+            Redeem Coupon Now
           </button>
-        </form>
-
-        <!-- Check-In Success State -->
-        <div id="success-panel" class="state-panel hidden">
-          <div class="success-badge">✓</div>
-          <h2 class="success-title">You're Checked In!</h2>
-          <p class="success-sub">Thank you for visiting us. Redirecting to our storefront...</p>
-
-          <div class="cta-wrap">
-            <a id="store-redirect-btn" href="#" class="btn-storefront">
-              <span>Go to Shop Website Now →</span>
-            </a>
-            <a id="review-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn-review hidden">
-              <span>⭐ Leave a 5-Star Review on Google</span>
-            </a>
-          </div>
         </div>
-
       </div>
+
     </div>
   </main>
 
