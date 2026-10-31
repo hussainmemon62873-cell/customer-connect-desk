@@ -18,6 +18,104 @@ const ico = name => `<svg class="i" aria-hidden="true"><use href="#i-${name}"/><
 // Escapes HTML special characters to prevent broken markup and XSS
 const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+
+// Opens editor and pre-populates existing data
+async function openStoreContentEditor(slug) {
+  $("edit-store-slug").value = slug;
+  $("edit-modal-title").textContent = `Editing Content: ${slug}`;
+  $("edit-services-list").innerHTML = "";
+  $("edit-pricing-list").innerHTML = "";
+
+  const res = await fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action: "getStoreConfig", slug: slug, shopId: slug })
+  });
+  const data = await res.json();
+  const store = data.store;
+
+  if (store) {
+    $("edit-store-tagline").value = store.tagline || "";
+    $("edit-store-address").value = store.address || "";
+    $("edit-store-banners").value = (store.banners || []).join("\n");
+    $("edit-store-about").value = store.aboutText || "";
+
+    (store.services || []).forEach(s => addServiceRow(s.icon, s.title, s.desc));
+    (store.pricing || []).forEach(p => addPricingRow(p.item, p.price, p.desc));
+  }
+
+  $("edit-content-modal").hidden = false;
+}
+
+function addServiceRow(icon = "🔑", title = "", desc = "") {
+  const div = document.createElement("div");
+  div.className = "service-edit-row";
+  div.style.cssText = "display:flex; gap:8px; margin-bottom:8px;";
+  div.innerHTML = `
+    <input type="text" class="form-input s-icon" value="${icon}" style="width:50px;" />
+    <input type="text" class="form-input s-title" value="${title}" placeholder="Title" style="flex:1;" />
+    <input type="text" class="form-input s-desc" value="${desc}" placeholder="Description" style="flex:2;" />
+    <button type="button" onclick="this.parentElement.remove()" style="background:#ef4444; border:none; color:#fff; border-radius:6px; padding:0 8px; cursor:pointer;">&times;</button>
+  `;
+  $("edit-services-list").appendChild(div);
+}
+
+function addPricingRow(item = "", price = "₹", desc = "") {
+  const div = document.createElement("div");
+  div.className = "pricing-edit-row";
+  div.style.cssText = "display:flex; gap:8px; margin-bottom:8px;";
+  div.innerHTML = `
+    <input type="text" class="form-input p-item" value="${item}" placeholder="Item Name" style="flex:2;" />
+    <input type="text" class="form-input p-price" value="${price}" placeholder="Price" style="width:80px;" />
+    <input type="text" class="form-input p-desc" value="${desc}" placeholder="Brief detail" style="flex:2;" />
+    <button type="button" onclick="this.parentElement.remove()" style="background:#ef4444; border:none; color:#fff; border-radius:6px; padding:0 8px; cursor:pointer;">&times;</button>
+  `;
+  $("edit-pricing-list").appendChild(div);
+}
+
+async function saveStoreContentChanges() {
+  const slug = $("edit-store-slug").value;
+  const banners = $("edit-store-banners").value.split("\n").map(s => s.trim()).filter(Boolean);
+  
+  const services = Array.from(document.querySelectorAll(".service-edit-row")).map(row => ({
+    icon: row.querySelector(".s-icon").value.trim(),
+    title: row.querySelector(".s-title").value.trim(),
+    desc: row.querySelector(".s-desc").value.trim()
+  })).filter(s => s.title);
+
+  const pricing = Array.from(document.querySelectorAll(".pricing-edit-row")).map(row => ({
+    item: row.querySelector(".p-item").value.trim(),
+    price: row.querySelector(".p-price").value.trim(),
+    desc: row.querySelector(".p-desc").value.trim()
+  })).filter(p => p.item);
+
+  const payload = {
+    action: "updateStoreContent",
+    slug: slug,
+    tagline: $("edit-store-tagline").value.trim(),
+    address: $("edit-store-address").value.trim(),
+    aboutText: $("edit-store-about").value.trim(),
+    banners: banners,
+    services: services,
+    pricing: pricing
+  };
+
+  await fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  });
+
+  alert("Store content updated!");
+  closeEditContentModal();
+}
+
+function closeEditContentModal() {
+  $("edit-content-modal").hidden = true;
+}
+
+
+
 // 1. Toast Notification System
 function showDbToast(msg, isError = false) {
   const toast = $("db-toast");
