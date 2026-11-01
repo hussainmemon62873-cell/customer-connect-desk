@@ -3,7 +3,8 @@
 // Zero Browser Alerts + Step Validation + Master-Sheet Sync
 // ==========================================
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7buq0z4WjPniRpDUm9akpUVpc3Giw_EyIehuGsO1Es1bTlFxQwVpWyygPqqpx6L9Y/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwKYQwjkwZI8Y-e7ed0G6kvR6nW3qW6PJ8vX0MGzB9zlPjNw0YgekMlMVhq39zEMYVh/exec";
+
 
 const BASE_DOMAIN = "https://customer-connect-desk.pages.dev";
 
