@@ -298,9 +298,15 @@ async function apiCall(body) {
   const res = await fetch(SCRIPT_URL, {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
+    redirect: "follow"
   });
-  return res.json();
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch (err) {
+    throw new Error("Invalid response from server: " + text.slice(0, 120));
+  }
 }
 
 // 9. Super-Admin Authentication Handshake
