@@ -295,17 +295,20 @@ function parseJwt(token) {
 
 // 8. Central API Fetch
 async function apiCall(body) {
+  const formPayload = new URLSearchParams();
+  formPayload.append("postData", JSON.stringify(body));
+
   const res = await fetch(SCRIPT_URL, {
     method: "POST",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(body),
+    body: formPayload,
     redirect: "follow"
   });
+
   const text = await res.text();
   try {
     return JSON.parse(text);
   } catch (err) {
-    throw new Error("Invalid response from server: " + text.slice(0, 120));
+    throw new Error("Invalid server response: " + text.slice(0, 100));
   }
 }
 
