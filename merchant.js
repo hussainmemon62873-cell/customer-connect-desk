@@ -149,18 +149,21 @@ $("btn-logout").addEventListener("click", () => {
   location.reload();
 });
 
+
 $("save-status-btn").addEventListener("click", async () => {
   const isOpen = statusToggle.checked;
   const closingTime = $("closing-time-input").value.trim();
   const btn = $("save-status-btn");
-  
+
   btn.disabled = true;
   btn.innerHTML = `<span>Saving...</span>`;
 
   try {
-    await fetch(SCRIPT_URL, {
+    const response = await fetch(SCRIPT_URL, {
       method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
       body: JSON.stringify({
         action: "updateStoreStatus",
         shopId: currentSlug,
@@ -168,14 +171,23 @@ $("save-status-btn").addEventListener("click", async () => {
         closingTime: closingTime
       })
     });
+
+    const result = await response.json();
+
+    if (!response.ok || result.status !== "success") {
+      throw new Error(result.message || "Unable to update store status.");
+    }
+
     showToast("Live store status updated!");
-  } catch (e) {
-    showToast("Saved locally (Sync pending)");
+  } catch (error) {
+    console.error("Store status update failed:", error);
+    showToast("Update failed. Please try again.");
   } finally {
     btn.disabled = false;
     btn.innerHTML = `<span>💾 Update Live Store Status</span>`;
   }
 });
+
 
 $("save-promo-btn").addEventListener("click", () => {
   showToast("Offer banner updated on shop.html");
