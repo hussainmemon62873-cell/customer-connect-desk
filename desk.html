@@ -1,108 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MSGS - Customer Check-In Desk</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="desk.css">
-</head>
-<body>
-
-  <!-- Toast Notification Container -->
-  <div id="toast-wrap"></div>
-
-  <div class="desk-container">
-    <div class="card">
-      
-      <!-- Shop Header -->
-      <div class="shop-header">
-        <span class="badge" id="shop-badge">Customer Desk</span>
-        <h1 id="shop-title">Loading Store...</h1>
-        <p id="shop-tagline">Please wait while we set up your check-in portal.</p>
-      </div>
-
-      <!-- Main Form Container -->
-      <div id="form-container">
-        
-        <!-- System Notice Banner -->
-        <div id="system-notice" style="display: none; padding: 10px 14px; margin-bottom: 1rem; background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; font-size: 0.82rem; font-weight: 700; border-radius: var(--radius-md); text-align: center;">
-          Your data exists in our system
-        </div>
-
-        <!-- Direct Google Review Banner (Visible on NFC / QR Scan) -->
-        <div id="direct-review-box" style="display: none; margin-bottom: 1rem;">
-          <a id="direct-review-link" href="#" target="_blank" class="btn-review" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
-            ⭐ Leave a 5-Star Google Review
-          </a>
-        </div>
-
-        <form id="checkin-form">
-          
-          <!-- Mobile Number Field -->
-          <div class="form-group">
-            <label>Mobile Number</label>
-            <div class="phone-wrap">
-              <span class="phone-prefix">+91</span>
-              <input type="tel" id="customer-phone" class="phone-input" maxlength="10" placeholder="9876543210" required>
-            </div>
-            <span class="field-hint">Enter your 10-digit number for instant lookup</span>
-          </div>
-
-          <!-- Extra Fields Container (Name, Email, DOB) -->
-          <div id="extra-fields-container">
-            
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" id="customer-name" class="text-input" placeholder="Hussain Memon" required>
-            </div>
-
-            <div class="form-group">
-              <label>Email Address</label>
-              <input type="email" id="customer-email" class="text-input" placeholder="name@example.com" required>
-            </div>
-
-            <div class="form-group">
-              <label>Date of Birth (DD / MM / YYYY)</label>
-              <div class="dob-row">
-                <input type="text" id="dob-dd" class="dob-box" maxlength="2" placeholder="DD">
-                <span class="dob-sep">/</span>
-                <input type="text" id="dob-mm" class="dob-box" maxlength="2" placeholder="MM">
-                <span class="dob-sep">/</span>
-                <input type="text" id="dob-yy" class="dob-box dob-year" maxlength="4" placeholder="YYYY">
-              </div>
-              <!-- Hidden input to store combined ISO date for backend compatibility -->
-              <input type="hidden" id="customer-dob">
-            </div>
-
-          </div>
-
-          <!-- Submit Button -->
-          <button type="submit" id="submit-btn" class="btn-submit" style="margin-top: 1.25rem;">
-            Complete Check-In
-          </button>
-
-        </form>
-      </div>
-
-      <!-- Success Screen Container -->
-      <div id="success-container" class="state-panel" style="display: none;">
-        <div class="success-badge">✓</div>
-        <h2 class="success-title">Check-In Successful!</h2>
-        <p class="success-sub" id="visit-counter" style="font-weight: 700; color: var(--text); margin-top: 0.25rem;"></p>
-        
-        <div class="cta-wrap" id="review-btn-wrap">
-          <!-- Dynamic review button injected via JS -->
-        </div>
-
-        <button onclick="location.reload()" class="btn-storefront" style="margin-top: 10px; background: #e2e8f0; color: #0f172a;">
-          New Check-In
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <script src="desk.js"></script>
-</body>
-</html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff"><title>Customer Check-in | Customer Connect Desk</title><link rel="stylesheet" href="desk.css"><script src="desk.js" defer></script></head><body><main class="desk-shell">
+<header class="desk-brand"><span class="brand-icon">CC</span><div><p class="eyebrow">CUSTOMER CONNECT DESK</p><h1 id="shop-title">Loading shop…</h1><p id="shop-tagline">Quick and secure customer check-in.</p></div></header><section class="desk-card"><span class="desk-badge">VISITOR CHECK-IN</span><div id="form-container">
+<div id="system-notice" class="system-notice" style="display:none">Your details are already in our system.</div><div id="direct-review-box" class="direct-review-box" style="display:none"><a id="direct-review-link" href="#" target="_blank" rel="noopener">⭐ Leave a Google review</a></div><div id="ccd-on-premise-notice" class="premise-notice">Please use this check-in while visiting the shop.</div><form id="checkin-form" novalidate><label for="customer-phone">Mobile number *</label><div class="phone-field">
+<span>+91</span><input id="customer-phone" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel-national" placeholder="9876543210" required></div>
+<small>Enter your 10-digit number to find your saved customer profile.</small><div class="form-fields"><label for="customer-name">Full name *<input id="customer-name" type="text" autocomplete="name" placeholder="Your full name" required></label><label for="customer-email">Email address (optional)
+<input id="customer-email" type="email" autocomplete="email" placeholder="you@example.com"></label><label>Date of birth (optional)<div class="dob-fields"><input id="dob-dd" type="text" inputmode="numeric" maxlength="2" placeholder="DD" aria-label="Day">
+<span>/</span><input id="dob-mm" type="text" inputmode="numeric" maxlength="2" placeholder="MM" aria-label="Month"><span>/</span><input id="dob-yy" type="text" inputmode="numeric" maxlength="4" placeholder="YYYY" aria-label="Year">
+</div><input id="customer-dob" type="hidden"></label></div><button id="submit-btn" class="btn-primary" type="submit">Complete check-in</button></form>
+</div><div id="success-container" class="success-container" style="display:none"><div class="success-icon">✓</div><h2 class="success-title">Your visit is recorded!</h2><p class="success-sub">Your details are in our system. Thank you for visiting!</p><p id="visit-counter" class="visit-counter"></p><div id="review-btn-wrap"></div><button id="btn-next-customer" class="btn-secondary" type="button" onclick="resetDeskForm()">Next customer check-in</button></div></section><footer>Customer details are used to maintain your visit record. Please ask the shop staff for help if you need to correct your details.
+</footer></main></body></html>
