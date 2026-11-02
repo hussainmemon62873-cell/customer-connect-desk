@@ -1,459 +1,69 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-  <title>B2B Super-Admin Console | Customer Connect Desk</title>
-  <meta name="robots" content="noindex, nofollow" />
-  <meta name="theme-color" content="#000000" />
-  <script>
-    (function () {
-      var t = "dark";
-      try { t = localStorage.getItem("ccd_theme") || "dark"; } catch (e) {}
-      document.documentElement.setAttribute("data-theme", t);
-      var m = document.querySelector('meta[name="theme-color"]');
-      if (m) m.setAttribute("content", t === "dark" ? "#000000" : "#ffffff");
-    })();
-  </script>
-
-  <!-- Google Identity Services & QRCode Library -->
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff"><meta name="description" content="Customer Connect Desk Super Admin">
+  <title>Customer Connect Desk | Super Admin</title>
+  <link rel="stylesheet" href="admin.css">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-  <!-- Typography -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="admin.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script src="admin.js" defer></script>
 </head>
 <body>
-
-  <!-- Icon sprite -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <defs>
-      <symbol id="i-overview" viewBox="0 0 24 24"><path d="M4 13h6V4H4zM14 20h6V11h-6zM14 4h6v4h-6zM4 17h6v3H4z"/></symbol>
-      <symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9l1.5-5h15L21 9M3 9a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0M5 12v8h14v-8M10 20v-4h4v4"/></symbol>
-      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-      <symbol id="i-qr" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM20 14v6h-6"/></symbol>
-      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
-      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
-      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></symbol>
-      <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 00-14-4L4 9M4 4v5h5M4 13a8 8 0 0014 4l2-2M20 20v-5h-5"/></symbol>
-      <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></symbol>
-      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="3"/></symbol>
-      <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M4 4l16 16"/></symbol>
-      <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></symbol>
-      <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18v.01"/></symbol>
-      <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 012-2h8"/></symbol>
-      <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
-      <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
-      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
-      <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></symbol>
-      <symbol id="i-db" viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v12c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3"/></symbol>
-      <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 20a7 7 0 0114 0"/></symbol>
-      <symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
-      <symbol id="i-arrow-l" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
-    </defs>
-  </svg>
-
-  <a class="skip-link" href="#main">Skip to content</a>
-
-  <!-- 1. Google OAuth & Master Setup Gate Overlay -->
-  <div id="auth-gate-overlay" class="auth-gate-shell">
-    <div class="auth-aside" aria-hidden="true">
-      <div class="auth-aside-brand"><svg class="i"><use href="#i-store"/></svg> CCD CORE</div>
-      <p class="auth-aside-copy">Register stores, approve merchants and issue NFC and QR stands from one console.</p>
-    </div>
-    <div class="auth-gate-card">
-      <div class="auth-brand-logo"><svg class="i"><use href="#i-shield"/></svg></div>
-      <h2>Sign in to the console</h2>
-      <p class="auth-sub">Super-admin identity verification</p>
-
-      <div class="form-group">
-        <label for="admin-pass">Master setup password</label>
-        <div class="password-wrap">
-          <input type="password" id="admin-pass" placeholder="Enter setup password (1st time only)" autocomplete="current-password" />
-          <button type="button" class="btn-eye" id="btn-toggle-eye" aria-label="Show password" aria-pressed="false">
-            <svg class="i i-show"><use href="#i-eye"/></svg>
-            <svg class="i i-hide"><use href="#i-eye-off"/></svg>
-          </button>
-        </div>
-        <span class="field-hint">Required on first login to link your Google identity permanently.</span>
-      </div>
-
-      <div class="g-signin-wrap">
-        <div id="g_id_onload"
-             data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com"
-             data-callback="handleAdminLogin"
-             data-auto_prompt="false">
-        </div>
-        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-shape="rectangular"></div>
-      </div>
-      <div class="auth-status" id="auth-status" role="status" aria-live="polite" hidden><span class="spinner"></span> Verifying your identity…</div>
-    </div>
-  </div>
-
-  <!-- 2. Main B2B Console Application -->
-  <div class="app-layout" id="app-layout">
-
-    <!-- Sidebar (desktop) / bottom tab bar (mobile) -->
-    <aside class="sidebar">
-      <div class="sidebar-header">
-        <div class="brand-badge"><span class="brand-mark"><svg class="i"><use href="#i-store"/></svg></span> CCD CORE</div>
-        <span class="version-tag">v2.6 PRO</span>
-      </div>
-
-      <nav class="sidebar-nav" aria-label="Main">
-        <button class="nav-item active" data-tab="tab-overview" title="Overview">
-          <span class="nav-icon"><svg class="i"><use href="#i-overview"/></svg></span>
-          <span class="nav-label">Overview</span>
-        </button>
-        <button class="nav-item" data-tab="tab-stores" title="Stores Directory">
-          <span class="nav-icon"><svg class="i"><use href="#i-store"/></svg></span>
-          <span class="nav-label">Stores</span>
-          <span class="nav-count-badge" id="badge-total-stores">0</span>
-        </button>
-        <button class="nav-item" data-tab="tab-wizard" title="Register Store">
-          <span class="nav-icon"><svg class="i"><use href="#i-plus"/></svg></span>
-          <span class="nav-label">Register</span>
-        </button>
-        <button class="nav-item" data-tab="tab-qr" title="NFC & Stand Studio">
-          <span class="nav-icon"><svg class="i"><use href="#i-qr"/></svg></span>
-          <span class="nav-label">Studio</span>
-        </button>
-      </nav>
-    </aside>
-
-    <!-- Main Workspace Area -->
-    <div class="main-content">
-
-      <header class="topbar">
-        <div class="topbar-brand"><span class="brand-mark"><svg class="i"><use href="#i-store"/></svg></span> CCD CORE</div>
-
-        <div class="topbar-search">
-          <svg class="i search-icon" aria-hidden="true"><use href="#i-search"/></svg>
-          <input type="search" id="global-store-search" placeholder="Search store, slug, phone or owner" aria-label="Search stores" autocomplete="off" />
-        </div>
-
-        <div class="topbar-actions">
-          <button class="btn-theme-toggle" id="theme-toggle-btn" title="Toggle light/dark theme" aria-label="Toggle light or dark theme">
-            <svg class="i icon-sun"><use href="#i-sun"/></svg>
-            <svg class="i icon-moon"><use href="#i-moon"/></svg>
-            <span id="theme-icon">Light</span>
-          </button>
-          <button class="btn-quick-add" id="btn-top-add"><svg class="i"><use href="#i-plus"/></svg><span>New store</span></button>
-
-          <div class="account">
-            <button class="btn-account" id="btn-account" aria-haspopup="true" aria-expanded="false" aria-label="Account menu">
-              <svg class="i"><use href="#i-user"/></svg>
-            </button>
-            <div class="account-menu" id="account-menu" hidden>
-              <div class="admin-pill">
-                <div class="admin-info">
-                  <span class="admin-name" id="user-name">Super Admin</span>
-                  <span class="admin-email" id="user-email">admin@ccd.internal</span>
-                </div>
-              </div>
-              <button class="btn-logout" id="btn-logout" title="Exit console"><svg class="i"><use href="#i-logout"/></svg> Log out</button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main id="main">
-
-      <!-- TAB 1: OVERVIEW & ANALYTICS -->
-      <section class="tab-pane active" id="tab-overview">
-        <div class="page-title-row">
-          <div>
-            <h1>Platform performance</h1>
-            <p class="subtitle">Store status and database connection, from your Master-Sheet.</p>
-          </div>
-          <button class="btn-refresh" id="btn-refresh-overview"><svg class="i"><use href="#i-refresh"/></svg> Refresh data</button>
-        </div>
-
-        <div class="stats-metric-grid">
-          <div class="metric-card">
-            <div class="metric-top"><span class="metric-title">Active stores</span><span class="metric-pill">Live</span></div>
-            <div class="metric-val emerald" id="stat-active-stores">0</div>
-            <div class="metric-footer">Live merchant endpoints</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-top"><span class="metric-title">Pending approval</span><span class="metric-pill warning">Review</span></div>
-            <div class="metric-val amber" id="stat-pending-stores">0</div>
-            <div class="metric-footer">Self-registered applications</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-top"><span class="metric-title">Suspended</span><span class="metric-pill danger">Paused</span></div>
-            <div class="metric-val rose" id="stat-suspended-stores">0</div>
-            <div class="metric-footer">Stores switched off by an admin</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-top"><span class="metric-title">Database sync</span><span class="metric-pill info">Google Sheets</span></div>
-            <div class="metric-val blue sync-val" id="stat-sync-state">Waiting</div>
-            <div class="metric-footer" id="stat-sync-time">No sync yet this session</div>
-          </div>
-        </div>
-
-        <div class="card-surface breakdown">
-          <div class="breakdown-head">
-            <h2>Store status breakdown</h2>
-            <span class="subtitle" id="breakdown-total">0 stores</span>
-          </div>
-          <div class="status-bar" id="status-bar" role="img" aria-label="Share of stores by status">
-            <span class="seg active" id="seg-active"></span><span class="seg pending" id="seg-pending"></span><span class="seg suspended" id="seg-suspended"></span>
-          </div>
-          <ul class="legend">
-            <li><i class="dot active"></i>Active</li>
-            <li><i class="dot pending"></i>Pending</li>
-            <li><i class="dot suspended"></i>Suspended</li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- TAB 2: STORES DIRECTORY -->
-      <section class="tab-pane" id="tab-stores">
-        <div class="page-title-row">
-          <div>
-            <h1>Stores directory</h1>
-            <p class="subtitle">Approve, suspend, generate QR codes for, or delete store registrations.</p>
-          </div>
-        </div>
-
-        <div class="filter-bar">
-          <div class="filter-chips" role="group" aria-label="Filter by status">
-            <button type="button" class="chip active" data-filter="ALL">All</button>
-            <button type="button" class="chip" data-filter="ACTIVE">Active</button>
-            <button type="button" class="chip" data-filter="PENDING">Pending</button>
-            <button type="button" class="chip" data-filter="SUSPENDED">Suspended</button>
-          </div>
-          <span class="result-count" id="store-result-count" aria-live="polite"></span>
-        </div>
-
-        <div class="table-container card-surface">
-          <table class="b2b-table">
-            <thead>
-              <tr>
-                <th scope="col">Store</th>
-                <th scope="col">Owner / contact</th>
-                <th scope="col">Tagline</th>
-                <th scope="col">Status</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="store-table-body">
-              <tr><td colspan="5" class="table-loading"><span class="spinner"></span> Loading store registry…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- TAB 3: STEPPER REGISTRATION WIZARD -->
-      <section class="tab-pane" id="tab-wizard">
-        <div class="page-title-row">
-          <div>
-            <h1 id="wizard-heading">Register new store</h1>
-            <p class="subtitle">Email and mobile number must be unique across all stores.</p>
-          </div>
-        </div>
-
-        <div class="wizard-card card-surface">
-          <div class="stepper-bar" aria-label="Registration progress">
-            <div class="step-item active current" data-step="1"><span class="step-num">1</span><span class="step-lbl">Identity</span></div>
-            <div class="step-line"></div>
-            <div class="step-item" data-step="2"><span class="step-num">2</span><span class="step-lbl">Contact &amp; Owner</span></div>
-            <div class="step-line"></div>
-            <div class="step-item" data-step="3"><span class="step-num">3</span><span class="step-lbl">Google Links &amp; Theme</span></div>
-          </div>
-
-          <form id="wizard-form" novalidate>
-            <!-- SECTION 1: IDENTITY -->
-            <div class="wizard-section active" id="wizard-sec-1">
-              <div class="form-group">
-                <label for="shop-id">Store slug (URL key) *</label>
-                <div class="slug-input-wrapper">
-                  <span class="slug-prefix">desk.html?shop=</span>
-                  <input type="text" id="shop-id" class="text-input" placeholder="memonlock" required autocapitalize="none" autocorrect="off" spellcheck="false" />
-                </div>
-                <span class="field-hint">Letters and numbers only, at least 3. Must be unique in the database.</span>
-              </div>
-              <div class="form-group">
-                <label for="shop-name">Store display name *</label>
-                <input type="text" id="shop-name" class="text-input" placeholder="e.g. Memon Lock Center" required autocomplete="off" />
-              </div>
-              <div class="form-group">
-                <label for="shop-tagline">Business tagline / specialty *</label>
-                <input type="text" id="shop-tagline" class="text-input" placeholder="e.g. Computerized key making &amp; sensor locks" required autocomplete="off" />
-              </div>
-              <div class="wizard-nav-btns">
-                <div></div>
-                <button type="button" class="btn-step-next" onclick="goToStep(2)">Continue <svg class="i"><use href="#i-arrow-r"/></svg></button>
-              </div>
-            </div>
-
-            <!-- SECTION 2: CONTACT & OWNER -->
-            <div class="wizard-section" id="wizard-sec-2">
-              <div class="form-group">
-                <label for="owner-name">Owner full name *</label>
-                <input type="text" id="owner-name" class="text-input" placeholder="e.g. Hussain Memon" required autocomplete="off" />
-              </div>
-              <div class="form-group">
-                <label for="owner-email">Owner email address *</label>
-                <input type="email" id="owner-email" class="text-input" placeholder="merchant@gmail.com" required inputmode="email" autocapitalize="none" autocomplete="off" />
-                <span class="field-hint">Duplicate emails are rejected.</span>
-              </div>
-              <div class="form-group">
-                <label for="shop-mobile">Owner WhatsApp / mobile *</label>
-                <input type="tel" id="shop-mobile" class="text-input" placeholder="10-digit mobile number" maxlength="10" required inputmode="numeric" autocomplete="off" />
-                <span class="field-hint">Duplicates are rejected. The last 4 digits are the merchant dashboard PIN.</span>
-              </div>
-              <div class="wizard-nav-btns">
-                <button type="button" class="btn-step-prev" onclick="goToStep(1)"><svg class="i"><use href="#i-arrow-l"/></svg> Back</button>
-                <button type="button" class="btn-step-next" onclick="goToStep(3)">Continue <svg class="i"><use href="#i-arrow-r"/></svg></button>
-              </div>
-            </div>
-
-            <!-- SECTION 3: LINKS & BRAND THEME -->
-            <div class="wizard-section" id="wizard-sec-3">
-              <div class="form-group">
-                <label for="shop-review-url">Google 5-star review link</label>
-                <input type="url" id="shop-review-url" class="text-input" placeholder="https://g.page/r/your-review-id" inputmode="url" autocapitalize="none" />
-              </div>
-              <div class="form-group">
-                <label for="shop-map-url">Google Maps embed URL</label>
-                <input type="url" id="shop-map-url" class="text-input" placeholder="https://www.google.com/maps/embed?pb=..." inputmode="url" autocapitalize="none" />
-              </div>
-              <div class="form-group">
-                <label for="shop-closing-time">Closing time</label>
-                <input type="text" id="shop-closing-time" class="text-input" placeholder="e.g. 9:00 PM" value="9:00 PM" autocomplete="off" />
-                <span class="field-hint">Default is 9:00 PM if left blank.</span>
-              </div>
-
-              <fieldset class="theme-fieldset">
-                <legend>Theme colors</legend>
-                <div class="color-grid">
-                  <label class="color-box"><span>Primary</span><input type="color" id="col-primary" value="#2563eb" /></label>
-                  <label class="color-box"><span>Background</span><input type="color" id="col-bg" value="#0f172a" /></label>
-                  <label class="color-box"><span>Card base</span><input type="color" id="col-card" value="#ffffff" /></label>
-                  <label class="color-box"><span>Text color</span><input type="color" id="col-text" value="#0f172a" /></label>
-                </div>
-              </fieldset>
-
-              <div class="wizard-nav-btns">
-                <button type="button" class="btn-step-prev" onclick="goToStep(2)"><svg class="i"><use href="#i-arrow-l"/></svg> Back</button>
-                <button type="submit" class="btn-save" id="btn-save-store"><span>Save &amp; provision store</span></button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <!-- TAB 4: NFC & STAND STUDIO -->
-      <section class="tab-pane" id="tab-qr">
-        <div class="page-title-row">
-          <div>
-            <h1>NFC &amp; Stand Studio</h1>
-            <p class="subtitle">Generate counter stand and storefront QR codes for a store.</p>
-          </div>
-          <div class="store-select-wrap">
-            <label for="qr-store-selector" class="sr-only">Store</label>
-            <select id="qr-store-selector" class="dropdown-select">
-              <option value="">-- Choose Store --</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="qr-studio-grid">
-          <div class="qr-panel card-surface">
-            <div class="qr-panel-head">
-              <h3>In-store counter stand (NFC &amp; QR)</h3>
-              <p>Scan target for walk-in customer check-ins</p>
-            </div>
-            <div id="box-stand-qr" class="qr-canvas-box"></div>
-            <div class="url-chip" id="chip-stand-url">Select a store to view URL</div>
-            <div class="qr-actions">
-              <button class="btn-small" id="btn-copy-stand" onclick="copyStudioLink('stand')" disabled><svg class="i"><use href="#i-copy"/></svg> Copy URL</button>
-              <button class="btn-small" id="btn-dl-stand" onclick="downloadStudioQr('stand')" disabled><svg class="i"><use href="#i-download"/></svg> Download PNG</button>
-            </div>
-          </div>
-
-          <div class="qr-panel card-surface">
-            <div class="qr-panel-head">
-              <h3>Public storefront / Google Maps QR</h3>
-              <p>Direct link for business cards, ads and flyers</p>
-            </div>
-            <div id="box-public-qr" class="qr-canvas-box"></div>
-            <div class="url-chip" id="chip-public-url">Select a store to view URL</div>
-            <div class="qr-actions">
-              <button class="btn-small" id="btn-copy-public" onclick="copyStudioLink('public')" disabled><svg class="i"><use href="#i-copy"/></svg> Copy URL</button>
-              <button class="btn-small" id="btn-dl-public" onclick="downloadStudioQr('public')" disabled><svg class="i"><use href="#i-download"/></svg> Download PNG</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      </main>
-    </div>
-  </div>
-
-  <!-- Confirmation Modal -->
-  <div class="modal-backdrop" id="confirm-modal">
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
-      <div class="modal-icon" id="modal-icon"><svg class="i"><use href="#i-alert"/></svg></div>
-      <h3 id="modal-title">Confirm action</h3>
-      <p id="modal-desc">Are you sure you want to proceed?</p>
-      <div class="modal-btns">
-        <button class="btn-modal-cancel" id="btn-modal-cancel">Cancel</button>
-        <button class="btn-modal-confirm" id="btn-modal-confirm">Delete store</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Database Sync Toast -->
-  <div class="db-toast" id="db-toast" role="status" aria-live="polite"></div>
-
-<!-- DYNAMIC STORE CONTENT & GLOBAL POLICY EDITOR MODAL -->
-<div class="modal-overlay" id="edit-content-modal" hidden>
-  <div class="modal-box" style="max-width: 680px; max-height: 85vh;">
-    <div class="modal-head">
-      <h3 id="edit-modal-title">Edit Store Content</h3>
-      <button type="button" class="modal-close" onclick="closeEditContentModal()">&times;</button>
-    </div>
-    <div class="modal-content" style="padding: 16px;">
-      
-      <input type="hidden" id="edit-store-slug" />
-
-      <label>Store Tagline</label>
-      <input type="text" id="edit-store-tagline" class="form-input" style="width:100%; margin-bottom:12px;" />
-
-      <label>Physical Address</label>
-      <input type="text" id="edit-store-address" class="form-input" style="width:100%; margin-bottom:12px;" />
-
-      <label>Banner Image URLs (One per line)</label>
-      <textarea id="edit-store-banners" class="form-input" rows="3" style="width:100%; margin-bottom:12px;" placeholder="https://example.com/banner1.jpg"></textarea>
-
-      <label>About Us Paragraph</label>
-      <textarea id="edit-store-about" class="form-input" rows="4" style="width:100%; margin-bottom:12px;"></textarea>
-
-      <hr style="border:0; border-top:1px solid #334155; margin:16px 0;" />
-      <h4>Services Cards</h4>
-      <div id="edit-services-list"></div>
-      <button type="button" class="btn" onclick="addServiceRow()" style="margin: 8px 0 16px;">+ Add Service Card</button>
-
-      <hr style="border:0; border-top:1px solid #334155; margin:16px 0;" />
-      <h4>Pricing Table</h4>
-      <div id="edit-pricing-list"></div>
-      <button type="button" class="btn" onclick="addPricingRow()" style="margin: 8px 0 16px;">+ Add Pricing Item</button>
-
-      <button type="button" class="btn btn-primary" onclick="saveStoreContentChanges()" style="width:100%; min-height:46px; margin-top:14px;">
-        💾 Save All Changes & Update Live Store
-      </button>
-    </div>
-  </div>
+<svg aria-hidden="true" class="icon-sprite" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol><symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.3 3.9 2.7 17a2 2 0 0 0 1.7 3h15.2a2 2 0 0 0 1.7-3l-7.6-13.1a2 2 0 0 0-3.4 0Z"/></symbol>
+</svg>
+<div class="auth-gate-overlay" id="auth-gate-overlay">
+  <section class="auth-gate-card">
+    <div class="brand-mark">CC</div><p class="eyebrow">PLATFORM CONTROL CENTER</p>
+    <h1>Super Admin sign in</h1><p class="muted">Use the registered Google account to manage shop registrations and storefronts.</p>
+    <label for="admin-pass">Initial setup password <span class="muted">(only required until the Admin identity is locked)</span></label>
+    <div class="password-field"><input id="admin-pass" type="password" autocomplete="current-password" placeholder="Setup password (if configured)"><button id="btn-toggle-eye" type="button" aria-label="Show password">Show</button></div>
+    <div id="g_id_onload" data-client_id="913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com" data-callback="handleAdminLogin" data-auto_prompt="false"></div>
+    <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="signin_with" data-shape="rectangular" data-logo_alignment="left"></div>
+    <p id="auth-status" class="muted" hidden>Verifying Google account…</p>
+  </section>
 </div>
-
-
-  <script src="admin.js"></script>
-</body>
-</html>
+<header class="topbar">
+  <a class="brand" href="index.html"><span class="brand-mark">CC</span><span><strong>Customer Connect Desk</strong><small>Super Admin</small></span></a>
+  <div class="top-actions"><span class="sync-pill"><i></i><span id="stat-sync-state">Not connected</span></span><button id="btn-refresh-overview" class="btn btn-quiet" type="button">Refresh</button><button id="theme-toggle-btn" class="btn btn-quiet" type="button">Theme: <span id="theme-icon">Light</span></button><div class="account"><button id="btn-account" class="account-trigger" type="button" aria-expanded="false"><span id="user-name">Admin</span><span>⌄</span></button><div id="account-menu" class="account-menu" hidden><span id="user-email" class="muted"></span><button id="btn-logout" type="button" class="btn btn-danger-soft">Sign out</button></div></div></div>
+</header>
+<div class="app-layout">
+  <aside class="sidebar"><p class="eyebrow">WORKSPACE</p>
+    <button class="nav-item active" data-tab="tab-overview" type="button"><span>▦</span> Overview</button>
+    <button class="nav-item" data-tab="tab-stores" type="button"><span>▤</span> Shops <b id="badge-total-stores">0</b></button>
+    <button class="nav-item" data-tab="tab-wizard" type="button"><span>＋</span> Register shop</button>
+    <button class="nav-item" data-tab="tab-qr" type="button"><span>▦</span> QR studio</button>
+    <div class="sidebar-note"><strong>Google Sheets workspace</strong><span>All store and customer records remain in your existing spreadsheet.</span></div>
+  </aside>
+  <main class="main-content">
+    <section class="tab-pane active" id="tab-overview">
+      <div class="page-heading"><div><p class="eyebrow">LIVE OPERATIONS</p><h1>Platform overview</h1><p class="muted">Monitor registrations, store status and storefront publishing.</p></div><button id="btn-top-add" type="button" class="btn btn-primary">＋ Register a shop</button></div>
+      <div class="metric-grid"><article class="metric-card"><span>Approved shops</span><strong id="stat-active-stores">0</strong><small>Active and available</small></article><article class="metric-card"><span>Awaiting approval</span><strong id="stat-pending-stores">0</strong><small>Review these registrations</small></article><article class="metric-card"><span>Suspended shops</span><strong id="stat-suspended-stores">0</strong><small>Not publicly available</small></article><article class="metric-card"><span>Total shops</span><strong id="breakdown-total">0 stores</strong><small id="stat-sync-time">Not synced yet</small></article></div>
+      <article class="panel"><div class="panel-heading"><div><h2>Registration status</h2><p class="muted">Current distribution across your shop network.</p></div><span id="store-result-count" class="count-label"></span></div><div class="segmented-bar"><span id="seg-active"></span><span id="seg-pending"></span><span id="seg-suspended"></span></div><div class="legend"><span><i class="dot active-dot"></i> Approved</span><span><i class="dot pending-dot"></i> Pending</span><span><i class="dot suspended-dot"></i> Suspended</span></div></article>
+      <article class="panel"><div class="panel-heading"><div><h2>Quick actions</h2><p class="muted">Approve a shop before sharing its check-in and public website links.</p></div></div><div class="quick-grid"><button type="button" class="quick-card" onclick="document.querySelector('[data-tab=tab-stores]').click()"><strong>Review shops</strong><span>Approve or suspend registrations</span></button><button type="button" class="quick-card" onclick="document.querySelector('[data-tab=tab-qr]').click()"><strong>Generate QR codes</strong><span>Desk and public storefront links</span></button></div></article>
+    </section>
+    <section class="tab-pane" id="tab-stores">
+      <div class="page-heading"><div><p class="eyebrow">SHOP NETWORK</p><h1>Shop registry</h1><p class="muted">Approve new registrations, manage active shops and share links.</p></div></div>
+      <div class="toolbar"><input id="global-store-search" type="search" placeholder="Search by shop, slug, owner, mobile or email" aria-label="Search shops"><div class="filter-chips"><button class="chip active" data-filter="ALL" type="button">All</button><button class="chip" data-filter="ACTIVE" type="button">Approved</button><button class="chip" data-filter="PENDING" type="button">Pending</button><button class="chip" data-filter="SUSPENDED" type="button">Suspended</button></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Shop</th><th>Owner</th><th>Tagline</th><th>Status</th><th>Actions</th></tr></thead><tbody id="store-table-body"><tr><td colspan="5" class="table-loading">Sign in to load the shop registry.</td></tr></tbody></table></div>
+    </section>
+    <section class="tab-pane" id="tab-wizard">
+      <div class="page-heading"><div><p class="eyebrow">NEW SHOP</p><h1 id="wizard-heading">Register a shop</h1><p class="muted">Admin-created shops are activated immediately. Public registrations require Admin approval.</p></div></div>
+      <form id="wizard-form" class="panel wizard-form">
+        <div class="stepper"><span class="step-item active current" data-step="1">1 · Business</span><span class="step-item" data-step="2">2 · Owner</span><span class="step-item" data-step="3">3 · Appearance</span></div>
+        <section id="wizard-sec-1" class="wizard-section active"><h2>Business identity</h2><div class="form-grid"><label>Shop ID / URL slug *<input id="shop-id" required maxlength="40" placeholder="memonlock"></label><label>Shop display name *<input id="shop-name" required placeholder="Memon Lock Center"></label><label class="full">Tagline *<input id="shop-tagline" required placeholder="Your trusted local service partner"></label></div><div class="form-actions"><button type="button" class="btn btn-primary" onclick="goToStep(2)">Continue</button></div></section>
+        <section id="wizard-sec-2" class="wizard-section"><h2>Shop owner</h2><div class="form-grid"><label>Owner full name *<input id="owner-name" required></label><label>Owner email *<input id="owner-email" type="email" required></label><label>Owner mobile *<input id="shop-mobile" type="tel" inputmode="numeric" maxlength="10" required></label></div><div class="form-actions"><button type="button" class="btn btn-quiet" onclick="goToStep(1)">Back</button><button type="button" class="btn btn-primary" onclick="goToStep(3)">Continue</button></div></section>
+        <section id="wizard-sec-3" class="wizard-section"><h2>Store appearance and links</h2><div class="form-grid"><label>Primary color<input id="col-primary" type="color" value="#2563eb"></label><label>Page background<input id="col-bg" type="color" value="#ffffff"></label><label>Card background<input id="col-card" type="color" value="#ffffff"></label><label>Text color<input id="col-text" type="color" value="#0f172a"></label><label>Google Review URL<input id="shop-review-url" type="url" placeholder="https://g.page/r/..."></label><label>Google Maps URL / Embed URL<input id="shop-map-url" type="url" placeholder="https://www.google.com/maps/embed?... "></label><label>Closing time<input id="shop-closing-time" type="text" value="9:00 PM"></label></div><div class="form-actions"><button type="button" class="btn btn-quiet" onclick="goToStep(2)">Back</button><button id="btn-save-store" type="submit" class="btn btn-primary">Save shop</button></div></section>
+      </form>
+    </section>
+    <section class="tab-pane" id="tab-qr">
+      <div class="page-heading"><div><p class="eyebrow">SHARE YOUR LINKS</p><h1>QR studio</h1><p class="muted">QR codes appear only after Admin approval.</p></div></div>
+      <article class="panel"><label class="select-label" for="qr-store-selector">Select an approved shop</label><select id="qr-store-selector"><option value="">-- Choose Store --</option></select><div class="qr-grid"><section class="qr-card"><h2>Customer check-in Desk</h2><div id="box-stand-qr" class="qr-box"><span>Select an approved shop</span></div><p id="chip-stand-url" class="url-chip">Select a store to view URL</p><div class="button-row"><button id="btn-copy-stand" type="button" class="btn btn-quiet" onclick="copyStudioLink('stand')" disabled>Copy link</button><button id="btn-dl-stand" type="button" class="btn btn-primary" onclick="downloadStudioQr('stand')" disabled>Download QR</button></div></section><section class="qr-card"><h2>Public shop website</h2><div id="box-public-qr" class="qr-box"><span>Select an approved shop</span></div><p id="chip-public-url" class="url-chip">Select a store to view URL</p><div class="button-row"><button id="btn-copy-public" type="button" class="btn btn-quiet" onclick="copyStudioLink('public')" disabled>Copy link</button><button id="btn-dl-public" type="button" class="btn btn-primary" onclick="downloadStudioQr('public')" disabled>Download QR</button></div></section></div></article>
+    </section>
+  </main>
+</div>
+<div id="confirm-modal" class="modal-overlay"><div class="modal-card"><h2 id="modal-title">Confirm action</h2><p id="modal-desc"></p><div class="form-actions"><button id="btn-modal-cancel" type="button" class="btn btn-quiet">Cancel</button><button id="btn-modal-confirm" type="button" class="btn btn-danger">Deactivate shop</button></div></div></div>
+<div id="edit-content-modal" class="modal-overlay" hidden><div class="modal-card modal-large"><div class="modal-heading"><h2 id="edit-modal-title">Edit shop website</h2><button type="button" class="btn btn-quiet" onclick="closeEditContentModal()">Close</button></div><input id="edit-store-slug" type="hidden"><div class="form-grid"><label>Store tagline<input id="edit-store-tagline" class="form-input"></label><label>Physical address<input id="edit-store-address" class="form-input"></label><label class="full">Banner image URLs (one per line)<textarea id="edit-store-banners" rows="3" class="form-input"></textarea></label><label class="full">Home page introduction (separate paragraphs with a blank line)<textarea id="edit-store-home" rows="4" class="form-input"></textarea></label><label class="full">About us (multiple paragraphs supported)<textarea id="edit-store-about" rows="5" class="form-input"></textarea></label><label>After check-in redirect URL (HTTPS only)<input id="edit-store-redirect-url" class="form-input" type="url"></label><label>Shop contact mobile<input id="edit-store-owner-mobile" class="form-input" type="tel" maxlength="10"></label><label>Google Review URL<input id="edit-store-review-url" class="form-input" type="url"></label><label>Google Maps Embed URL<input id="edit-store-map-url" class="form-input" type="url"></label></div><h3>Services</h3><div id="edit-services-list"></div><button type="button" class="btn btn-quiet" onclick="addServiceRow()">＋ Add service</button><h3>Pricing</h3><div id="edit-pricing-list"></div><button type="button" class="btn btn-quiet" onclick="addPricingRow()">＋ Add pricing item</button><button type="button" class="btn btn-primary full-width" onclick="saveStoreContentChanges()">Save and publish changes</button></div></div>
+<div id="db-toast" class="toast" role="status" aria-live="polite"></div>
+</body></html>
