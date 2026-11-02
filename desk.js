@@ -3,7 +3,8 @@
 // Fast Walk-in Check-in + Direct Review Capture
 // ==========================================
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHdc634lNNW6UkZXPK2tYBSL8ImSPTxHeD3EROsbe8k4Vfguy4If3g8HSfoVESnEtF/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNPnuDhiXOrm4-tRJJ7wXpb7PMwifLQfK-i3pbW-QaOrU74fm-PFgh9aT2sntGLZgx/exec";
+
 const $ = id => document.getElementById(id);
 const urlParams = new URLSearchParams(window.location.search);
 const currentShopId = (urlParams.get("shop") || "memonlock").trim().toLowerCase();
