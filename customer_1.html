@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#172b4d">
+  <title>Customer QR Portal · Dynamic QR</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="portal-pages.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <script src="config.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body data-page="customer">
+  <header class="portal-header">
+    <a class="brand" href="index_1.html"><span class="logo">Q</span><span><b>Dynamic QR</b><small>Customer self-service portal</small></span></a>
+    <nav><a href="index_1.html">Public website</a><a href="admin_1.html">Owner login</a></nav>
+  </header>
+  <div class="portal-intro"><span class="eyebrow">YOUR QR COLLECTION</span><h1>Access your QR codes</h1><p>Enter your reference number and registered email address. We will verify your access before showing your allocation.</p></div>
+  <div id="systemNotice" class="systemnotice" role="status" aria-live="polite" hidden></div>
+  <main id="customerRoot" class="dedicated-root" aria-live="polite">
+    <div class="loading-card"><span class="loader"></span><b>Preparing customer portal…</b><small>Your QR collection will appear after email verification.</small></div>
+  </main>
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Customer QR portal"><div class="modalbox"><button class="close" type="button" aria-label="Close dialog" onclick="closeModal()">×</button><div id="modalContent"></div></div></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
