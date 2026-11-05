@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#172b4d">
+  <meta name="description" content="Allocate dynamic QR codes, approve destinations once per allocation, and manage reusable QR inventory.">
+  <title>Dynamic QR Platform</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js" defer></script>
+  <script src="config.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#home"><span class="logo">Q</span><span><b>Dynamic QR</b><small>Smart destination management</small></span></a>
+  <nav aria-label="Main navigation">
+    <a href="#home">Home</a><a href="#how">How it works</a><a href="#faq">FAQ</a>
+    <a class="navbtn" href="customer_1.html">Customer portal</a>
+    <a class="navbtn dark" href="admin_1.html">Owner dashboard</a>
+  </nav>
+  <button class="hamb" type="button" aria-label="Toggle navigation" onclick="document.body.classList.toggle('navopen')">☰</button>
+</header>
+<div id="systemNotice" class="systemnotice" role="status" aria-live="polite" hidden></div>
+<main id="home">
+  <section class="hero wrap">
+    <div>
+      <span class="eyebrow">ONE QR · FLEXIBLE DESTINATIONS</span>
+      <h1>Your QR codes.<br><em>Your destinations.</em></h1>
+      <p>Generate reusable QR inventory, manage destinations securely and keep printed QR codes useful when links change.</p>
+      <div class="actions"><a class="primary" href="customer_1.html">Open customer portal</a><a class="textlink" href="#how">Learn how it works ↗</a></div>
+      <div class="trust"><span>✓ Dynamic destinations</span><span>✓ Owner-controlled approval</span><span>✓ Download &amp; print</span></div>
+    </div>
+    <div class="hero-art"><div class="mockcard"><div class="mocktop"><span>YOUR QR COLLECTION</span><span class="dot"></span></div><div id="heroQr" class="heroqr" aria-label="QR preview"></div><b>QR001</b><small>Scan to open the latest approved destination</small><div class="mockline"></div><div class="mockstats"><span><b>01</b><small>QR ID</small></span><span><b>∞</b><small>Flexible links</small></span><span><b>PIN</b><small>Owner control</small></span></div></div></div>
+  </section>
+  <section class="featureband wrap" id="how"><div><span class="eyebrow">HOW IT WORKS</span><h2>From allocation to activation.</h2></div><div class="steps"><article><i>01</i><b>Allocate</b><p>Owner registers a customer and assigns QR IDs.</p></article><article><i>02</i><b>Configure</b><p>Customer verifies their email and enters a URL for every allotted QR.</p></article><article><i>03</i><b>Approve once</b><p>Owner reviews the complete allocation and approves it one time with a PIN.</p></article><article><i>04</i><b>Scan &amp; manage</b><p>Approved QR codes redirect directly. Owner controls future changes.</p></article></div></section>
+  <section class="content wrap"><div><span class="eyebrow">BUILT FOR CONTROL</span><h2>One owner. One shared customer portal.</h2><p>Customers access their own allocation with a reference number and email verification code. Owner-only actions stay behind Google sign-in and a separate security PIN.</p></div><div class="featuregrid"><article><b>Reusable QR inventory</b><p>Deleted serial IDs move to a clean reusable list, then return to Active when reallocated.</p></article><article><b>Permanent history</b><p>Previous ownership and reissue events remain in the audit history.</p></article><article><b>Locked URL controls</b><p>Only the owner can unlock URL editing, suspend, restore or delete destinations.</p></article><article><b>Export-ready</b><p>Download QR images, text records, spreadsheets and print sheets.</p></article></div></section>
+  <section class="cta wrap"><div><span class="eyebrow">ALREADY HAVE A REFERENCE?</span><h2>Open your QR collection.</h2><p>Verify the registered email to view your own QR allocation.</p></div><a class="primary" href="customer_1.html">Continue to portal →</a></section>
+  <section class="wrap faq" id="faq"><span class="eyebrow">HELP CENTRE</span><h2>Frequently asked questions</h2><details><summary>Does every QR need separate owner approval?</summary><p>No. The owner approves the customer's entire initial QR allocation once, after every QR has a destination URL.</p></details><details><summary>Can customers change URLs after approval?</summary><p>No. After initial approval, destination fields are locked. The owner can unlock and change destinations after PIN verification.</p></details><details><summary>What happens to deleted QR IDs?</summary><p>They move to the Deleted / Reusable inventory. When selected for a new allocation, the ID is removed from that list and transferred to Active inventory.</p></details><details><summary>Will an old printed QR redirect to a new customer after its serial is reused?</summary><p>No. The visible serial and secret scan token are separate. A reissued serial gets a fresh scan token; the old token remains retired.</p></details></section>
+</main>
+<footer><div class="wrap foot"><div><b>Dynamic QR Platform</b><p>Simple QR allocation. Secure destination control.</p></div><div class="footlinks"><a href="#home">Home</a><a href="#how">How it works</a><a href="#faq">FAQ</a><a id="supportLink" href="mailto:support@example.com" hidden>Contact</a></div><small>© <span id="year"></span> Dynamic QR Platform. Complete legal and contact details before public launch.</small></div></footer>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Dynamic QR dialog"><div class="modalbox"><button class="close" type="button" aria-label="Close dialog" onclick="closeModal()">×</button><div id="modalContent"></div></div></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
