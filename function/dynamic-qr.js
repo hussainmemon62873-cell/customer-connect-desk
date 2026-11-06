@@ -13,7 +13,8 @@ function jsonResponse(body, status = 200, extraHeaders = {}) {
       'X-Frame-Options': 'DENY',
       'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
       'Cross-Origin-Resource-Policy': 'same-origin',
-      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+      'Strict-Transport-Security': 'max-age=31536000',
+      'X-Permitted-Cross-Domain-Policies': 'none',
       ...extraHeaders
     }
   });
@@ -174,7 +175,8 @@ export async function onRequest({ request, env }) {
   let body;
   try { body = await request.text(); }
   catch (_) { return jsonResponse({ ok: false, error: 'Could not read the API request body.' }, 400); }
-  if (!body || body.length > 100000) return jsonResponse({ ok: false, error: 'API request body is empty or too large.' }, 413);
+  // 250 QR destinations can approach 512 KB at the 2,048-character URL limit.
+  if (!body || body.length > 750000) return jsonResponse({ ok: false, error: 'API request body is empty or too large.' }, 413);
 
   try {
     const form = new URLSearchParams(body);

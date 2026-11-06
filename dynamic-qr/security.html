@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#172b4d">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Security practices, customer responsibilities and incident reporting for the Dynamic QR Platform.">
+  <link rel="canonical" href="https://customer-connect-desk.pages.dev/dynamic-qr/security.html">
+  <title>Security & Incident Response | Dynamic QR Platform</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="portal-pages.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="index_1.html"><span class="logo">Q</span><span><b>Dynamic QR</b><small>Smart destination management</small></span></a>
+  <nav aria-label="Main navigation"><a href="index_1.html">Home</a><a href="dynamic-qr-guide.html">Guide</a><a href="faq.html">FAQ</a><a class="navbtn" href="customer_1.html">Customer portal</a></nav>
+</header>
+<main class="wrap editorial-page"><article class="editorial-article">
+  <p class="eyebrow">TRUST & SAFETY</p>
+  <h1>Security & Incident Response</h1>
+  <div class="notice">PRE-LAUNCH REVIEW — This page describes the intended security approach. The operator must confirm that each control is enabled in the live environment, add verified contact details, and obtain appropriate legal review before publication.</div>
+  <p class="article-lead">Security is an ongoing responsibility. The platform is designed to reduce common risks through controlled access, server-side checks, protected QR destinations and operational review. No website, cloud provider, email system or internet-connected service can guarantee that every attack, outage or data incident will be prevented.</p>
+  <h2>1. Security controls designed into the service</h2>
+  <ul>
+    <li>Owner access uses a Google identity check and a separate owner PIN for sensitive management actions.</li>
+    <li>Customer access uses a registration reference, matching registered email address and a time-limited one-time verification code.</li>
+    <li>Owner permissions and destination changes are checked by the backend, not trusted solely to browser controls.</li>
+    <li>QR scan tokens are separate from visible serial numbers. Reissued serials receive new scan tokens; retired tokens are not intended to be reassigned.</li>
+    <li>Initial destinations require review and approval of the complete allocation before redirects are enabled.</li>
+    <li>HTTPS destinations are validated and common private or reserved IP destinations are rejected. This is not a malware, phishing or reputation guarantee.</li>
+    <li>Important owner actions and QR lifecycle events are recorded for operational review.</li>
+  </ul>
+  <h2>2. What customers and account owners must do</h2>
+  <ul>
+    <li>Protect the Google account and email inbox used to access the service. Use a unique password and multi-factor authentication where available.</li>
+    <li>Never share one-time verification codes, owner PINs, private session links or account recovery codes.</li>
+    <li>Use a secure, updated device and sign out or close the session on shared devices.</li>
+    <li>Check every destination URL before approving or distributing a QR code. Do not use the service for phishing, malware, impersonation or deceptive redirects.</li>
+    <li>Tell the operator promptly if an account, QR code, destination or device may have been compromised.</li>
+  </ul>
+  <h2>3. Reporting a suspected security incident</h2>
+  <p>Report suspected unauthorised access, exposed personal information, a malicious QR destination or an unexpected redirect to <strong>[MONITORED SECURITY / ABUSE EMAIL]</strong>. Include the QR serial or reference, the approximate time, the affected page and a short description. Do not email passwords, PINs or one-time codes.</p>
+  <p>The operator will assess reports, take reasonable containment and investigation steps, preserve relevant evidence where appropriate, and provide notifications to affected people and authorities when required by applicable law. A report is not confirmation that a breach occurred.</p>
+  <h2>4. Service providers and availability</h2>
+  <p>The service depends on hosting, identity, email, database and network providers. A failure or security event at a provider, a customer's email account, a linked destination website or the wider internet may affect availability or confidentiality. The operator will manage these dependencies as described in the Privacy Policy and applicable service terms.</p>
+  <h2>5. No promise of perfect security</h2>
+  <p>Security measures reduce risk; they do not eliminate it. The operator does not promise that the platform will be uninterrupted, error-free or immune from every unauthorised access attempt. Nothing on this page removes a duty or liability that applicable law does not permit the operator to exclude.</p>
+  <h2>6. Contact and review</h2>
+  <p>Security contact: <strong>[MONITORED SECURITY EMAIL]</strong><br>Privacy / grievance contact: <strong>[PRIVACY CONTACT EMAIL]</strong><br>Effective date: <strong>[DATE]</strong></p>
+</article></main>
+<footer><div class="wrap foot"><div><b>Dynamic QR Platform</b><p>Managed QR allocation and destination workflows.</p></div><div class="footlinks"><a href="index_1.html">Home</a><a href="dynamic-qr-guide.html">Guide</a><a href="faq.html">FAQ</a><a href="security.html">Security</a><a href="privacy-policy.html">Privacy</a><a href="terms-and-conditions.html">Terms</a><a href="contact.html">Contact</a></div><small>© <span id="year"></span> Dynamic QR Platform</small></div></footer>
+<script>document.getElementById('year').textContent=new Date().getFullYear()</script>
+</body>
+</html>
