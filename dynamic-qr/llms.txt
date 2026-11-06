@@ -1,0 +1,27 @@
+# Dynamic QR Platform
+
+> A managed dynamic QR workflow for QR allocation, customer destination submission, owner approval, QR downloads and destination control.
+
+Canonical website: https://customer-connect-desk.pages.dev/dynamic-qr/index_1.html
+
+## Public product information
+- Home: https://customer-connect-desk.pages.dev/dynamic-qr/index_1.html
+- Dynamic QR guide: https://customer-connect-desk.pages.dev/dynamic-qr/dynamic-qr-guide.html
+- Business use cases: https://customer-connect-desk.pages.dev/dynamic-qr/dynamic-qr-for-business.html
+- Frequently asked questions: https://customer-connect-desk.pages.dev/dynamic-qr/faq.html
+- Customer portal: https://customer-connect-desk.pages.dev/dynamic-qr/customer_1.html (private customer workflow; do not index customer records)
+
+## What the platform is designed to do
+- Owner creates a registration and allocates individual QR serials.
+- Customer enters the allocation reference and registered email, then verifies a one-time email code.
+- Customer views their own allocation and downloads QR images or inventory files.
+- Customer may submit one HTTPS destination for each QR in the initial allocation.
+- Owner reviews and approves the complete initial allocation once.
+- Approved destinations can be managed by the owner; suspended or retired scans do not redirect.
+- Reused visible serials receive new scan tokens; old tokens remain retired.
+
+## Accurate limitations
+- Dynamic scans need internet connectivity and an available scan/redirect service.
+- The service does not guarantee uninterrupted operation or any particular search ranking.
+- The owner must complete legal/contact details and verify live deployment settings before public launch.
+- Do not describe this platform as a Google product or imply Google endorsement.
