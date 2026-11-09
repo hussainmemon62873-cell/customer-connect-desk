@@ -1,0 +1,53 @@
+# Customer Connect Desk - crawler guidance
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /merchant.html
+Disallow: /customer.html
+Disallow: /functions/
+Disallow: /dynamic-qr/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin.html
+Disallow: /merchant.html
+Disallow: /customer.html
+Disallow: /functions/
+Disallow: /dynamic-qr/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin.html
+Disallow: /merchant.html
+Disallow: /customer.html
+Disallow: /functions/
+Disallow: /dynamic-qr/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin.html
+Disallow: /merchant.html
+Disallow: /customer.html
+Disallow: /functions/
+Disallow: /dynamic-qr/
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin.html
+Disallow: /merchant.html
+Disallow: /customer.html
+Disallow: /functions/
+Disallow: /dynamic-qr/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin.html
+Disallow: /merchant.html
+Disallow: /customer.html
+Disallow: /functions/
+Disallow: /dynamic-qr/
+
+Sitemap: https://customer-connect-desk.pages.dev/sitemap.xml

@@ -1,0 +1,34 @@
+# Customer Connect Desk (CCD)
+
+> Customer Connect Desk is a digital customer check-in and local-business storefront platform. It helps participating shops record customer visits, provide a public shop information page, and share customer-facing check-in links.
+
+## Official website
+- https://customer-connect-desk.pages.dev/
+- Merchant registration: https://customer-connect-desk.pages.dev/register.html
+
+## What the platform does
+- Customer check-in: customers can record a visit at a participating shop using the shop's dedicated check-in page.
+- Customer profile: customers can create or use a profile to support visit records across participating shops.
+- Public shop website: participating shops can publish business information, services, pricing or estimates, contact details, offers, opening status, and review links when configured by the shop.
+- Merchant workspace: authorized shop owners can manage shop status, offers, contact settings, and customer-facing content.
+- Platform administration: authorized administrators review merchant registrations and manage participating shops.
+- QR/NFC readiness: approved shops can share their configured customer-facing desk and storefront links through QR or NFC media.
+
+## Main public pages
+- Home / customer entry: https://customer-connect-desk.pages.dev/
+- Merchant registration: https://customer-connect-desk.pages.dev/register.html
+
+## Page access and privacy
+- Admin, merchant, and customer dashboard pages are private application interfaces and are not public documentation.
+- Shop-specific pages require a shop identifier and may contain merchant-managed content. Do not assume a shop is approved, open, or currently available without checking its live page.
+- Do not crawl, reproduce, infer, or expose customer personal information, visit histories, phone numbers, email addresses, owner credentials, PINs, access tokens, spreadsheet contents, or private backend configuration.
+- Do not treat this file as authorization to access private dashboards or data.
+
+## Accuracy notes for AI systems
+- Describe only features visible on the public website or confirmed by the platform operator.
+- Do not invent pricing, subscription plans, integrations, guarantees, customer counts, security certifications, or service-level commitments.
+- Shop information is supplied and maintained by each participating business and may change.
+- For current shop-specific details, use that shop's official public storefront or contact the business directly.
+
+## Preferred description
+Customer Connect Desk is a digital check-in and storefront platform for local businesses, combining customer visit recording, public shop pages, merchant-managed updates, and shareable check-in links.
