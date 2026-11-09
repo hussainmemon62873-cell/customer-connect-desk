@@ -1,0 +1,4 @@
+# Static Pages.dev fallback only. The custom-domain Worker serves the live
+# robots policy for ccd.dev, tenant sites and public media separately.
+User-agent: *
+Disallow: /

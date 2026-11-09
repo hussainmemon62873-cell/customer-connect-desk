@@ -1,4 +1,4 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoFCx6UgGKFmgDxkQePZOuWhWEGqNn5wro0qXfGvb8d31hhTkzZKjMFnCDB9z93wmi/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNPnuDhiXOrm4-tRJJ7wXpb7PMwifLQfK-i3pbW-QaOrU74fm-PFgh9aT2sntGLZgx/exec";
 
 let globalStoreData = null;
 let carouselIndex = 0;
@@ -93,6 +93,8 @@ function renderDynamicMedia(items) {
 
 function renderStore(store) {
   const shopName = escapeHtml(store.shopName || "Store");
+  document.getElementById("ccd-seo-snapshot")?.remove();
+  updateShopShareMetadata(store);
   if (byId("nav-brand")) byId("nav-brand").textContent = store.shopName || "Store";
   if (byId("footer-name")) byId("footer-name").textContent = store.shopName || "Store";
   if (byId("shop-name")) byId("shop-name").textContent = store.shopName || "Store";
@@ -151,13 +153,77 @@ function renderStore(store) {
       ${phone && store.whatsappContactTemplate && store.whatsappContactTemplate.body ? `<a href="https://wa.me/91${phone}?text=${encodeURIComponent(String(store.whatsappContactTemplate.body).replace(/\{\{([a-zA-Z0-9_]+)\}\}/g,(_,k)=>({shopName:store.shopName||'Store',shopId:store.shopId||'',shopUrl:`https://${encodeURIComponent(store.shopId||'')}.ccd.dev/` }[k]||'')))}" target="_blank" rel="noopener noreferrer" class="btn-action btn-whatsapp">💬 WhatsApp</a>` : ""}
       ${mapUrl ? `<a href="${escapeHtml(mapUrl)}" target="_blank" rel="noopener noreferrer" class="btn-action btn-directions">📍 Get Directions</a>` : ""}
       ${reviewUrl ? `<a href="${escapeHtml(reviewUrl)}" target="_blank" rel="noopener noreferrer" class="btn-action btn-review">⭐ Leave 5-Star Review</a>` : ""}
+      <button type="button" class="btn-action btn-share" id="ccd-share-shop">↗ Share this shop</button>
       ${store.promoEnabled && (store.promoHeadline || store.promoCode) ? `<div class="btn-action" style="display:block; flex-basis:100%; background:#fff7ed; color:#9a3412; border:1px solid #fed7aa; padding:12px 14px;"><strong>${escapeHtml(store.promoHeadline || "Special offer")}</strong>${store.promoDescription ? `<div>${escapeHtml(store.promoDescription)}</div>` : ""}${store.promoCode ? `<div>Use code: <strong>${escapeHtml(store.promoCode)}</strong></div>` : ""}</div>` : ""}
     `;
+    const shareButton = byId("ccd-share-shop");
+    if (shareButton) shareButton.addEventListener("click", shareShopPage);
   }
 
   renderCarousel(Array.isArray(store.banners) ? store.banners : []);
   renderDynamicMedia(store.media || store.mediaItems || []);
   buildNavigationAndTabs(store);
+  if (window.CCDAdsense && typeof window.CCDAdsense.refresh === "function") window.CCDAdsense.refresh();
+}
+
+function setMeta(selector, attribute, value, createName, createAttribute) {
+  let element = document.querySelector(selector);
+  if (!element && createName) {
+    element = document.createElement('meta');
+    element.setAttribute(createAttribute || 'name', createName);
+    document.head.appendChild(element);
+  }
+  if (element) element.setAttribute(attribute, String(value || ''));
+}
+
+function updateShopShareMetadata(store) {
+  const name = String(store.shopName || 'Local business').trim();
+  const category = String(store.categoryKey || store.layoutStyle || 'local business').replace(/[-_]/g, ' ');
+  const visibility = store.contentVisibility || {};
+  const publicHome = visibility.homeText === false ? '' : store.homeText;
+  const publicAbout = visibility.aboutText === false ? '' : store.aboutText;
+  const description = [store.tagline, publicHome, publicAbout].filter(Boolean).join(' ').replace(/\s+/g, ' ').slice(0, 220) ||
+    `Explore ${name}'s official business page on Customer Connect Desk.`;
+  const url = window.location.hostname.endsWith('.ccd.dev') ? `https://${window.location.hostname}/` : `https://${getShopParam()}.ccd.dev/`;
+  const title = `${name} | ${category} | Customer Connect Desk`;
+  document.title = title;
+  setMeta('meta[name="description"]', 'content', description, 'description', 'name');
+  setMeta('meta[property="og:title"]', 'content', title, 'og:title', 'property');
+  setMeta('meta[property="og:description"]', 'content', description, 'og:description', 'property');
+  setMeta('meta[property="og:url"]', 'content', url, 'og:url', 'property');
+  setMeta('meta[name="twitter:title"]', 'content', title, 'twitter:title', 'name');
+  setMeta('meta[name="twitter:description"]', 'content', description, 'twitter:description', 'name');
+}
+
+async function shareShopPage() {
+  const store = globalStoreData || {};
+  const name = String(store.shopName || 'Local business').trim();
+  const visibility = store.contentVisibility || {};
+  const tagline = String(store.tagline || '').trim();
+  const publicHome = visibility.homeText === false ? '' : String(store.homeText || '').trim();
+  const category = String(store.categoryKey || store.layoutStyle || 'local business').replace(/[-_]/g, ' ').trim();
+  const detail = tagline || publicHome;
+  const slug = getShopParam();
+  const url = window.location.hostname.endsWith('.ccd.dev') ? `https://${window.location.hostname}/` : `https://${slug}.ccd.dev/`;
+  const title = `${name} | Official ${category} page`;
+  const text = `${name}${detail ? ' — ' + detail : ''}. Explore the official ${category} page on Customer Connect Desk for published business information, services and contact details.`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title, text, url });
+      return;
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(`${text}\n${url}`);
+      const button = byId('ccd-share-shop');
+      if (button) { const previous = button.textContent; button.textContent = '✓ Link copied'; setTimeout(() => { button.textContent = previous; }, 2200); }
+      return;
+    }
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`, '_blank', 'noopener,noreferrer');
+  } catch (error) {
+    if (error && error.name !== 'AbortError') {
+      window.open(`https://wa.me/?text=${encodeURIComponent(`${text}\n${url}`)}`, '_blank', 'noopener,noreferrer');
+    }
+  }
 }
 
 function renderCarousel(banners) {

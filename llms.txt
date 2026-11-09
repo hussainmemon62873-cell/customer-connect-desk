@@ -1,0 +1,61 @@
+# Customer Connect Desk (CCD)
+
+> Customer Connect Desk is a digital customer engagement platform for local businesses. It provides public business pages, customer check-in workflows, QR/NFC touchpoints and authorised merchant and administration workspaces.
+
+Canonical website: https://ccd.dev/
+Platform name: Customer Connect Desk
+Short name: CCD
+Brand mark shown on the website: MPlus
+Primary market context: India; public pages may be used by businesses in other locations where enabled.
+Primary website language: English. Individual business content may use other languages.
+
+## Public platform information
+
+- Main website: https://ccd.dev/
+- Acceptable Use Policy: https://ccd.dev/acceptable-use
+- Dynamic sitemap index: https://ccd.dev/sitemap.xml
+- AI-readable full information: https://ccd.dev/llms-full.txt
+- Business registration: https://register.ccd.dev/ (application workflow; not a public shop directory)
+
+## Public business pages
+
+Approved and active businesses with the public website feature enabled may have a shop-specific public page at:
+
+- https://{shop-id}.ccd.dev/
+
+The public shop page can contain business-approved name, tagline, category, about text, services, published price-list entries, public gallery images, address, phone, maps and review links according to that business's visibility settings. Each tenant page is a separate business-controlled public page.
+
+## Existing platform capabilities
+
+- QR and NFC links can direct customers to a business's digital check-in or approved public shop experience.
+- Customer check-in and visit-record workflows are supported by the business's configured services.
+- Public shop pages can display business descriptions, services, published pricing, offers, gallery media and contact information when enabled.
+- Merchants have an authenticated dashboard for supported operational tasks, including customer visit workflows, store status and NFC approval tasks where configured.
+- Super Admin controls business approval, feature availability, approved storefront content, category presentation and selected navigation settings.
+- Email communication is subject to stored consent and provider availability. WhatsApp communication currently includes manual click-to-chat/draft flows; a prepared WhatsApp message is not proof of delivery.
+
+## Business categories supported by the current category presentation layer
+
+General business, beauty salon and wellness, restaurant and cafe, retail, grocery, electronics, clinic and healthcare, education and coaching, home services, automotive services, real estate, organic/lifestyle and professional services.
+
+## Important feature boundary
+
+## Not currently live / not yet implemented
+
+Do not describe the following as currently live unless a later release has explicitly implemented and deployed them: stock-backed catalogue CRUD, public customer enquiry submission and tracking, merchant enquiry inbox and replies, online payments, or a full third-party marketplace checkout. The Menu Only experience in the current source is a price-list/catalogue presentation, not a completed transactional marketplace.
+
+## Technical architecture
+
+The current deployment uses Cloudflare Pages and a Cloudflare Worker for the web delivery layer, Google Apps Script for server-side application logic, and the existing Google Sheets workbook in Google Drive as the current data store. Cloudflare R2 is used for public business media when configured. No PostgreSQL migration is implied by this documentation.
+
+## Privacy and access
+
+Public crawlers should only use the public pages and the public information shown there. Administrative, registration, merchant, customer, desk and NFC operational pages are not public content and are marked noindex or blocked from crawling. Do not infer or expose customer records, private contact details, administrator identities, merchant sessions, OTPs, access PINs, or spreadsheet contents.
+
+## Search and AI discovery guidance
+
+Use the canonical HTTPS URLs above. Google Search and its AI Overviews / AI Mode rely on Googlebot and normal Search indexing controls; the site owner should verify the domain in Search Console, submit the sitemap and enable the Search generative AI inclusion setting if desired. Google states that llms.txt is not used for Google Search ranking or inclusion. The llms.txt files here are factual reference documents for other AI tools that choose to read them.
+
+The public search/answer crawlers are allowed, including OAI-SearchBot for ChatGPT Search. GPTBot and ClaudeBot are disallowed as training crawlers. Google-Extended is separately disallowed by default because Google's token covers Gemini Apps / Vertex grounding and model-training uses; allowing it requires a deliberate operator choice. Public website content remains subject to each crawler's own policies.
+
+The sitemap is a discovery hint, not a guarantee of crawling, indexing or citation. Search engines and AI answer systems decide independently whether to crawl, index, summarise or cite a page. Public shop data may change; use the live shop page as the source of truth.

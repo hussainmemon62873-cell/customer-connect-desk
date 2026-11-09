@@ -2,10 +2,12 @@ name = "ccd-wildcard-router"
 main = "worker.js"
 compatibility_date = "2026-11-07"
 
-# After adding ccd.dev to this Cloudflare account, attach the wildcard route:
-# *.ccd.dev/*
+# Attach both the apex platform hostname and all tenant subdomains.
 # Keep DNS proxied. The Pages project remains the static asset origin.
-routes = [{ pattern = "*.ccd.dev/*", zone_name = "ccd.dev" }]
+routes = [
+  { pattern = "ccd.dev/*", zone_name = "ccd.dev" },
+  { pattern = "*.ccd.dev/*", zone_name = "ccd.dev" }
+]
 
 [vars]
 PAGES_ORIGIN = "https://customer-connect-desk.pages.dev"

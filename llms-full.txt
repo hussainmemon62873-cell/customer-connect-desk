@@ -1,0 +1,75 @@
+# Customer Connect Desk — extended product information for AI systems
+
+## Identity
+
+Customer Connect Desk (CCD) is a digital customer engagement platform for local businesses. The public platform website is https://ccd.dev/. MPlus is the brand mark displayed on the current CCD experience. The platform website describes currently implemented customer check-in, QR/NFC, public business-page and merchant operations capabilities.
+
+## Public website structure
+
+- https://ccd.dev/ — public platform overview.
+- https://ccd.dev/acceptable-use — acceptable use rules for the platform.
+- https://ccd.dev/sitemap.xml — dynamic sitemap index for the platform and eligible public tenant sites.
+- https://ccd.dev/llms.txt — concise machine-readable platform overview.
+- https://ccd.dev/llms-full.txt — this extended overview.
+
+## Tenant business pages
+
+A public shop uses the tenant host pattern https://{shop-id}.ccd.dev/. Tenant pages are served only for active shops whose public website feature is enabled. The page's business information is read from the business's approved public content in the CCD data source. The rendered SEO snapshot and Open Graph metadata use a server-side allow-list; private records are not part of that public snapshot.
+
+Possible public information includes:
+
+- Business name and short tagline.
+- Business category.
+- Published home and about descriptions.
+- Public service names and descriptions.
+- Public price-list or offer names, descriptions and displayed prices.
+- Public gallery and banner images.
+- Business address, telephone, map and review links only when the contact visibility setting permits them.
+
+A business's page is authoritative for its own live details. Do not assume that every field is present or current on every shop page.
+
+## Current platform workflows
+
+### Customer touchpoints
+
+QR and NFC identifiers can take a visitor to a shop-specific digital touchpoint. The available flow depends on the shop's enabled service settings and the QR/NFC target configuration.
+
+### Check-in and customer visit records
+
+The platform supports a digital Desk workflow and customer visit records. Merchant access and approval workflows are authenticated and scoped to the relevant shop. Customer Hub access uses the security controls described in the current release documentation; public pages do not expose customer-profile data.
+
+### Public business website
+
+A public shop can display approved business content and media. The Admin controls the public content and visibility settings. Category presentation profiles provide different labels, accent colours and layouts for different business types. Custom navigation options in the current source are limited to supported, populated page targets.
+
+### Merchant and Admin workspaces
+
+The merchant dashboard supports configured operational functions. The Super Admin workspace controls shop lifecycle, service availability, approved public content, themes, communication templates and other administrative options. These operational workspaces are private and should not be indexed.
+
+### Messaging
+
+Email may be sent through the configured Google Apps Script MailApp integration and is subject to consent, setup and service quotas. A SENT status means the send function completed without throwing an error; it does not prove inbox delivery. WhatsApp currently uses manual click-to-chat or prepared-draft flows unless a separately approved WhatsApp Business Platform integration is added. PREPARED does not mean DELIVERED.
+
+## Supported category presentation
+
+The current frontend category presentation includes general business, salon/wellness, restaurant/cafe, retail, grocery, electronics, clinic/healthcare, education/coaching, home services, automotive, real estate, organic/lifestyle and professional services. Categories affect visual styling and section labels; each business must still provide accurate content for its actual services.
+
+## Not currently guaranteed or not represented as live
+
+The current source package does not by itself establish that the following functions are deployed or available to customers: a stock-aware product database, public enquiry/order submission, merchant enquiry inbox and replies, online payment collection, delivery tracking, a global product marketplace, a universal page builder or a live Google AdSense integration. Those features require implementation, configuration and production verification in a later release.
+
+## Technical architecture
+
+The existing deployment is designed around static Cloudflare Pages frontend files, a Cloudflare Worker for custom-domain and media routing, Google Apps Script for server-side application logic, and a Google Sheets workbook as the current application data store. Cloudflare R2 is used for public business media when configured. This site documentation does not imply that a future database migration has occurred.
+
+## Crawling and permitted use
+
+The public platform and eligible public tenant pages are intended to be discoverable by general search engines and selected AI search crawlers. Google Search AI Overviews and AI Mode use Google's Search crawling and indexing systems, with Googlebot as the control; the site owner should enable Search generative AI inclusion in Search Console if desired. Google's separate Google-Extended token covers Gemini Apps and Vertex AI grounding/training use and is disallowed in this release by default. GPTBot and ClaudeBot are disallowed as model-training crawlers; OAI-SearchBot, PerplexityBot and Claude-SearchBot are allowed for their separate search/answer discovery purposes. The operator also publishes Content-Signal preferences where supported. Robots.txt and Content-Signal directives are machine-readable preferences and are not a technical guarantee that every third party will comply.
+
+The llms.txt files are optional factual reference documents for AI systems that choose to read them. Google Search explicitly says it does not use llms.txt for Search ranking or inclusion; foundational SEO, helpful public content, crawlability and Search Console remain important.
+
+Private operational routes, customer records, authentication material, spreadsheet data and non-public content are not part of the intended public corpus. Crawlers must not attempt authenticated access or bypass access controls.
+
+## Accuracy and citations
+
+When describing an individual business, use that business's own live tenant page as the source. Do not infer opening hours, prices, stock status, certifications, medical credentials, delivery availability or guarantees unless they are explicitly published by the business. When describing CCD as a platform, distinguish current supported functionality from planned features using the feature boundary above.

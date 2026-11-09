@@ -1,0 +1,656 @@
+[1/6] Apps Script syntax
+[2/6] Browser JavaScript syntax
+[3/6] Static frontend/backend audit
+{
+  "files": {
+    "Code.gs": {
+      "exists": true,
+      "bytes": 134882
+    },
+    "index.html": {
+      "exists": true,
+      "bytes": 15041
+    },
+    "admin.html": {
+      "exists": true,
+      "bytes": 20361
+    },
+    "admin.css": {
+      "exists": true,
+      "bytes": 13248
+    },
+    "admin.js": {
+      "exists": true,
+      "bytes": 74832
+    },
+    "merchant.html": {
+      "exists": true,
+      "bytes": 5673
+    },
+    "merchant.css": {
+      "exists": true,
+      "bytes": 5219
+    },
+    "merchant.js": {
+      "exists": true,
+      "bytes": 29456
+    },
+    "desk.html": {
+      "exists": true,
+      "bytes": 3560
+    },
+    "desk.css": {
+      "exists": true,
+      "bytes": 3886
+    },
+    "desk.js": {
+      "exists": true,
+      "bytes": 19157
+    },
+    "customer.html": {
+      "exists": true,
+      "bytes": 4031
+    },
+    "customer.css": {
+      "exists": true,
+      "bytes": 3600
+    },
+    "customer.js": {
+      "exists": true,
+      "bytes": 6216
+    },
+    "register.html": {
+      "exists": true,
+      "bytes": 4499
+    },
+    "register.css": {
+      "exists": true,
+      "bytes": 3525
+    },
+    "register.js": {
+      "exists": true,
+      "bytes": 6634
+    },
+    "shop.html": {
+      "exists": true,
+      "bytes": 4328
+    },
+    "shop.css": {
+      "exists": true,
+      "bytes": 7184
+    },
+    "shop.js": {
+      "exists": true,
+      "bytes": 26512
+    },
+    "nfc.html": {
+      "exists": true,
+      "bytes": 1901
+    },
+    "nfc.css": {
+      "exists": true,
+      "bytes": 1327
+    },
+    "nfc.js": {
+      "exists": true,
+      "bytes": 4005
+    }
+  },
+  "pages": {
+    "admin": {
+      "html_ids": 106,
+      "duplicate_ids": [],
+      "missing_assets": [],
+      "missing_label_targets": [],
+      "missing_anchor_targets": [],
+      "missing_js_element_refs": [],
+      "dynamic_ids_created_by_js": [
+        "btn-global-policies",
+        "ccd-business-category",
+        "ccd-content-visibility",
+        "ccd-dashboard-theme",
+        "ccd-experience-mode",
+        "ccd-experience-studio",
+        "ccd-global-policy-modal",
+        "ccd-media-add-image",
+        "ccd-media-add-video",
+        "ccd-media-editor",
+        "ccd-media-preview",
+        "ccd-media-rows",
+        "ccd-media-status",
+        "ccd-media-upload",
+        "ccd-merchant-pin",
+        "ccd-merchant-pin-save",
+        "ccd-merchant-pin-status",
+        "ccd-nav-add",
+        "ccd-nav-preset",
+        "ccd-nav-rows",
+        "ccd-policy-close",
+        "ccd-policy-cookies",
+        "ccd-policy-faq",
+        "ccd-policy-privacy",
+        "ccd-policy-save",
+        "ccd-policy-terms",
+        "ccd-publish-aboutText",
+        "ccd-publish-contact",
+        "ccd-publish-homeText",
+        "ccd-publish-pricing",
+        "ccd-publish-services",
+        "ccd-service-phase1",
+        "ccd-service-phase2",
+        "ccd-services-save",
+        "ccd-services-status",
+        "ccd-theme-editor",
+        "ccd-theme-pin",
+        "ccd-theme-preview",
+        "ccd-theme-save",
+        "ccd-theme-status",
+        "lifecycle-security-pin"
+      ],
+      "missing_inline_handler_functions": [],
+      "has_css_link": true,
+      "has_js_link": true,
+      "forms": [
+        "wizard-form"
+      ],
+      "responsive_media_queries": 3,
+      "css_brace_balance": 0,
+      "script_src": [
+        "https://accounts.google.com/gsi/client",
+        "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js",
+        "admin.js",
+        "brand-loader.js"
+      ]
+    },
+    "merchant": {
+      "html_ids": 29,
+      "duplicate_ids": [],
+      "missing_assets": [],
+      "missing_label_targets": [],
+      "missing_anchor_targets": [],
+      "missing_js_element_refs": [],
+      "dynamic_ids_created_by_js": [
+        "ccd-merchant-mobile-styles",
+        "ccd-theme-overrides",
+        "merchant-add-price",
+        "merchant-approval-list",
+        "merchant-approval-section",
+        "merchant-communication-list",
+        "merchant-communication-section",
+        "merchant-customer-list",
+        "merchant-customer-section",
+        "merchant-pricing-list",
+        "merchant-pricing-section",
+        "merchant-refresh-customers",
+        "merchant-save-pricing"
+      ],
+      "missing_inline_handler_functions": [],
+      "has_css_link": true,
+      "has_js_link": true,
+      "forms": [],
+      "responsive_media_queries": 1,
+      "css_brace_balance": 0,
+      "script_src": [
+        "merchant.js",
+        "brand-loader.js"
+      ]
+    },
+    "desk": {
+      "html_ids": 21,
+      "duplicate_ids": [],
+      "missing_assets": [],
+      "missing_label_targets": [],
+      "missing_anchor_targets": [],
+      "missing_js_element_refs": [],
+      "dynamic_ids_created_by_js": [
+        "btn-next-customer",
+        "ccd-confirm-details",
+        "ccd-email-consent",
+        "ccd-email-optin",
+        "ccd-on-premise-notice",
+        "ccd-profile-privacy-hint",
+        "ccd-returning-confirm",
+        "ccd-whatsapp-consent",
+        "ccd-whatsapp-optin",
+        "toast-wrap"
+      ],
+      "missing_inline_handler_functions": [],
+      "has_css_link": true,
+      "has_js_link": true,
+      "forms": [
+        "checkin-form"
+      ],
+      "responsive_media_queries": 1,
+      "css_brace_balance": 0,
+      "script_src": [
+        "desk.js",
+        "brand-loader.js"
+      ]
+    },
+    "customer": {
+      "html_ids": 19,
+      "duplicate_ids": [],
+      "missing_assets": [],
+      "missing_label_targets": [],
+      "missing_anchor_targets": [],
+      "missing_js_element_refs": [],
+      "dynamic_ids_created_by_js": [],
+      "missing_inline_handler_functions": [],
+      "has_css_link": true,
+      "has_js_link": true,
+      "forms": [
+        "login-form"
+      ],
+      "responsive_media_queries": 1,
+      "css_brace_balance": 0,
+      "script_src": [
+        "customer.js",
+        "brand-loader.js"
+      ]
+    },
+    "register": {
+      "html_ids": 25,
+      "duplicate_ids": [],
+      "missing_assets": [],
+      "missing_label_targets": [],
+      "missing_anchor_targets": [],
+      "missing_js_element_refs": [],
+      "dynamic_ids_created_by_js": [],
+      "missing_inline_handler_functions": [],
+      "has_css_link": true,
+      "has_js_link": true,
+      "forms": [
+        "mobile-lookup-form",
+        "email-lookup-form",
+        "register-form"
+      ],
+      "responsive_media_queries": 2,
+      "css_brace_balance": 0,
+      "script_src": [
+        "register.js",
+        "brand-loader.js"
+      ]
+    },
+    "shop": {
+      "html_ids": 32,
+      "duplicate_ids": [],
+      "missing_assets": [],
+      "missing_label_targets": [],
+      "missing_anchor_targets": [],
+      "missing_js_element_refs": [
+        "ccd-seo-snapshot"
+      ],
+      "dynamic_ids_created_by_js": [
+        "ccd-dynamic-media",
+        "ccd-media-grid",
+        "ccd-media-style",
+        "ccd-shop-nav-wrap-style",
+        "ccd-store-presentation-styles",
+        "view-media"
+      ],
+      "missing_inline_handler_functions": [],
+      "has_css_link": true,
+      "has_js_link": true,
+      "forms": [],
+      "responsive_media_queries": 1,
+      "css_brace_balance": 0,
+      "script_src": [
+        "adsense.js",
+        "shop.js",
+        "brand-loader.js"
+      ]
+    },
+    "nfc": {
+      "html_ids": 7,
+      "duplicate_ids": [],
+      "missing_assets": [],
+      "missing_label_targets": [],
+      "missing_anchor_targets": [],
+      "missing_js_element_refs": [],
+      "dynamic_ids_created_by_js": [],
+      "missing_inline_handler_functions": [],
+      "has_css_link": true,
+      "has_js_link": true,
+      "forms": [
+        "nfc-form"
+      ],
+      "responsive_media_queries": 0,
+      "css_brace_balance": 0,
+      "script_src": [
+        "nfc.js",
+        "brand-loader.js"
+      ]
+    },
+    "index": {
+      "html_ids": 21,
+      "duplicate_ids": [],
+      "forms": [
+        "registration-form"
+      ],
+      "script_src": [
+        "https://accounts.google.com/gsi/client",
+        "brand-loader.js"
+      ],
+      "local_refs_missing": []
+    }
+  },
+  "backend": {
+    "function_count": 117,
+    "duplicate_functions": [],
+    "doPost_count": 1,
+    "cache_service_references": 19,
+    "google_token_verification_present": true
+  },
+  "api": {
+    "frontend_actions": [
+      "adminAuth",
+      "checkUser",
+      "customerAuthStart",
+      "customerAuthVerify",
+      "customerCheckin",
+      "getAdminData",
+      "getCommunicationStatus",
+      "getCustomerDashboardData",
+      "getGlobalPolicies",
+      "getMerchantData",
+      "getMessageTemplates",
+      "getPriceHistory",
+      "getRegistrationStatus",
+      "getStoreConfig",
+      "getStoreContentAdmin",
+      "logMerchantWhatsAppDraft",
+      "logReviewOnly",
+      "logWhatsAppDraft",
+      "nfcDecision",
+      "nfcStart",
+      "registerStore",
+      "registrationLookup",
+      "saveMessageTemplate",
+      "saveUser",
+      "sendOwnerEmail",
+      "setMerchantAccessPin",
+      "setRegistrationRequestStatus",
+      "setShopDashboardTheme",
+      "setShopLifecycle",
+      "setShopServices",
+      "setStoreRegistrationStatus",
+      "updateGlobalPolicies",
+      "updateMerchantPricing",
+      "updateMerchantProfile",
+      "updateMerchantPromo",
+      "updateStoreContent",
+      "updateStoreStatus",
+      "verifyMerchantPin"
+    ],
+    "backend_router_actions": [
+      "adminAuth",
+      "checkCustomerStatus",
+      "checkUser",
+      "customerAuthStart",
+      "customerAuthVerify",
+      "customerCheckin",
+      "deleteStore",
+      "getAdminData",
+      "getCommunicationStatus",
+      "getCustomerDashboardData",
+      "getGlobalPolicies",
+      "getMerchantData",
+      "getMessageTemplates",
+      "getOwnerStore",
+      "getPriceHistory",
+      "getPublicSeoDirectory",
+      "getPublicStoreSEO",
+      "getRegistrationStatus",
+      "getStoreConfig",
+      "getStoreContentAdmin",
+      "getStoreProfile",
+      "logMerchantWhatsAppDraft",
+      "logReviewOnly",
+      "logWhatsAppDraft",
+      "nfcDecision",
+      "nfcStart",
+      "recordCustomerVisit",
+      "registerStore",
+      "registrationLookup",
+      "saveMessageTemplate",
+      "saveStore",
+      "saveUser",
+      "sendOwnerEmail",
+      "setMerchantAccessPin",
+      "setRegistrationRequestStatus",
+      "setShopDashboardTheme",
+      "setShopLifecycle",
+      "setShopServices",
+      "setStoreRegistrationStatus",
+      "toggleLiveDeskStatus",
+      "updateCoupon",
+      "updateGlobalPolicies",
+      "updateMerchantPricing",
+      "updateMerchantProfile",
+      "updateMerchantPromo",
+      "updateStoreContent",
+      "updateStoreStatus",
+      "verifyAdminSession",
+      "verifyAdminUploadTarget",
+      "verifyMerchantPin"
+    ],
+    "missing_backend_handlers": [],
+    "backend_actions_not_used_by_current_frontend": [
+      "checkCustomerStatus",
+      "deleteStore",
+      "getOwnerStore",
+      "getPublicSeoDirectory",
+      "getPublicStoreSEO",
+      "getStoreProfile",
+      "recordCustomerVisit",
+      "saveStore",
+      "toggleLiveDeskStatus",
+      "updateCoupon",
+      "verifyAdminSession",
+      "verifyAdminUploadTarget"
+    ]
+  },
+  "global": {
+    "apps_script_urls": [
+      "https://script.google.com/macros/s/AKfycbzNPnuDhiXOrm4-tRJJ7wXpb7PMwifLQfK-i3pbW-QaOrU74fm-PFgh9aT2sntGLZgx/exec"
+    ],
+    "single_consistent_apps_script_url": true,
+    "google_identity_client_id_in_backend": "913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com",
+    "google_identity_client_id_in_admin": "913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com",
+    "google_identity_client_id_in_index": "913181271941-qvtfqq8l2c2imgpsnsh4k1gbdafr0t8e.apps.googleusercontent.com",
+    "dashboard_theme_count_admin": 20,
+    "dashboard_theme_count_merchant": 20,
+    "dashboard_theme_count_backend": 20,
+    "dashboard_theme_ids_match": true,
+    "todo_markers": [],
+    "required_source_file_count": 23,
+    "all_required_source_files_present": true,
+    "mplus_loader_all_pages": true,
+    "mplus_loader_pages": {
+      "index": {
+        "loader_markup": true,
+        "loader_css": true,
+        "loader_script": true,
+        "mplus_logo_asset": true
+      },
+      "admin": {
+        "loader_markup": true,
+        "loader_css": true,
+        "loader_script": true,
+        "mplus_logo_asset": true
+      },
+      "merchant": {
+        "loader_markup": true,
+        "loader_css": true,
+        "loader_script": true,
+        "mplus_logo_asset": true
+      },
+      "desk": {
+        "loader_markup": true,
+        "loader_css": true,
+        "loader_script": true,
+        "mplus_logo_asset": true
+      },
+      "customer": {
+        "loader_markup": true,
+        "loader_css": true,
+        "loader_script": true,
+        "mplus_logo_asset": true
+      },
+      "register": {
+        "loader_markup": true,
+        "loader_css": true,
+        "loader_script": true,
+        "mplus_logo_asset": true
+      },
+      "shop": {
+        "loader_markup": true,
+        "loader_css": true,
+        "loader_script": true,
+        "mplus_logo_asset": true
+      },
+      "nfc": {
+        "loader_markup": true,
+        "loader_css": true,
+        "loader_script": true,
+        "mplus_logo_asset": true
+      }
+    },
+    "premium_shared_stylesheet_exists": true,
+    "postgres_target_schema_exists": true
+  }
+}
+[4/6] Marketplace schema structural audit
+PASS: 25 marketplace tables, tenant-scoped foreign keys, enquiry-only workflow, and key indexes are present.
+NOTE: This is a structural source audit, not execution against a PostgreSQL server.
+[5/6] In-memory Apps Script / Sheets workflow tests
+PASS: Super Admin Google identity token flow creates a session
+PASS: Super Admin can configure a secure merchant PIN for an existing shop
+PASS: Media Worker can verify a live Super Admin session through the Apps Script backend
+PASS: Google ID tokens with an incorrect OAuth audience are rejected
+PASS: Admin registry reads the existing Master-Sheet rows
+PASS: Apps Script correctly parses form-encoded postData payloads used by the Admin and NFC pages
+PASS: Apps Script correctly decodes raw URL-encoded postData bodies and avoids the prior postData=% JSON parse error
+PASS: Admin first load seeds owner, customer, public-shop and system-backup templates before messages are sent
+PASS: First-time phone lookup does not create a customer
+PASS: Read-only phone lookup bypasses the global write lock
+PASS: Lookup does not add a tenant visit row
+PASS: New customer check-in creates the first central profile
+PASS: New profile is added to existing Master-Customers schema
+PASS: Customer email consent is recorded in CustomerProfiles
+PASS: Successful check-in creates tenant visit row
+PASS: Successful check-in creates central Visits row
+PASS: Request ID is written to existing AuditLog.RequestReference column
+PASS: Transactional confirmation email is invoked once for provided email
+PASS: Customer email uses the configured public website base URL
+PASS: Legacy phone-only checkUser lookup cannot disclose customer profile data
+PASS: Legacy checkUser exposes profile only to the matching verified Google email
+PASS: Verified Google profile lookup rejects a mismatched supplied mobile number
+PASS: Repeated request ID returns a duplicate success
+PASS: Duplicate retry does not add a second visit
+PASS: Duplicate retry does not send a second email
+PASS: Cross-shop lookup confirms a profile exists without revealing customer identity
+PASS: Public Desk lookup hides customer identity, preferences and private shop-owner contacts
+PASS: Cross-shop lookup does not count as a visit
+PASS: Returning customer is blocked until details are confirmed
+PASS: Returning customer check-in rejects a mismatched saved name without disclosing the correct name
+PASS: Confirmed returning customer visit succeeds without returning private customer or owner data
+PASS: Returning cross-shop check-in writes only the second shop visit
+PASS: Returning check-in with no new consent choice preserves existing WhatsApp consent
+PASS: Customer Hub refuses insecure phone plus last-four PIN authentication
+PASS: Customer Hub sends an email verification code only to the email saved on the matching profile
+PASS: Customer verification email contains a six-digit code
+PASS: Customer Hub rejects an incorrect one-time code
+PASS: Correct email one-time code creates a short-lived customer session
+PASS: Customer Hub reads visit totals only with an OTP-verified session
+PASS: Customer Hub does not disclose private customer profile without a session token
+PASS: Customer OTP start uses a generic response and does not send to an unverified email address
+PASS: Customer Hub rejects expired one-time verification codes
+PASS: Public registration remains pending
+PASS: Pending public registration does not create a tenant visit tab
+PASS: Registration status cannot be discovered using only shop ID and email
+PASS: Registration status requires the high-entropy secret link token
+PASS: Admin dashboard receives pending registration requests
+PASS: Admin approval creates the tenant tab
+PASS: Admin approval persists the selected store mode and category without changing the existing StoreContent header
+PASS: New shops remain disabled until Admin explicitly enables a service phase
+PASS: Admin can enable Phase 1 and Phase 2 for a shop
+PASS: Registration wizard first checks only the mobile number
+PASS: Registration wizard verifies phone and email pair before collecting shop details
+PASS: Admin can disable Phase 2 while leaving Phase 1 enabled
+PASS: Admin configures a secure PIN before merchant access is enabled
+PASS: Unauthenticated merchant bootstrap exposes only safe basics and cannot spoof the authenticated merchant client
+PASS: Phase 2 website/status/pricing APIs are blocked while Phase 1 merchant functions remain available
+PASS: Admin can disable both service phases
+PASS: Both disabled service phases block Desk, public website and existing merchant sessions
+PASS: Admin can re-enable both service phases
+PASS: Conflicting public registration is queued for Admin review without exposing conflict details to the applicant
+PASS: Duplicate registration response does not disclose shop status or tenant identifier
+PASS: Approved shop public config can be loaded
+PASS: Unknown public config client types cannot retrieve owner private contact fields
+PASS: Desk configuration is restricted to the fields required by the check-in page
+PASS: Admin can save dynamic storefront content
+PASS: Public store config returns published media and hides unpublished pricing
+PASS: Admin-published category, experience mode and dynamic navigation are returned to the public storefront
+PASS: Public SEO snapshot includes published shop content only and excludes hidden pricing / private owner identity
+PASS: Paginated public SEO directory includes active shops with the public website feature enabled
+PASS: HTTPS post-check-in redirect is stored and returned
+PASS: Admin price addition is written to PriceHistory
+PASS: Shared policies are written to existing StorePolicies tab
+PASS: Merchant custom PIN unlock creates a short-lived shop-scoped session
+PASS: Merchant login rejects a phone last-four PIN even when no custom PIN is configured
+PASS: Merchant cannot modify storefront pricing under the Admin-only access model
+PASS: Rejected merchant pricing changes do not modify price history
+PASS: Admin can retrieve complete old/new price history with shop and timestamp
+PASS: Merchant customer/visit list loads with session
+PASS: Merchant live-status update writes existing legacy status cells and StoreSettings
+PASS: Customer email is not sent without explicit EmailOptIn
+PASS: Skipped customer email consent is visible in the communication log
+PASS: Check-in recovers from a stale customer row cache entry
+PASS: Stale cache cannot overwrite another customer after a row move
+PASS: Suspended store doGet does not expose private store-row fields
+PASS: Admin message centre seeds reusable email and WhatsApp templates
+PASS: Message template changes reject an incorrect Admin security PIN
+PASS: Admin can persist an editable email template with the security PIN
+PASS: Owner email send uses saved template and returns SENT after MailApp accepts
+PASS: Owner email failure is returned and logged as FAILED
+PASS: Email template placeholders are dynamically resolved per shop
+PASS: WhatsApp action logs PREPARED rather than falsely claiming it was sent
+PASS: Admin can retrieve per-shop email and WhatsApp communication statuses
+PASS: Admin can edit the customer visit email template
+PASS: Admin can edit the customer WhatsApp template
+PASS: Admin can edit the public shop WhatsApp contact template
+PASS: Public shop receives the saved WhatsApp contact template after cache invalidation
+PASS: Customer confirmation email uses the saved Admin template
+PASS: Customer email send failures are logged as FAILED and are not reported as sent
+PASS: Shopkeeper WhatsApp follow-up logs PREPARED only with recorded consent
+PASS: Shopkeeper dashboard receives communication statuses
+PASS: Admin can save a dashboard theme with security PIN
+PASS: Dashboard theme changes reject an incorrect security PIN
+PASS: Incorrect Admin PIN attempts are written to the security audit log
+PASS: Admin can suspend a shop with security PIN
+PASS: Legacy status endpoint cannot bypass PIN-protected restore for suspended shops
+PASS: Admin can restore a suspended shop with security PIN
+PASS: Admin can archive a shop without deleting its data
+PASS: Admin can restore an archived shop
+PASS: Existing shops without a custom PIN cannot use the insecure last-four phone fallback
+PASS: Admin can set a separate 6-digit merchant PIN with the Admin security PIN
+PASS: Shopkeeper can unlock using the custom merchant PIN
+PASS: Legacy last-four PIN is disabled after a custom merchant PIN is set
+PASS: Suspending a shop invalidates existing merchant sessions
+PASS: Shopkeeper session is available for NFC approval
+PASS: Within the 25-minute repeat-visit window, shopkeeper approval is required
+PASS: New NFC approval request expires exactly five minutes after creation
+PASS: NFC reload returns the same pending request without creating a duplicate
+PASS: Only the correct shopkeeper dashboard receives its pending approval request
+PASS: Rejected NFC request remains terminal on customer reload
+PASS: Expired NFC request stays terminal and is not recreated on reload
+PASS: Recent visit creates a five-minute NFC approval request
+PASS: Correct shopkeeper can approve its own NFC request
+PASS: Customer reload returns the saved approval result
+PASS: Public Desk lookup attempts are rate limited without writing visits
+
+ALL 125 MOCK BACKEND TESTS PASSED
+[6/6] SEO, AI discovery and social metadata audit
+SEO / AI / Social audit passed: all required files exist, sitemap XML is valid, private pages are noindex, crawler rules and social metadata are present, AdSense is fail-closed, and preview image is 1200x630.
+All locally executable CCD checks passed. Live-service/browser/database load checks are documented in TEST_REPORT.md.
