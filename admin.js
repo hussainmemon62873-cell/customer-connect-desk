@@ -4,7 +4,7 @@ if (window.CCDLoading) window.CCDLoading.hold();
 // Zero Browser Alerts + Step Validation + Master-Sheet Sync
 // ==========================================
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNPnuDhiXOrm4-tRJJ7wXpb7PMwifLQfK-i3pbW-QaOrU74fm-PFgh9aT2sntGLZgx/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoFCx6UgGKFmgDxkQePZOuWhWEGqNn5wro0qXfGvb8d31hhTkzZKjMFnCDB9z93wmi/exec";
 const BASE_DOMAIN = "https://ccd.dev";
 
 let currentUser = { name: "", email: "", sessionToken: "" };
