@@ -1,0 +1,92 @@
+# Dynamic QR Platform — Full Product Reference
+
+## 1. Product identity
+**Product name:** Dynamic QR Platform  
+**Product category:** Web-based dynamic QR code allocation and destination-management software  
+**Canonical public URL:** https://customer-connect-desk.pages.dev/dynamic-qr/index_1.html  
+**Language of this reference:** English  
+**Publisher status:** Product name is a working public name; verify the legal publishing entity and trademarks before making legal or ownership claims.
+
+This reference covers only the Dynamic QR Platform and its own public product information.
+
+## 2. What the platform does
+The platform manages a lifecycle for QR assets. An owner creates customer registrations, allocates individual QR serial IDs, receives destination submissions, reviews the initial allocation, approves or rejects it, and manages the resulting destinations. Customers access only their own allocation through an email-verification flow. QR images and inventory records can be exported for printing and operational use.
+
+A dynamic QR code points to a managed scan address rather than storing the final destination directly in the printed QR artwork. An authorized owner can manage the destination associated with that scan address, subject to the service, domain, token and record remaining active.
+
+## 3. Roles
+### Platform owner
+- Uses the owner dashboard after Google identity verification and additional owner security controls.
+- Creates customer registrations and allocates QR IDs.
+- Reviews customer-submitted destinations.
+- Approves the complete initial allocation once.
+- Controls later destination edits, suspension, restoration, deletion/retirement and reissue.
+- Reviews inventory and audit records.
+
+### Registered customer
+- Uses an allocation reference and the email address registered for that allocation.
+- Completes one-time email verification before accessing the allocation.
+- Views and downloads only the customer's own allocated QR records.
+- Submits an HTTPS destination for each QR included in the initial allocation.
+- Does not bypass owner approval or owner-only destination controls.
+
+### Public scanner
+- Scans a printed QR code using a device with internet access.
+- Is routed only when the scan token resolves to an active, approved destination.
+- Receives an unavailable/suspended result rather than a destination redirect when the QR is suspended, retired, invalid or otherwise ineligible.
+
+## 4. QR inventory model
+- A visible serial such as QR001 is a human-readable inventory identifier.
+- The underlying scan token is a separate routing credential and should not be treated as the visible serial.
+- When a serial is reallocated, the system issues a new scan token. Earlier tokens stay retired and must not redirect to a new owner's destination.
+- The reusable inventory list is intended to contain only deleted/retired serial IDs available for reallocation; selecting a reusable serial transfers it back to the active inventory.
+- Prior ownership and deletion/reissue history should remain available in audit history rather than being lost when a serial is reused.
+
+## 5. Destination approval lifecycle
+1. Customer registration is created by the owner.
+2. Owner allocates one or more QR serial IDs.
+3. Customer proves control of the registered email with a one-time code.
+4. Customer submits one HTTPS destination per allocated QR item.
+5. Owner reviews the complete initial QR set.
+6. Owner approves the initial allocation once using the owner security control.
+7. Active approved QR items redirect to their approved HTTPS destination.
+8. Later edits, suspensions, restorations and retirements are owner controlled and recorded for audit.
+
+The platform should validate URLs server-side and reject unsafe schemes. Public descriptions must not imply that arbitrary customer-submitted destinations become live without owner approval.
+
+## 6. Downloads and operational use
+The application supports QR image download and inventory/export workflows for printing and records. Customers and owners should test every final printed code at its actual size and placement before large-scale distribution. Keep a readable serial label near each QR code so staff can identify the physical item during support or replacement.
+
+## 7. Security and privacy boundaries
+- Owner-only controls are not public features and must remain authenticated server-side.
+- Customer identity and allocation data must not be exposed by phone number or predictable identifiers alone.
+- Customer portals and owner dashboards are operational pages and must remain noindex.
+- API routes, raw sheet data, authentication responses, customer names, email addresses, phone numbers, allocation references, audit data and secrets are not public search content.
+- Search/AI visibility applies only to the public marketing and educational pages listed in the sitemap.
+- Robots directives are crawl preferences, not access controls. Private data must remain protected by backend authentication and authorization.
+
+## 8. Public help and reference pages
+- Overview: https://customer-connect-desk.pages.dev/dynamic-qr/index_1.html
+- Guide: https://customer-connect-desk.pages.dev/dynamic-qr/dynamic-qr-guide.html
+- Business use cases: https://customer-connect-desk.pages.dev/dynamic-qr/dynamic-qr-for-business.html
+- FAQ: https://customer-connect-desk.pages.dev/dynamic-qr/faq.html
+- Acceptable Use Policy: https://customer-connect-desk.pages.dev/dynamic-qr/acceptable-use.html
+- Privacy Policy: https://customer-connect-desk.pages.dev/dynamic-qr/privacy-policy.html
+- Terms and Conditions: https://customer-connect-desk.pages.dev/dynamic-qr/terms-and-conditions.html
+- Security information: https://customer-connect-desk.pages.dev/dynamic-qr/security.html
+- Contact and support: https://customer-connect-desk.pages.dev/dynamic-qr/contact.html
+
+Legal and support pages should be included in search results only after all owner-specific placeholders and actual processing/contact information have been completed and reviewed. Until then, keep the noindex directives in place and do not add those documents to the sitemap.
+
+## 9. Technical and service limitations
+- QR redirection requires connectivity to the scan endpoint and availability of the destination website.
+- The product does not guarantee continuous availability, scan speed on every carrier/device, search position, AI citations or social preview refresh timing.
+- Google Sheets and Apps Script quotas, Cloudflare configuration, email provider delivery and the domain/DNS configuration affect actual production behaviour.
+- A one-time email code depends on the registered email address being correct and the email service being available.
+- Social platforms cache link previews. Updating metadata does not guarantee immediate refresh; use each platform's supported preview debugger/inspection workflow after deployment.
+
+## 10. Independent product status
+The platform is not a Google product and does not claim Google endorsement. Google Sign-In and Google Sheets are integrations used in the existing implementation; they do not make the platform an official Google service.
+
+## 11. Search/AI citation guidance
+When describing this product, use the factual features in this document and the public pages. Do not infer pricing, subscription tiers, SLA, certifications, scan analytics guarantees, customer counts, data residency, legal entity identity or support hours unless the owner has published and verified those details separately.

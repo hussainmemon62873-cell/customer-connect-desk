@@ -97,3 +97,28 @@ body[data-page="customer"] .portal-intro{padding-bottom:4px}
 .owner-identity{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;margin:12px 0 18px;border:1px solid #dfe5ef;border-radius:12px;background:#f8faff;color:#25334d;font-size:13px}.owner-identity small{width:100%;color:#68758d}.owner-identity button{white-space:nowrap}
 
 .owner-health{margin:12px 0 18px;padding:14px;border:1px solid #dce3ef;border-radius:14px;background:#f8faff}.owner-health>div:first-child{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.owner-health small{display:block;color:#66758d;font-size:12px}.owner-health-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}.owner-health-grid>div{padding:10px;background:#fff;border:1px solid #e5eaf2;border-radius:10px}.owner-health-grid span{display:block;margin-top:4px;font-size:13px;font-weight:600;overflow-wrap:anywhere}.owner-health details{margin-top:8px;font-size:13px}.owner-health details ul{margin:8px 0 0;padding-left:20px}
+
+
+/* Dynamic QR public sharing controls */
+.dqr-share{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:34px;margin-bottom:34px;padding:24px;border:1px solid rgba(75,132,194,.22);border-radius:22px;background:linear-gradient(135deg,rgba(14,57,116,.07),rgba(35,140,220,.08));}
+.dqr-share-copy{flex:1 1 300px;min-width:240px;}
+.dqr-share-copy h2{margin:8px 0;font-size:clamp(1.25rem,2.3vw,1.8rem);}
+.dqr-share-copy p{margin:0;max-width:650px;}
+.dqr-share-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;}
+.dqr-share-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 15px;border-radius:999px;border:1px solid rgba(21,73,135,.24);background:#fff;color:#16345b;text-decoration:none;font-family:inherit;font-size:.9rem;font-weight:600;line-height:1.1;cursor:pointer;}
+.dqr-share-btn:hover,.dqr-share-btn:focus-visible{background:#eaf4ff;border-color:#307dca;outline:2px solid transparent;}
+.dqr-share-whatsapp{background:#e9f8f0;border-color:#b7e3ca;color:#145b36;}
+.dqr-share-status{flex-basis:100%;min-height:1.2em;margin:0;color:#24547f;font-size:.88rem;}
+@media(max-width:640px){.dqr-share{padding:18px;gap:16px}.dqr-share-actions{width:100%}.dqr-share-btn{flex:1 1 42%;font-size:.84rem;padding:10px 11px}}
+
+/* Owner security setup diagnostics */
+.security-control-list{margin-top:14px;padding:12px 14px;border:1px solid #dbe3ef;border-radius:14px;background:#f8fafc}
+.security-control-list>summary{cursor:pointer;font-weight:750;color:#172b4d}
+.security-control-row{display:flex;gap:14px;align-items:flex-start;justify-content:space-between;padding:11px 0;border-bottom:1px solid #e4eaf2}
+.security-control-row:last-child{border-bottom:0}
+.security-control-row span{display:grid;gap:4px;min-width:0}
+.security-control-row small{color:#64748b;line-height:1.45}
+.security-control-row strong{white-space:nowrap;font-size:.78rem}
+.security-ready{color:#087443}
+.security-missing{color:#b42318}
+@media(max-width:520px){.security-control-row{display:grid;gap:5px}.security-control-row strong{white-space:normal}}

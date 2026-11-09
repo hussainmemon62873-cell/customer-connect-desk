@@ -7,3 +7,16 @@
 /* Static-site configuration notice */
 .systemnotice{max-width:1180px;margin:16px auto;padding:14px 18px;border:1px solid #e2b66f;border-radius:12px;background:#fff8e9;color:#704d17;font-size:14px;line-height:1.5}
 .systemnotice[hidden]{display:none}
+
+
+/* Dynamic QR public sharing controls */
+.dqr-share{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:34px;margin-bottom:34px;padding:24px;border:1px solid rgba(75,132,194,.22);border-radius:22px;background:linear-gradient(135deg,rgba(14,57,116,.07),rgba(35,140,220,.08));}
+.dqr-share-copy{flex:1 1 300px;min-width:240px;}
+.dqr-share-copy h2{margin:8px 0;font-size:clamp(1.25rem,2.3vw,1.8rem);}
+.dqr-share-copy p{margin:0;max-width:650px;}
+.dqr-share-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;}
+.dqr-share-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 15px;border-radius:999px;border:1px solid rgba(21,73,135,.24);background:#fff;color:#16345b;text-decoration:none;font-family:inherit;font-size:.9rem;font-weight:600;line-height:1.1;cursor:pointer;}
+.dqr-share-btn:hover,.dqr-share-btn:focus-visible{background:#eaf4ff;border-color:#307dca;outline:2px solid transparent;}
+.dqr-share-whatsapp{background:#e9f8f0;border-color:#b7e3ca;color:#145b36;}
+.dqr-share-status{flex-basis:100%;min-height:1.2em;margin:0;color:#24547f;font-size:.88rem;}
+@media(max-width:640px){.dqr-share{padding:18px;gap:16px}.dqr-share-actions{width:100%}.dqr-share-btn{flex:1 1 42%;font-size:.84rem;padding:10px 11px}}

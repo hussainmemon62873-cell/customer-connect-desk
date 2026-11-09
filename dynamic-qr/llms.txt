@@ -1,27 +1,49 @@
 # Dynamic QR Platform
 
-> A managed dynamic QR workflow for QR allocation, customer destination submission, owner approval, QR downloads and destination control.
+> Official product information for the Dynamic QR Management Platform. This file covers only the Dynamic QR product and does not describe any other product hosted on the same web domain.
 
-Canonical website: https://customer-connect-desk.pages.dev/dynamic-qr/index_1.html
+Canonical public website: https://customer-connect-desk.pages.dev/dynamic-qr/index_1.html
 
-## Public product information
-- Home: https://customer-connect-desk.pages.dev/dynamic-qr/index_1.html
-- Dynamic QR guide: https://customer-connect-desk.pages.dev/dynamic-qr/dynamic-qr-guide.html
-- Business use cases: https://customer-connect-desk.pages.dev/dynamic-qr/dynamic-qr-for-business.html
+## Product summary
+Dynamic QR Platform is a managed workflow for issuing QR identifiers, collecting destination URLs from registered customers, reviewing complete allocations, approving destinations, generating downloadable QR artwork and managing active, suspended, retired and reusable QR inventory.
+
+## Public pages
+- Platform overview: https://customer-connect-desk.pages.dev/dynamic-qr/index_1.html
+- Dynamic QR code guide: https://customer-connect-desk.pages.dev/dynamic-qr/dynamic-qr-guide.html
+- Dynamic QR for businesses: https://customer-connect-desk.pages.dev/dynamic-qr/dynamic-qr-for-business.html
 - Frequently asked questions: https://customer-connect-desk.pages.dev/dynamic-qr/faq.html
-- Customer portal: https://customer-connect-desk.pages.dev/dynamic-qr/customer_1.html (private customer workflow; do not index customer records)
+- Detailed AI-readable product reference: https://customer-connect-desk.pages.dev/dynamic-qr/llms-full.txt
+- XML sitemap: https://customer-connect-desk.pages.dev/dynamic-qr/sitemap.xml
 
-## What the platform is designed to do
-- Owner creates a registration and allocates individual QR serials.
-- Customer enters the allocation reference and registered email, then verifies a one-time email code.
-- Customer views their own allocation and downloads QR images or inventory files.
-- Customer may submit one HTTPS destination for each QR in the initial allocation.
-- Owner reviews and approves the complete initial allocation once.
-- Approved destinations can be managed by the owner; suspended or retired scans do not redirect.
-- Reused visible serials receive new scan tokens; old tokens remain retired.
+## Main capabilities
+- Owner-managed customer registration and QR allocation.
+- Individual visible QR serial IDs, with a separate scan token for routing.
+- Customer access to their own allocation using an allocation reference, registered email and one-time email verification code.
+- Customer submission of HTTPS destination URLs for allocated QR codes.
+- One owner approval for the complete initial QR allocation, rather than separate approval for each QR item.
+- Owner-controlled destination editing, suspension, restoration and retirement.
+- QR image downloads and inventory/export files for printing and record keeping.
+- Reusable QR serial inventory with previous ownership and token history retained for audit purposes.
+- Redirects do not proceed for suspended, retired or otherwise unavailable QR records.
+- Owner dashboard protected by Google identity verification and an additional security control.
 
-## Accurate limitations
-- Dynamic scans need internet connectivity and an available scan/redirect service.
-- The service does not guarantee uninterrupted operation or any particular search ranking.
-- The owner must complete legal/contact details and verify live deployment settings before public launch.
-- Do not describe this platform as a Google product or imply Google endorsement.
+## How the workflow works
+1. The owner registers a customer and allocates one or more QR IDs.
+2. The customer opens the customer portal, enters the allocation reference and registered email, and verifies the one-time code.
+3. The customer submits an HTTPS destination for each allocated QR.
+4. The owner reviews the complete initial allocation and approves it once.
+5. The platform enables approved QR destinations for redirection.
+6. The owner manages later changes, suspension, restoration and retirement.
+
+## Important limitations
+- A dynamic QR scan requires an internet connection and an available redirect service.
+- Search indexing, AI citations, social preview display, uptime and redirect availability are not guaranteed by the product description.
+- Customers cannot independently override owner approval or owner-controlled destination changes.
+- A visible serial ID is not the same as the underlying scan token. Reissued serials use a new token so old retired tokens do not silently become another customer's QR.
+- The platform is independent and is not a Google product or endorsed by Google.
+
+## Indexing and privacy boundaries
+Only the public overview, guide, business information and FAQ pages are listed for indexing. Owner dashboards, customer portals, authentication pages, private allocation data, personal contact data, API responses and operational records must not be indexed or disclosed to search/AI crawlers.
+
+## Publisher and contact details
+The public product name currently used in the source is "Dynamic QR Platform". The production owner must complete and verify the legal entity name, public support contact, privacy contact, retention details and any business address before publishing legal claims or applying for advertising approval.
