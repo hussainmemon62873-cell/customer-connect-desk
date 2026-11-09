@@ -1,5 +1,4 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoFCx6UgGKFmgDxkQePZOuWhWEGqNn5wro0qXfGvb8d31hhTkzZKjMFnCDB9z93wmi/exec";
-
 const $ = id => document.getElementById(id);
 let registrationPhone = '';
 function showToast(message) {

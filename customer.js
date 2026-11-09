@@ -1,6 +1,5 @@
 // Customer Hub: email OTP verified profile access. No profile data or token is persisted.
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoFCx6UgGKFmgDxkQePZOuWhWEGqNn5wro0qXfGvb8d31hhTkzZKjMFnCDB9z93wmi/exec";
-
 const $ = id => document.getElementById(id);
 let toastTimer = null;
 let customerToken = "";

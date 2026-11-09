@@ -1,6 +1,5 @@
 if (window.CCDLoading) window.CCDLoading.hold();
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoFCx6UgGKFmgDxkQePZOuWhWEGqNn5wro0qXfGvb8d31hhTkzZKjMFnCDB9z93wmi/exec";
-
+const NFC_SCRIPT_URL="https://script.google.com/macros/s/AKfycbyoFCx6UgGKFmgDxkQePZOuWhWEGqNn5wro0qXfGvb8d31hhTkzZKjMFnCDB9z93wmi/exec";
 const nfcParams=new URLSearchParams(location.search);const nfcHost=String(location.hostname||'').toLowerCase();const nfcHostSlug=nfcHost.endsWith('.ccd.dev')?nfcHost.slice(0,-'.ccd.dev'.length):'';const nfcShop=(nfcParams.get('shop')||(nfcHostSlug&&!['www','admin','register','api','assets','support','mail'].includes(nfcHostSlug)?nfcHostSlug:'')).trim().toLowerCase();let nfcPoll=null,nfcCountdownInterval=null,nfcRequestId='',nfcPhone='';
 const nfc$=id=>document.getElementById(id);
 async function nfcApi(payload){const form=new URLSearchParams();form.append('postData',JSON.stringify(payload));const r=await fetch(NFC_SCRIPT_URL,{method:'POST',body:form,redirect:'follow'});const t=await r.text();let d;try{d=JSON.parse(t)}catch(e){throw new Error('Server response could not be read.')}if(!r.ok||d.status==='error')throw new Error(d.message||'Request failed.');return d;}
