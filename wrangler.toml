@@ -1,0 +1,17 @@
+name = "ccd-wildcard-router"
+main = "worker.js"
+compatibility_date = "2026-11-07"
+
+# After adding ccd.dev to this Cloudflare account, attach the wildcard route:
+# *.ccd.dev/*
+# Keep DNS proxied. The Pages project remains the static asset origin.
+routes = [{ pattern = "*.ccd.dev/*", zone_name = "ccd.dev" }]
+
+[vars]
+PAGES_ORIGIN = "https://customer-connect-desk.pages.dev"
+PUBLIC_MEDIA_BASE = "https://media.ccd.dev"
+GAS_URL = "https://script.google.com/macros/s/AKfycbyoFCx6UgGKFmgDxkQePZOuWhWEGqNn5wro0qXfGvb8d31hhTkzZKjMFnCDB9z93wmi/exec"
+
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "ccd-public-media"
