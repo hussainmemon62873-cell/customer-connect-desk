@@ -4,7 +4,8 @@
 <script>
 if (window.CCDLoading) window.CCDLoading.hold();
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNPnuDhiXOrm4-tRJJ7wXpb7PMwifLQfK-i3pbW-QaOrU74fm-PFgh9aT2sntGLZgx/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoFCx6UgGKFmgDxkQePZOuWhWEGqNn5wro0qXfGvb8d31hhTkzZKjMFnCDB9z93wmi/exec";
+
 const params = new URLSearchParams(location.search);
 const currentShopSlug = (params.get('shop') || 'memonlock').trim().toLowerCase();
 let customerUser = { name: '', email: '', idToken: '' };
