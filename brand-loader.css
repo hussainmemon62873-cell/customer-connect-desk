@@ -1,0 +1,11 @@
+:root{--ccd-loader-ink:#101a3a;--ccd-loader-blue:#0877ed;--ccd-loader-red:#cb174c}
+#ccd-brand-loader{position:fixed;inset:0;z-index:1000000;display:grid;place-items:center;background:radial-gradient(circle at 50% 42%,#f3f8ff 0,#fff 48%,#f8fbff 100%);opacity:1;visibility:visible;transition:opacity .42s ease,visibility .42s ease}
+#ccd-brand-loader.ccd-loader-hidden{opacity:0;visibility:hidden;pointer-events:none}
+.ccd-loader-panel{width:min(420px,calc(100% - 44px));display:flex;flex-direction:column;align-items:center;gap:18px;padding:26px 22px 22px;border:1px solid rgba(10,74,160,.08);border-radius:28px;background:rgba(255,255,255,.78);box-shadow:0 28px 90px rgba(28,78,145,.10);backdrop-filter:blur(18px)}
+.ccd-loader-logo{display:block;width:min(100%,340px);height:auto;object-fit:contain}
+.ccd-loader-tagline{margin:-9px 0 2px;color:#62708a;font-size:11px;font-weight:700;letter-spacing:.19em;text-transform:uppercase;text-align:center}
+.ccd-loader-track{position:relative;width:min(230px,78%);height:4px;border-radius:999px;overflow:hidden;background:#e8effa}
+.ccd-loader-track:after{content:"";position:absolute;inset:0 auto 0 -45%;width:42%;border-radius:inherit;background:linear-gradient(90deg,var(--ccd-loader-blue),#24c5eb,var(--ccd-loader-red));animation:ccd-loader-sweep 1.25s ease-in-out infinite}
+.ccd-loader-caption{margin:0;color:#8a96aa;font-size:10px;letter-spacing:.17em;text-transform:uppercase}
+@keyframes ccd-loader-sweep{0%{transform:translateX(0)}100%{transform:translateX(350%)}}
+@media(prefers-reduced-motion:reduce){.ccd-loader-track:after{animation:none;left:0;width:100%}#ccd-brand-loader{transition:none}}

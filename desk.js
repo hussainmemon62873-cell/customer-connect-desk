@@ -4,22 +4,28 @@
 // ==========================================
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNPnuDhiXOrm4-tRJJ7wXpb7PMwifLQfK-i3pbW-QaOrU74fm-PFgh9aT2sntGLZgx/exec";
-
 const $ = id => document.getElementById(id);
 const urlParams = new URLSearchParams(window.location.search);
-const currentShopId = (urlParams.get("shop") || "memonlock").trim().toLowerCase();
+const deskHost = String(location.hostname || '').toLowerCase();
+const deskHostSlug = deskHost.endsWith('.ccd.dev') ? deskHost.slice(0, -'.ccd.dev'.length) : '';
+const currentShopId = (urlParams.get('shop') || (deskHostSlug && !['www','admin','register','api','assets','support','mail'].includes(deskHostSlug) ? deskHostSlug : '') || 'memonlock').trim().toLowerCase();
 let cachedStoreData = null;
 let resetTimer = null;
 let matchedCustomer = false;
 let lookupSequence = 0;
 let pendingRequestId = "";
 let pendingRequestPhone = "";
+if (window.CCDLoading) window.CCDLoading.hold();
 
 window.addEventListener("DOMContentLoaded", async () => {
-  setupDobInputs();
-  ensureCheckinWorkflowControls();
-  await fetchStoreThemeAndConfig();
-  restoreRecentSuccessScreen();
+  try {
+    setupDobInputs();
+    ensureCheckinWorkflowControls();
+    await fetchStoreThemeAndConfig();
+    restoreRecentSuccessScreen();
+    const approvedPhone=new URLSearchParams(window.location.hash.slice(1)).get("phone");
+    if(approvedPhone && $("customer-phone")){ $("customer-phone").value=approvedPhone.replace(/\D/g,"").slice(0,10); $("customer-phone").dispatchEvent(new Event("input",{bubbles:true})); }
+  } finally { if (window.CCDLoading) window.CCDLoading.finish(); }
 });
 
 async function apiPost(payload) {
@@ -37,7 +43,7 @@ async function apiPost(payload) {
 
 async function fetchStoreThemeAndConfig() {
   try {
-    let data = await apiPost({ action: "getStoreConfig", shopId: currentShopId, slug: currentShopId });
+    let data = await apiPost({ action: "getStoreConfig", shopId: currentShopId, slug: currentShopId, clientType: "DESK" });
     let store = data && (data.store || data.config || (data.shopName ? data : null));
     if (!store || !store.shopName) {
       const fallbackData = await apiPost({ action: "customerCheckin", actionType: "lookup", shopId: currentShopId, phone: "0000000000" });
@@ -120,7 +126,7 @@ function ensureCheckinWorkflowControls() {
     wrap.id = 'ccd-returning-confirm';
     wrap.hidden = true;
     wrap.style.cssText = 'display:none; align-items:flex-start; gap:10px; padding:12px 14px; margin-top:14px; border:1px solid #bfdbfe; border-radius:12px; background:#eff6ff; color:#1e3a8a; font-size:0.9rem; line-height:1.45;';
-    wrap.innerHTML = '<input id="ccd-confirm-details" type="checkbox" style="margin-top:3px; width:18px; height:18px; flex:0 0 auto;" /><span>I have checked my saved details and confirm that they are correct.</span>';
+    wrap.innerHTML = '<input id="ccd-confirm-details" type="checkbox" style="margin-top:3px; width:18px; height:18px; flex:0 0 auto;" /><span>I confirm that I am the customer associated with this mobile number and the name I entered is correct.</span>';
     submit.parentNode.insertBefore(wrap, submit);
     $('ccd-confirm-details').addEventListener('change', () => { submit.disabled = matchedCustomer && !$('ccd-confirm-details').checked; });
   }
@@ -130,6 +136,12 @@ function ensureCheckinWorkflowControls() {
     wrap.style.cssText = 'display:flex; align-items:flex-start; gap:10px; padding:11px 13px; margin-top:12px; border:1px solid #e2e8f0; border-radius:12px; color:#334155; font-size:0.86rem; line-height:1.4;';
     wrap.innerHTML = '<input id="ccd-whatsapp-optin" type="checkbox" style="margin-top:2px; width:17px; height:17px; flex:0 0 auto;" /><span>I agree to receive visit-related WhatsApp follow-up messages from this shop. This is optional.</span>';
     submit.parentNode.insertBefore(wrap, submit);
+  }
+  if (!$('ccd-email-consent')) {
+    const wrap=document.createElement('label');wrap.id='ccd-email-consent';
+    wrap.style.cssText='display:flex;align-items:flex-start;gap:10px;padding:11px 13px;margin-top:10px;border:1px solid #e2e8f0;border-radius:12px;color:#334155;font-size:0.86rem;line-height:1.4;';
+    wrap.innerHTML='<input id="ccd-email-optin" type="checkbox" style="margin-top:2px;width:17px;height:17px;flex:0 0 auto;" /><span>I agree to receive email visit confirmations and updates from this shop. This is optional.</span>';
+    submit.parentNode.insertBefore(wrap,submit);
   }
 }
 
@@ -142,6 +154,8 @@ function resetCustomerConfirmation() {
   if (submit) submit.disabled = false;
   const optin = $('ccd-whatsapp-optin');
   if (optin) optin.checked = false;
+  $('ccd-profile-privacy-hint')?.remove();
+  const emailOptin=$('ccd-email-optin');if(emailOptin)emailOptin.checked=false;
 }
 
 async function checkCustomerLookup(phone) {
@@ -156,20 +170,26 @@ async function checkCustomerLookup(phone) {
       matchedCustomer = true;
       if (notice) {
         notice.style.display = 'block';
-        notice.textContent = `Welcome back, ${data.customer.name || 'valued customer'}! Your saved details are shown below. Please confirm them before check-in.`;
+        notice.textContent = 'A customer profile exists for this mobile number. For privacy, saved details are not displayed here. Enter your full name exactly as registered and confirm before check-in.';
       }
-      if ($('customer-name')) $('customer-name').value = data.customer.name || '';
-      if ($('customer-email')) $('customer-email').value = data.customer.email || '';
-      if (data.customer.dob) parseAndSetDob(data.customer.dob);
+      if ($('customer-name')) $('customer-name').value = '';
+      if ($('customer-email')) $('customer-email').value = '';
+      $('ccd-profile-privacy-hint')?.remove();
+      if ($('dob-dd')) $('dob-dd').value='';if ($('dob-mm')) $('dob-mm').value='';if ($('dob-yy')) $('dob-yy').value='';updateHiddenDob();
       const confirmWrap = $('ccd-returning-confirm');
       const confirmBox = $('ccd-confirm-details');
       const submit = $('submit-btn');
       if (confirmWrap) { confirmWrap.hidden = false; confirmWrap.style.display = 'flex'; }
       if (confirmBox) confirmBox.checked = false;
       if (submit) submit.disabled = true;
-      if ($('ccd-whatsapp-optin')) $('ccd-whatsapp-optin').checked = String(data.customer.whatsAppOptIn || 'NO').toUpperCase() === 'YES';
+      // Existing consent choices remain unchanged unless the customer uses a verified preference flow.
+      if ($('ccd-whatsapp-consent')) $('ccd-whatsapp-consent').hidden = true;
+      if ($('ccd-email-consent')) $('ccd-email-consent').hidden = true;
     } else {
+      $('ccd-profile-privacy-hint')?.remove();
       if (notice) notice.style.display = 'none';
+      if ($('ccd-whatsapp-consent')) $('ccd-whatsapp-consent').hidden = false;
+      if ($('ccd-email-consent')) $('ccd-email-consent').hidden = false;
       if (wasReturningCustomer) clearCustomerProfileFields();
       matchedCustomer = false;
       if ($('submit-btn')) $('submit-btn').disabled = false;
@@ -223,6 +243,7 @@ if (form) form.addEventListener('submit', async e => {
   if (phone.length !== 10) { showToast('Please enter a valid 10-digit mobile number.', 'error'); $('customer-phone').focus(); return; }
   if (!name) { showToast('Please enter your full name.', 'error'); $('customer-name').focus(); return; }
   if (matchedCustomer && !confirmed) { showToast('Please confirm your saved details before check-in.', 'error'); return; }
+  if (!matchedCustomer && $('ccd-email-optin')?.checked && !email) { showToast('Enter an email address before opting in to email updates.', 'error'); $('customer-email')?.focus(); return; }
   // Keep the retry key in memory only; do not store a customer's phone in browser storage.
   if (!pendingRequestId || pendingRequestPhone !== phone) {
     pendingRequestId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `ccd-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -231,9 +252,13 @@ if (form) form.addEventListener('submit', async e => {
   const requestId = pendingRequestId;
   const payload = {
     action: 'customerCheckin', actionType: 'submit', shopId: currentShopId, phone, name, email, dob,
-    customerConfirmed: confirmed, whatsappOptIn: !!($('ccd-whatsapp-optin') && $('ccd-whatsapp-optin').checked),
+    customerConfirmed: confirmed,
     requestId: requestId, sourcePage: 'desk.html'
   };
+  if (!matchedCustomer) {
+    payload.whatsappOptIn = !!($('ccd-whatsapp-optin') && $('ccd-whatsapp-optin').checked);
+    payload.emailOptIn = !!($('ccd-email-optin') && $('ccd-email-optin').checked);
+  }
   const submitBtn = $('submit-btn');
   const originalText = submitBtn ? submitBtn.textContent : 'Check-in';
   if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Checking in…'; }

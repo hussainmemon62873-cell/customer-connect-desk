@@ -1,8 +1,61 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#fff"><title>Customer Hub | Customer Connect Desk</title><link rel="stylesheet" href="customer.css"><script src="customer.js" defer></script></head><body><header class="hub-header"><a href="index.html" class="hub-brand">
-<span>CC</span><strong>Customer Connect Desk</strong></a><button id="btn-theme" class="theme-button" type="button" aria-label="Switch theme">◐</button></header><main class="hub-main"><section class="hub-hero">
-<p class="eyebrow">YOUR VISIT HISTORY</p><h1>Customer Hub</h1><p>View your registered visit count and the shop where your profile was first created.</p></section><section id="login-card" class="hub-card"><h2>Sign in to your customer profile</h2><p class="muted">Use your registered mobile number and the last four digits of that number as your PIN.</p><form id="login-form">
-<label for="cust-phone">Mobile number<input id="cust-phone" class="text-input" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel-national" placeholder="10-digit mobile number" required></label><label for="cust-pin">4-digit PIN<div class="pin-row">
-<input id="cust-pin" class="text-input" type="password" inputmode="numeric" maxlength="4" autocomplete="current-password" placeholder="••••" required><button id="btn-pin-eye" type="button" class="eye-button" aria-label="Show PIN">Show</button></div><small>For now, your PIN is the last 4 digits of your mobile number.</small></label><p id="login-error" class="login-error" hidden></p><button id="btn-cust-login" class="btn-primary" type="submit">Verify &amp; view rewards</button></form></section><section id="profile-card" class="hub-card profile-card" hidden><div class="profile-top">
-<div class="profile-avatar">✓</div><div><p class="eyebrow">CUSTOMER PROFILE</p><h2 id="cust-welcome" tabindex="-1">Welcome</h2><p id="cust-phone-display" class="muted"></p></div></div><div class="profile-stats">
-<article><span>Total visits</span><strong id="stat-cust-visits">0</strong></article><article><span>First joined shop</span><strong id="stat-cust-store">--</strong></article><article><span>Member level</span><strong id="stat-cust-tier">Verified Member</strong>
-</article></div><p class="muted small-note">Your visit history is maintained centrally across participating Customer Connect Desk shops.</p><button id="btn-cust-logout" class="btn-secondary" type="button">Sign out</button></section></main><div id="toast-box" class="toast-box" role="status" aria-live="polite"></div><footer>Customer Connect Desk · Customer Hub</footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#fff">
+  <title>Customer Hub | Customer Connect Desk</title>
+  <link rel="stylesheet" href="customer.css">
+  <link rel="stylesheet" href="brand-loader.css">
+  <link rel="stylesheet" href="premium-ui.css">
+  <script src="customer.js" defer></script>
+</head>
+<body>
+  <div id="ccd-brand-loader" role="status" aria-live="polite" aria-label="Loading MPlus secure dynamic transactions"><div class="ccd-loader-panel"><img class="ccd-loader-logo" src="assets/mplus-logo.png" alt="MPlus — Secure, Fast Dynamic Transactions"><p class="ccd-loader-tagline">Secure · Fast · Dynamic Transactions</p><div class="ccd-loader-track" aria-hidden="true"></div><p class="ccd-loader-caption">Preparing your CCD workspace</p></div></div><script src="brand-loader.js"></script>
+  <header class="hub-header">
+    <a href="index.html" class="hub-brand"><span>CC</span><strong>Customer Connect Desk</strong></a>
+    <button id="btn-theme" class="theme-button" type="button" aria-label="Switch theme">◐</button>
+  </header>
+  <main class="hub-main">
+    <section class="hub-hero">
+      <p class="eyebrow">YOUR VISIT HISTORY</p>
+      <h1>Customer Hub</h1>
+      <p>View your registered visit count and the shop where your profile was first created.</p>
+    </section>
+    <section id="login-card" class="hub-card">
+      <h2>Verify your customer profile</h2>
+      <p class="muted">We will send a one-time verification code to the email address already saved on your customer profile. Your phone number alone is not used as a password.</p>
+      <form id="login-form">
+        <label for="cust-phone">Registered mobile number
+          <input id="cust-phone" class="text-input" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel-national" placeholder="10-digit mobile number" required>
+        </label>
+        <label for="cust-email">Registered email address
+          <input id="cust-email" class="text-input" type="email" maxlength="160" autocomplete="email" placeholder="Email saved with your visits" required>
+        </label>
+        <button id="btn-send-otp" class="btn-secondary" type="button">Send verification code</button>
+        <label id="otp-field-wrap" for="cust-otp" hidden>6-digit verification code
+          <input id="cust-otp" class="text-input" type="text" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="Enter the code from your email">
+          <small>The code expires in 10 minutes. Never share it with anyone.</small>
+        </label>
+        <p id="login-error" class="login-error" hidden></p>
+        <button id="btn-cust-login" class="btn-primary" type="submit" disabled>Verify and view rewards</button>
+      </form>
+    </section>
+    <section id="profile-card" class="hub-card profile-card" hidden>
+      <div class="profile-top">
+        <div class="profile-avatar">✓</div>
+        <div><p class="eyebrow">CUSTOMER PROFILE</p><h2 id="cust-welcome" tabindex="-1">Welcome</h2><p id="cust-phone-display" class="muted"></p></div>
+      </div>
+      <div class="profile-stats">
+        <article><span>Total visits</span><strong id="stat-cust-visits">0</strong></article>
+        <article><span>First joined shop</span><strong id="stat-cust-store">--</strong></article>
+        <article><span>Member level</span><strong id="stat-cust-tier">Verified Member</strong></article>
+      </div>
+      <p class="muted small-note">Your visit history is maintained centrally across participating Customer Connect Desk shops. Your sign-in session expires automatically.</p>
+      <button id="btn-cust-logout" class="btn-secondary" type="button">Sign out</button>
+    </section>
+  </main>
+  <div id="toast-box" class="toast-box" role="status" aria-live="polite"></div>
+  <footer>Customer Connect Desk · Customer Hub</footer>
+</body>
+</html>
