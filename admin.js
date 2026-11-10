@@ -20,6 +20,21 @@ const $ = id => document.getElementById(id);
 const ico = name => `<svg class="i" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+// Shared Admin API transport. Credentials and the issued session token remain in memory only.
+async function apiCall(payload = {}) {
+  const action = String(payload.action || '');
+  const request = { ...payload };
+  if (!['adminAuth','adminRecoveryStart','adminRecoveryVerify'].includes(action) && currentUser.sessionToken && !request.adminToken) request.adminToken = currentUser.sessionToken;
+  let response;
+  try { response = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, cache:'no-store', body:JSON.stringify(request) }); }
+  catch (error) { throw new Error('Could not reach the CCD Apps Script API. Check the Web App deployment URL and network connection.'); }
+  let result;
+  try { result = await response.json(); }
+  catch (error) { throw new Error('The CCD Apps Script API returned an unreadable response. Check the deployed backend version.'); }
+  if (!response.ok || !result || typeof result !== 'object' || Array.isArray(result)) throw new Error((result && result.message) || 'The CCD API request failed (' + response.status + ').');
+  return result;
+}
+
 
 const CCD_CATEGORY_LABELS = {
   general:'General business', salon:'Beauty salon & wellness', restaurant:'Restaurant & cafe', retail:'Retail & fashion',
@@ -244,7 +259,7 @@ function ensureDashboardThemeEditor(slug) {
   const modal=$('edit-content-modal'); if(!modal || $('ccd-theme-editor')) return;
   const section=document.createElement('section'); section.id='ccd-theme-editor';
   section.style.cssText='margin:18px 0;padding:16px;border:1px solid #cbd5e1;border-radius:12px;background:#f8fafc;color:#0f172a';
-  section.innerHTML=`<h3 style="margin:0 0 6px">Shopkeeper dashboard colour theme</h3><p style="margin:0 0 12px;color:#64748b;font-size:13px">Choose one of 20 coordinated palettes. This changes the merchant dashboard navbar, background, cards, text and accent colours.</p><label for="ccd-dashboard-theme">Theme</label><select id="ccd-dashboard-theme" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;margin:6px 0 10px">${CCD_DASHBOARD_THEMES.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select><div id="ccd-theme-preview" style="height:54px;border-radius:10px;border:1px solid #cbd5e1;margin-bottom:10px"></div><label for="ccd-theme-pin">Admin security PIN</label><input id="ccd-theme-pin" type="password" autocomplete="off" placeholder="Enter ADMIN_SECURITY_PIN" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;margin:6px 0 10px"><button id="ccd-theme-save" type="button" class="btn btn-primary">Save dashboard theme</button><p id="ccd-theme-status" class="muted" aria-live="polite"></p><hr style="margin:16px 0;border:0;border-top:1px solid #cbd5e1"><h3 style="margin:0 0 8px">Shop service permissions</h3><label style="display:flex;gap:9px;align-items:center;margin:8px 0"><input type="checkbox" id="ccd-service-phase1"> Phase 1 — Customer Connect, visits and follow-ups</label><label style="display:flex;gap:9px;align-items:center;margin:8px 0"><input type="checkbox" id="ccd-service-phase2"> Phase 2 — Shop Website and Pricing (enabled/disabled together)</label><button id="ccd-services-save" type="button" class="btn btn-quiet">Save service permissions</button><p id="ccd-services-status" class="muted" aria-live="polite"></p><hr style="margin:16px 0;border:0;border-top:1px solid #cbd5e1"><h3 style="margin:0 0 8px">Shopkeeper access PIN</h3><label for="ccd-merchant-pin">Set a new 6–12 digit merchant PIN</label><input id="ccd-merchant-pin" type="password" inputmode="numeric" maxlength="12" autocomplete="new-password" placeholder="6 to 12 digits" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;margin:6px 0 10px"><button id="ccd-merchant-pin-save" type="button" class="btn btn-quiet">Save merchant PIN</button><p id="ccd-merchant-pin-status" class="muted" aria-live="polite"></p>`;
+  section.innerHTML=`<h3 style="margin:0 0 6px">Shopkeeper dashboard colour theme</h3><p style="margin:0 0 12px;color:#64748b;font-size:13px">Choose one of 20 coordinated palettes. This changes the merchant dashboard navbar, background, cards, text and accent colours.</p><label for="ccd-dashboard-theme">Theme</label><select id="ccd-dashboard-theme" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;margin:6px 0 10px">${CCD_DASHBOARD_THEMES.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select><div id="ccd-theme-preview" style="height:54px;border-radius:10px;border:1px solid #cbd5e1;margin-bottom:10px"></div><label for="ccd-theme-pin">Admin password</label><input id="ccd-theme-pin" type="password" autocomplete="off" placeholder="Enter ADMIN_SETUP_PASSWORD" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;margin:6px 0 10px"><button id="ccd-theme-save" type="button" class="btn btn-primary">Save dashboard theme</button><p id="ccd-theme-status" class="muted" aria-live="polite"></p><hr style="margin:16px 0;border:0;border-top:1px solid #cbd5e1"><h3 style="margin:0 0 8px">Shop service permissions</h3><label style="display:flex;gap:9px;align-items:center;margin:8px 0"><input type="checkbox" id="ccd-service-phase1"> Phase 1 — Customer Connect, visits and follow-ups</label><label style="display:flex;gap:9px;align-items:center;margin:8px 0"><input type="checkbox" id="ccd-service-phase2"> Phase 2 — Shop Website and Pricing (enabled/disabled together)</label><button id="ccd-services-save" type="button" class="btn btn-quiet">Save service permissions</button><p id="ccd-services-status" class="muted" aria-live="polite"></p><hr style="margin:16px 0;border:0;border-top:1px solid #cbd5e1"><h3 style="margin:0 0 8px">Shopkeeper access PIN</h3><label for="ccd-merchant-pin">Set a new 6–12 digit merchant PIN</label><input id="ccd-merchant-pin" type="password" inputmode="numeric" maxlength="12" autocomplete="new-password" placeholder="6 to 12 digits" style="width:100%;padding:10px;border:1px solid #cbd5e1;border-radius:8px;margin:6px 0 10px"><button id="ccd-merchant-pin-save" type="button" class="btn btn-quiet">Save merchant PIN</button><p id="ccd-merchant-pin-status" class="muted" aria-live="polite"></p>`;
   const saveBtn=modal.querySelector('button[onclick="saveStoreContentChanges()"]');
   if(saveBtn) saveBtn.parentNode.insertBefore(section,saveBtn); else modal.querySelector('.modal-card')?.appendChild(section);
   const select=$('ccd-dashboard-theme'), preview=$('ccd-theme-preview');
@@ -253,16 +268,16 @@ function ensureDashboardThemeEditor(slug) {
   const currentStore=allStoresCache.find(x=>x.shopId===slug);
   if($('ccd-service-phase1')) $('ccd-service-phase1').checked=!!(currentStore&&currentStore.services&&currentStore.services.customerConnectEnabled);
   if($('ccd-service-phase2')) $('ccd-service-phase2').checked=!!(currentStore&&currentStore.services&&currentStore.services.websitePricingEnabled);
-  $('ccd-merchant-pin-save').addEventListener('click',async()=>{const b=$('ccd-merchant-pin-save');b.disabled=true;b.textContent='Saving…';try{const r=await apiCall({action:'setMerchantAccessPin',shopId:slug,merchantPin:$('ccd-merchant-pin').value,securityPin:$('ccd-theme-pin').value});if(r.status!=='success')throw new Error(r.message||'Merchant PIN was not saved.');$('ccd-merchant-pin-status').textContent=r.message;$('ccd-merchant-pin').value='';}catch(e){$('ccd-merchant-pin-status').textContent=e.message;}finally{b.disabled=false;b.textContent='Save merchant PIN';}});
-  $('ccd-services-save').addEventListener('click',async()=>{const b=$('ccd-services-save');b.disabled=true;b.textContent='Saving…';try{const r=await apiCall({action:'setShopServices',shopId:slug,customerConnectEnabled:$('ccd-service-phase1').checked,websitePricingEnabled:$('ccd-service-phase2').checked,securityPin:$('ccd-theme-pin').value});if(r.status!=='success')throw new Error(r.message||'Service permissions were not saved.');if(currentStore)currentStore.services={customerConnectEnabled:$('ccd-service-phase1').checked,websitePricingEnabled:$('ccd-service-phase2').checked,configured:true};$('ccd-services-status').textContent='Saved. Changes are enforced by the backend immediately.';loadDashboardData();}catch(e){$('ccd-services-status').textContent=e.message;}finally{b.disabled=false;b.textContent='Save service permissions';}});
-  $('ccd-theme-save').addEventListener('click',async()=>{const btn=$('ccd-theme-save');btn.disabled=true;btn.textContent='Saving…';try{const r=await apiCall({action:'setShopDashboardTheme',shopId:slug,themeId:select.value,securityPin:$('ccd-theme-pin').value});if(r.status!=='success')throw new Error(r.message||'Theme was not saved.');$('ccd-theme-status').textContent='Saved. The shopkeeper dashboard will use this theme after refresh.';const store=allStoresCache.find(x=>x.shopId===slug);if(store)store.dashboardTheme=select.value;}catch(e){$('ccd-theme-status').textContent=e.message;}finally{btn.disabled=false;btn.textContent='Save dashboard theme';}});
+  $('ccd-merchant-pin-save').addEventListener('click',async()=>{const b=$('ccd-merchant-pin-save');b.disabled=true;b.textContent='Saving…';try{const r=await apiCall({action:'setMerchantAccessPin',shopId:slug,merchantPin:$('ccd-merchant-pin').value,adminPassword:$('ccd-theme-pin').value});if(r.status!=='success')throw new Error(r.message||'Merchant PIN was not saved.');$('ccd-merchant-pin-status').textContent=r.message;$('ccd-merchant-pin').value='';}catch(e){$('ccd-merchant-pin-status').textContent=e.message;}finally{b.disabled=false;b.textContent='Save merchant PIN';}});
+  $('ccd-services-save').addEventListener('click',async()=>{const b=$('ccd-services-save');b.disabled=true;b.textContent='Saving…';try{const r=await apiCall({action:'setShopServices',shopId:slug,customerConnectEnabled:$('ccd-service-phase1').checked,websitePricingEnabled:$('ccd-service-phase2').checked,adminPassword:$('ccd-theme-pin').value});if(r.status!=='success')throw new Error(r.message||'Service permissions were not saved.');if(currentStore)currentStore.services={customerConnectEnabled:$('ccd-service-phase1').checked,websitePricingEnabled:$('ccd-service-phase2').checked,configured:true};$('ccd-services-status').textContent='Saved. Changes are enforced by the backend immediately.';loadDashboardData();}catch(e){$('ccd-services-status').textContent=e.message;}finally{b.disabled=false;b.textContent='Save service permissions';}});
+  $('ccd-theme-save').addEventListener('click',async()=>{const btn=$('ccd-theme-save');btn.disabled=true;btn.textContent='Saving…';try{const r=await apiCall({action:'setShopDashboardTheme',shopId:slug,themeId:select.value,adminPassword:$('ccd-theme-pin').value});if(r.status!=='success')throw new Error(r.message||'Theme was not saved.');$('ccd-theme-status').textContent='Saved. The shopkeeper dashboard will use this theme after refresh.';const store=allStoresCache.find(x=>x.shopId===slug);if(store)store.dashboardTheme=select.value;}catch(e){$('ccd-theme-status').textContent=e.message;}finally{btn.disabled=false;btn.textContent='Save dashboard theme';}});
 }
-function requestEnableWebsiteAndView(slug,name){pendingDeleteSlug=slug;pendingLifecycleOperation='ENABLE_WEBSITE_VIEW';lastFocus=document.activeElement;$('modal-title').textContent=`Enable Phase 2 and view ${name || slug}?`;$('modal-desc').innerHTML=`Phase 2 enables the public shop website and pricing together. The change is saved for this shop and can be disabled later.<br><br><label for="lifecycle-security-pin">Admin security PIN</label><input id="lifecycle-security-pin" type="password" autocomplete="off" style="display:block;width:100%;padding:11px;margin-top:7px;border:1px solid #cbd5e1;border-radius:8px" placeholder="Enter ADMIN_SECURITY_PIN">`;$('btn-modal-confirm').textContent='Enable and view website';$('confirm-modal').classList.add('active');$('btn-modal-cancel').focus();}
+function requestEnableWebsiteAndView(slug,name){pendingDeleteSlug=slug;pendingLifecycleOperation='ENABLE_WEBSITE_VIEW';lastFocus=document.activeElement;$('modal-title').textContent=`Enable Phase 2 and view ${name || slug}?`;$('modal-desc').innerHTML=`Phase 2 enables the public shop website and pricing together. The change is saved for this shop and can be disabled later.<br><br><label for="lifecycle-security-pin">Admin password</label><input id="lifecycle-security-pin" type="password" autocomplete="off" style="display:block;width:100%;padding:11px;margin-top:7px;border:1px solid #cbd5e1;border-radius:8px" placeholder="Enter ADMIN_SETUP_PASSWORD">`;$('btn-modal-confirm').textContent='Enable and view website';$('confirm-modal').classList.add('active');$('btn-modal-cancel').focus();}
 function requestLifecycle(slug, operation, name) {
   pendingDeleteSlug=slug; pendingLifecycleOperation=operation; lastFocus=document.activeElement;
   const labels={SUSPEND:'Suspend',ARCHIVE:'Archive / delete',RESTORE:'Restore'};
   $('modal-title').textContent=`${labels[operation]} shop: ${name}?`;
-  $('modal-desc').innerHTML=`This action preserves the shop record and customer history. You can restore it later.<br><br><label for="lifecycle-security-pin">Admin security PIN</label><input id="lifecycle-security-pin" type="password" autocomplete="off" style="display:block;width:100%;padding:11px;margin-top:7px;border:1px solid #cbd5e1;border-radius:8px" placeholder="Enter ADMIN_SECURITY_PIN">`;
+  $('modal-desc').innerHTML=`This action preserves the shop record and customer history. You can restore it later.<br><br><label for="lifecycle-security-pin">Admin password</label><input id="lifecycle-security-pin" type="password" autocomplete="off" style="display:block;width:100%;padding:11px;margin-top:7px;border:1px solid #cbd5e1;border-radius:8px" placeholder="Enter ADMIN_SETUP_PASSWORD">`;
   $('btn-modal-confirm').textContent=labels[operation]; $('confirm-modal').classList.add('active'); $('btn-modal-cancel').focus();
 }
 
@@ -377,9 +392,9 @@ async function saveStoreContentChanges() {
     const mode = payload.experienceMode;
     const phase1 = mode !== 'MENU_ONLY';
     const phase2 = mode !== 'COMMUNICATION_ONLY';
-    const securityPin = $('ccd-theme-pin') ? $('ccd-theme-pin').value.trim() : '';
-    const serviceResult = await apiCall({action:'setShopServices',shopId:slug,customerConnectEnabled:phase1,websitePricingEnabled:phase2,securityPin});
-    if (serviceResult.status !== 'success') throw new Error('Content saved, but activation mode was not applied: ' + (serviceResult.message || 'Admin security PIN is required.'));
+    const adminPassword = $('ccd-theme-pin') ? $('ccd-theme-pin').value.trim() : '';
+    const serviceResult = await apiCall({action:'setShopServices',shopId:slug,customerConnectEnabled:phase1,websitePricingEnabled:phase2,adminPassword});
+    if (serviceResult.status !== 'success') throw new Error('Content saved, but activation mode was not applied: ' + (serviceResult.message || 'Admin password is required.'));
     showDbToast("Store experience, navigation and activation mode saved.");
     closeEditContentModal();
   } catch (err) {
@@ -511,56 +526,97 @@ if ($("btn-toggle-eye")) $("btn-toggle-eye").addEventListener("click", () => {
   $("btn-toggle-eye").setAttribute("aria-label", show ? "Hide password" : "Show password");
 });
 
-function parseJwt(token) {
-  try {
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    return JSON.parse(decodeURIComponent(atob(base64).split("").map(c => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)).join("")));
-  } catch (e) { return null; }
-}
-
-async function apiCall(body) {
-  const payload = Object.assign({}, body);
-  if (payload.action !== "adminAuth" && currentUser.sessionToken) payload.adminToken = currentUser.sessionToken;
-  const formPayload = new URLSearchParams();
-  formPayload.append("postData", JSON.stringify(payload));
-  const res = await fetch(SCRIPT_URL, { method: "POST", body: formPayload, redirect: "follow" });
-  const responseText = await res.text();
-  try { return JSON.parse(responseText); }
-  catch (err) { throw new Error("Invalid server response: " + responseText.slice(0, 100)); }
-}
-
+let adminIdleTimer = null;
+let adminHardTimer = null;
+let lastAdminTouchAt = 0;
 function setAuthLoading(on) {
   const card = document.querySelector(".auth-gate-card");
   if (card) card.classList.toggle("is-loading", on);
-  if ($("auth-status")) $("auth-status").hidden = !on;
+  if ($("auth-status")) { $("auth-status").hidden = !on; if(on) $("auth-status").textContent = 'Verifying Admin credentials…'; }
+  if ($("btn-admin-login")) $("btn-admin-login").disabled = !!on;
 }
-
-window.handleAdminLogin = async function(response) {
-  const payload = parseJwt(response.credential);
-  if (!payload || !payload.email || !response.credential) return;
-  const enteredPass = $("admin-pass") ? $("admin-pass").value.trim() : "";
+function clearAdminSessionTimers() {
+  if (adminIdleTimer) clearTimeout(adminIdleTimer);
+  if (adminHardTimer) clearTimeout(adminHardTimer);
+  adminIdleTimer = null; adminHardTimer = null;
+}
+function endAdminSession(message) {
+  clearAdminSessionTimers();
+  const oldToken = currentUser.sessionToken;
+  currentUser.sessionToken = '';
+  if (oldToken) apiCall({action:'adminLogout',adminToken:oldToken}).catch(()=>{});
+  if ($('auth-gate-overlay')) $('auth-gate-overlay').classList.remove('hidden');
+  if ($('auth-status')) { $('auth-status').hidden = false; $('auth-status').textContent = message || 'Your Admin session expired. Sign in again.'; }
+}
+function resetAdminIdleTimer() {
+  if (!currentUser.sessionToken) return;
+  if (adminIdleTimer) clearTimeout(adminIdleTimer);
+  adminIdleTimer = setTimeout(()=>endAdminSession('Your Admin session expired after 30 minutes of inactivity. Sign in again.'), 30*60*1000);
+  const now=Date.now();
+  if (now-lastAdminTouchAt>60000) {
+    lastAdminTouchAt=now;
+    apiCall({action:'adminTouchSession'}).catch(err=>{ if(/session expired/i.test(err.message)) endAdminSession(err.message); });
+  }
+}
+function startAdminSessionTimers() {
+  clearAdminSessionTimers();
+  adminHardTimer=setTimeout(()=>endAdminSession('Your Admin session reached its 8-hour limit. Sign in again.'),8*60*60*1000);
+  resetAdminIdleTimer();
+}
+['pointerdown','keydown','touchstart','click'].forEach(eventName=>document.addEventListener(eventName,resetAdminIdleTimer,{passive:true}));
+async function performAdminLogin(event) {
+  if(event) event.preventDefault();
+  const email=$('admin-email')?$('admin-email').value.trim().toLowerCase():'';
+  const password=$('admin-pass')?$('admin-pass').value:'';
+  if(!email||!password){showDbToast('Enter your Admin email and password.',true);return;}
   setAuthLoading(true);
   try {
-    const authData = await apiCall({ action: "adminAuth", idToken: response.credential, email: payload.email, password: enteredPass });
-    if (authData.status !== "success" || !authData.sessionToken) {
-      showDbToast(authData.message || "Access denied.", true);
-      return;
-    }
-    currentUser.name = payload.name || "Super Admin";
-    currentUser.email = payload.email.toLowerCase();
-    currentUser.sessionToken = authData.sessionToken;
-    if ($("user-name")) $("user-name").textContent = currentUser.name;
-    if ($("user-email")) $("user-email").textContent = currentUser.email;
-    $("auth-gate-overlay").classList.add("hidden");
+    const authData=await apiCall({action:'adminAuth',email,password});
+    if(authData.status!=='success'||!authData.sessionToken)throw new Error(authData.message||'Access denied.');
+    currentUser.name=authData.name||'Super Admin';currentUser.email=authData.email||email;currentUser.sessionToken=authData.sessionToken;
+    $('admin-pass').value='';
+    if($('user-name'))$('user-name').textContent=currentUser.name;
+    if($('user-email'))$('user-email').textContent=currentUser.email;
+    $('auth-gate-overlay').classList.add('hidden');
+    if($('auth-status'))$('auth-status').hidden=true;
     showDbToast(`Authenticated as Super-Admin: ${currentUser.email}`);
-    loadDashboardData();
-    initMessageCentre();
-    loadMessageTemplates().catch(err => { if ($("msg-action-status")) $("msg-action-status").textContent = err.message; });
-  } catch (err) {
-    showDbToast("Authentication failed: " + err.message, true);
-  } finally { setAuthLoading(false); }
-};
+    startAdminSessionTimers();
+    loadDashboardData();initMessageCentre();
+    loadMessageTemplates().catch(err=>{if($('msg-action-status'))$('msg-action-status').textContent=err.message;});
+  } catch(err) { showDbToast(err.message||'Authentication failed.',true); }
+  finally { setAuthLoading(false); }
+}
+async function startAdminRecovery() {
+  const button=$('btn-send-admin-otp');if(button){button.disabled=true;button.textContent='Sending…';}
+  try {
+    const r=await apiCall({action:'adminRecoveryStart',email:$('admin-recovery-email').value.trim()});
+    if(r.status!=='success')throw new Error(r.message||'Recovery could not be started.');
+    $('admin-recovery-verify').hidden=false;
+    if($('auth-status')){$('auth-status').hidden=false;$('auth-status').textContent=r.message||'Recovery OTP sent.';}
+  } catch(e) { showDbToast(e.message,true); }
+  finally {if(button){button.disabled=false;button.textContent='Resend recovery OTP';}}
+}
+async function resetAdminPassword() {
+  const otp=$('admin-recovery-otp').value.trim(),next=$('admin-recovery-new-password').value,confirm=$('admin-recovery-confirm-password').value;
+  if(next.length<12){showDbToast('New password must contain at least 12 characters.',true);return;}
+  if(next!==confirm){showDbToast('The new password and confirmation do not match.',true);return;}
+  const button=$('btn-reset-admin-password');button.disabled=true;button.textContent='Updating…';
+  try {
+    const r=await apiCall({action:'adminRecoveryVerify',email:$('admin-recovery-email').value.trim(),otp,newPassword:next});
+    if(r.status!=='success')throw new Error(r.message||'Password recovery failed.');
+    $('admin-recovery-otp').value='';$('admin-recovery-new-password').value='';$('admin-recovery-confirm-password').value='';$('admin-recovery-panel').hidden=true;
+    showDbToast(r.message||'Password updated. Sign in with your new password.');
+  } catch(e){showDbToast(e.message,true);} finally {button.disabled=false;button.textContent='Reset password';}
+}
+if($('admin-login-form'))$('admin-login-form').addEventListener('submit',performAdminLogin);
+if($('btn-forgot-admin-password'))$('btn-forgot-admin-password').addEventListener('click',()=>{$('admin-recovery-panel').hidden=false;if($('auth-status')){$('auth-status').hidden=true;}});
+if($('btn-back-admin-login'))$('btn-back-admin-login').addEventListener('click',()=>{$('admin-recovery-panel').hidden=true;if($('auth-status'))$('auth-status').hidden=true;});
+if($('btn-send-admin-otp'))$('btn-send-admin-otp').addEventListener('click',startAdminRecovery);
+if($('btn-reset-admin-password'))$('btn-reset-admin-password').addEventListener('click',resetAdminPassword);
+if ($("btn-toggle-eye")) $("btn-toggle-eye").addEventListener("click", () => {
+  const input = $("admin-pass");const show = input.type === "password";input.type = show ? "text" : "password";
+  $("btn-toggle-eye").setAttribute("aria-pressed", String(show));$("btn-toggle-eye").setAttribute("aria-label", show ? "Hide password" : "Show password");
+});
 
 function setSyncState(ok) {
   const v = $("stat-sync-state"), t = $("stat-sync-time");
@@ -592,7 +648,7 @@ async function loadDashboardData() {
 }
 
 
-// Persistent message centre. Template edits require the separately configured ADMIN_SECURITY_PIN.
+// Persistent message centre. Template edits require the separately configured ADMIN_SETUP_PASSWORD.
 let messageTemplatesCache=[];
 function messageVarsForShop(shop){return {ownerName:shop.ownerName||'Shop owner',shopName:shop.shopName||shop.shopId,shopId:shop.shopId,ownerEmail:shop.ownerEmail||'',ownerMobile:shop.ownerMobile||'',deskUrl:`https://${shop.shopId}.ccd.dev/nfc`,shopUrl:`https://${shop.shopId}.ccd.dev/`,merchantUrl:`https://${shop.shopId}.ccd.dev/merchant`,registrationStatus:shop.registrationStatus||'PENDING'};}
 function fillMessageShopSelect(){const sel=$('msg-shop-select');if(!sel)return;const old=sel.value;sel.innerHTML='<option value="">Select a shop</option>';allStoresCache.forEach(s=>{const o=document.createElement('option');o.value=s.shopId;o.textContent=`${s.shopName} (${s.shopId})`;sel.appendChild(o)});if(old)sel.value=old;}
@@ -605,13 +661,13 @@ function initMessageCentre(){
  $('msg-template-key').addEventListener('change',()=>{const t=getSelectedMessageTemplate();$('msg-subject').value=t?.subject||'';$('msg-body').value=t?.body||'';});
  $('msg-shop-select').addEventListener('change',()=>loadCommunicationLog().catch(e=>$('msg-action-status').textContent=e.message));
  $('msg-refresh-log').addEventListener('click',()=>loadCommunicationLog().catch(e=>$('msg-action-status').textContent=e.message));
- $('msg-save-template').addEventListener('click',async()=>{try{const r=await apiCall({action:'saveMessageTemplate',templateKey:$('msg-template-key').value.trim(),channel:$('msg-channel').value,subject:$('msg-subject').value,body:$('msg-body').value,securityPin:$('msg-security-pin').value});if(r.status!=='success')throw new Error(r.message);$('msg-action-status').textContent='Template saved. Future sends use this saved version.';await loadMessageTemplates();}catch(e){$('msg-action-status').textContent=e.message;}});
+ $('msg-save-template').addEventListener('click',async()=>{try{const r=await apiCall({action:'saveMessageTemplate',templateKey:$('msg-template-key').value.trim(),channel:$('msg-channel').value,subject:$('msg-subject').value,body:$('msg-body').value,adminPassword:$('msg-security-pin').value});if(r.status!=='success')throw new Error(r.message);$('msg-action-status').textContent='Template saved. Future sends use this saved version.';await loadMessageTemplates();}catch(e){$('msg-action-status').textContent=e.message;}});
  $('msg-send-email').addEventListener('click',async e=>{
   const btn=e.currentTarget,slug=$('msg-shop-select').value,key=$('msg-template-key').value.trim();
   if(!slug)return $('msg-action-status').textContent='Select a shop first.';
   if(key!=='OWNER_STATUS'||$('msg-channel').value!=='EMAIL')return $('msg-action-status').textContent='Choose OWNER_STATUS and Email to send an owner email. Customer and public shop templates apply automatically.';
   btn.disabled=true;btn.textContent='Saving & sending…';
-  try{const saved=await apiCall({action:'saveMessageTemplate',templateKey:key,channel:'EMAIL',subject:$('msg-subject').value,body:$('msg-body').value,securityPin:$('msg-security-pin').value});if(saved.status!=='success')throw new Error(saved.message||'Template could not be saved.');const r=await apiCall({action:'sendOwnerEmail',shopId:slug,templateKey:key,securityPin:$('msg-security-pin').value});if(r.status!=='success')throw new Error(r.message);btn.textContent='Sent';$('msg-action-status').textContent='SENT: Apps Script accepted the send request; inbox delivery is not confirmed.';await loadCommunicationLog();}
+  try{const saved=await apiCall({action:'saveMessageTemplate',templateKey:key,channel:'EMAIL',subject:$('msg-subject').value,body:$('msg-body').value,adminPassword:$('msg-security-pin').value});if(saved.status!=='success')throw new Error(saved.message||'Template could not be saved.');const r=await apiCall({action:'sendOwnerEmail',shopId:slug,templateKey:key,adminPassword:$('msg-security-pin').value});if(r.status!=='success')throw new Error(r.message);btn.textContent='Sent';$('msg-action-status').textContent='SENT: Apps Script accepted the send request; inbox delivery is not confirmed.';await loadCommunicationLog();}
   catch(err){btn.textContent='Send email';$('msg-action-status').textContent='Not sent: '+err.message;await loadCommunicationLog().catch(()=>{});}
   finally{btn.disabled=false;}
  });
@@ -622,9 +678,9 @@ function initMessageCentre(){
   const mobile=String(shop.ownerMobile||'').replace(/\D/g,'');if(mobile.length<10)return $('msg-action-status').textContent='Shop owner mobile number is invalid.';
   const popup=window.open('about:blank','_blank');if(!popup)return $('msg-action-status').textContent='Allow pop-ups to open the WhatsApp draft.';
   try{
-   const bodyText=$('msg-body').value;const saved=await apiCall({action:'saveMessageTemplate',templateKey:key,channel:'WHATSAPP',subject:'',body:bodyText,securityPin:$('msg-security-pin').value});if(saved.status!=='success')throw new Error(saved.message||'Template could not be saved.');
+   const bodyText=$('msg-body').value;const saved=await apiCall({action:'saveMessageTemplate',templateKey:key,channel:'WHATSAPP',subject:'',body:bodyText,adminPassword:$('msg-security-pin').value});if(saved.status!=='success')throw new Error(saved.message||'Template could not be saved.');
    const vars=messageVarsForShop(shop),body=bodyText.replace(/\{\{([a-zA-Z0-9_]+)\}\}/g,(_,k)=>vars[k]||'');
-   const r=await apiCall({action:'logWhatsAppDraft',shopId:shop.shopId,templateKey:key,securityPin:$('msg-security-pin').value});if(r.status!=='success')throw new Error(r.message);
+   const r=await apiCall({action:'logWhatsAppDraft',shopId:shop.shopId,templateKey:key,adminPassword:$('msg-security-pin').value});if(r.status!=='success')throw new Error(r.message);
    popup.location.href=`https://wa.me/${mobile.length===10?'91'+mobile:mobile}?text=${encodeURIComponent(body)}`;$('msg-action-status').textContent='WhatsApp draft prepared. Review it and press Send in WhatsApp; it is not marked as sent.';await loadCommunicationLog();
   }catch(err){popup.close();$('msg-action-status').textContent=err.message;await loadCommunicationLog().catch(()=>{});}
  });
@@ -775,10 +831,10 @@ if ($("btn-modal-confirm")) $("btn-modal-confirm").addEventListener("click", asy
   const btn=$('btn-modal-confirm'); btn.disabled=true;
   try {
     if(operation==='ENABLE_WEBSITE_VIEW'){
-      const popup=window.open('about:blank','_blank');const st=allStoresCache.find(x=>x.shopId===target),r=await apiCall({action:'setShopServices',shopId:target,customerConnectEnabled:!!(st&&st.services&&st.services.customerConnectEnabled),websitePricingEnabled:true,securityPin:pin});
+      const popup=window.open('about:blank','_blank');const st=allStoresCache.find(x=>x.shopId===target),r=await apiCall({action:'setShopServices',shopId:target,customerConnectEnabled:!!(st&&st.services&&st.services.customerConnectEnabled),websitePricingEnabled:true,adminPassword:pin});
       if(r.status!=='success')throw new Error(r.message||'Phase 2 could not be enabled.');if(popup)popup.location.href=`https://${target}.ccd.dev/`;showDbToast('Phase 2 enabled. Website opened.');closeModal();pendingDeleteSlug=null;loadDashboardData();return;
     }
-    const res=await apiCall({action:'setShopLifecycle',shopId:target,operation,securityPin:pin});
+    const res=await apiCall({action:'setShopLifecycle',shopId:target,operation,adminPassword:pin});
     if(res.status!=='success') throw new Error(res.message||'Lifecycle action failed.');
     showDbToast(res.message||'Shop updated.'); closeModal(); pendingDeleteSlug=null; loadDashboardData();
   } catch(e) { showDbToast(e.message||'Action failed.',true); }
@@ -827,7 +883,7 @@ window.sendOwnerLinks = async function(slug, includeDesk) {
   if($('msg-shop-select'))$('msg-shop-select').value=slug;
   if($('msg-channel'))$('msg-channel').value='WHATSAPP';
   if($('msg-template-key'))$('msg-template-key').value='OWNER_STATUS';
-  try{await loadMessageTemplates();$('msg-channel').value='WHATSAPP';$('msg-template-key').value='OWNER_STATUS';const t=getSelectedMessageTemplate();if(t){$('msg-subject').value=t.subject||'';$('msg-body').value=t.body||'';}await loadCommunicationLog();showDbToast('Owner WhatsApp template loaded. Review/edit it, enter your security PIN, then prepare the draft.');}catch(e){showDbToast(e.message||'Could not load message template.',true);}
+  try{await loadMessageTemplates();$('msg-channel').value='WHATSAPP';$('msg-template-key').value='OWNER_STATUS';const t=getSelectedMessageTemplate();if(t){$('msg-subject').value=t.subject||'';$('msg-body').value=t.body||'';}await loadCommunicationLog();showDbToast('Owner WhatsApp template loaded. Review/edit it, enter your Admin password, then prepare the draft.');}catch(e){showDbToast(e.message||'Could not load message template.',true);}
 };
 
 window.openStudioForStore = function(slug) {
@@ -885,5 +941,5 @@ window.downloadStudioQr = function(type) {
 };
 
 if ($("btn-refresh-overview")) $("btn-refresh-overview").addEventListener("click", () => { showDbToast("Refreshing Master-Sheet data..."); loadDashboardData(); });
-if ($("btn-logout")) $("btn-logout").addEventListener("click", () => { currentUser.sessionToken = ""; location.reload(); });
+if ($("btn-logout")) $("btn-logout").addEventListener("click", () => { endAdminSession("You have signed out."); location.reload(); });
 window.addEventListener("DOMContentLoaded", () => { handleWizardEnterKey(); ensureGlobalPolicyEditor(); if (window.CCDLoading) window.CCDLoading.finish(); });

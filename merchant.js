@@ -7,12 +7,20 @@ let merchantToken = "";
 let merchantStoreConfig = null;
 let merchantCustomerTimer = null;
 let merchantPricingInitialized = false;
+let merchantIdleTimer=null,merchantHardTimer=null,merchantLastTouchAt=0;
 if (window.CCDLoading) window.CCDLoading.hold();
 
 const MERCHANT_THEME_MAP = {
 'midnight-blue':['#080d1a','#111c33','#2563eb','#f8fafc','#9fb2d1'],'obsidian-cyan':['#090f12','#142329','#06b6d4','#f1fcff','#9ab6bf'],'slate-indigo':['#111827','#1f2937','#6366f1','#f8fafc','#cbd5e1'],'graphite-blue':['#101820','#1c2b3a','#3b82f6','#f4f8ff','#a9bbd0'],'navy-ice':['#0b1730','#152b4d','#60a5fa','#f3f8ff','#b7c9e6'],'carbon-electric':['#0a0a0b','#1b1b20','#38bdf8','#ffffff','#a1a1aa'],'royal-night':['#15102b','#261b46','#8b5cf6','#fbfaff','#c4b5fd'],'ocean-dark':['#06202b','#0b3542','#14b8a6','#f0fdfa','#99c8c7'],'deep-space':['#080b20','#151a3a','#818cf8','#f5f5ff','#b8bce8'],'steel-blue':['#17212b','#263746','#0ea5e9','#f4f9fc','#b0c1cf'],'arctic-light':['#eaf3f9','#ffffff','#1677c8','#102a43','#57738a'],'cloud-blue':['#f1f6fc','#ffffff','#2563eb','#14243a','#637b99'],'pearl-indigo':['#f5f3ff','#ffffff','#5b4bdb','#211b3b','#77708f'],'frost-cyan':['#effbfc','#ffffff','#0891b2','#12313a','#5e7d84'],'minimal-slate':['#f1f3f5','#ffffff','#475569','#17202a','#697586'],'white-blue':['#f7faff','#ffffff','#1d4ed8','#14213d','#64748b'],'soft-lavender':['#f7f3ff','#ffffff','#7c3aed','#24143d','#7b6b91'],'emerald-night':['#071b16','#102c23','#10b981','#effff8','#9dcbb7'],'teal-studio':['#eaf7f5','#ffffff','#0f766e','#123b39','#5d817d'],'mono-pro':['#151515','#242424','#e5e7eb','#ffffff','#b6b6b6']};
 function applyMerchantServiceVisibility(flags){const f=flags||{};const phase1=!!f.customerConnectEnabled,phase2=!!f.websitePricingEnabled;[['merchant-metrics-section',phase1],['merchant-customer-section',phase1],['merchant-approval-section',phase1],['merchant-communication-section',phase1],['status-card-box',phase2],['merchant-promo-section',false],['merchant-contact-section',false],['merchant-pricing-section',false],['preview-storefront-btn',phase2]].forEach(([id,visible])=>{const el=$(id);if(el)el.hidden=!visible;});}
 function applyMerchantDashboardTheme(themeId){const t=MERCHANT_THEME_MAP[themeId]||MERCHANT_THEME_MAP['midnight-blue'];const root=document.documentElement;root.style.setProperty('--bg',t[0]);root.style.setProperty('--surface',t[1]);root.style.setProperty('--accent',t[2]);root.style.setProperty('--ink',t[3]);root.style.setProperty('--muted',t[4]);root.style.setProperty('--line',t[4]+'55');root.dataset.ccdTheme=themeId||'midnight-blue';let st=document.getElementById('ccd-theme-overrides');if(!st){st=document.createElement('style');st.id='ccd-theme-overrides';document.head.appendChild(st);}st.textContent=`body{background:var(--bg)!important;color:var(--ink)!important}.merchant-header{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}.merchant-brand,.merchant-brand strong,.icon-button{color:var(--ink)!important}.icon-button{background:var(--surface)!important;border-color:var(--line)!important}.brand-icon,.secure-tag{background:var(--accent)!important;color:#fff!important}.card,.metric-card,#merchant-customer-section,#merchant-pricing-section{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}.card h1,.card h2,.card h3,.card strong,.metric-card strong,#merchant-customer-section strong,#merchant-approval-section strong,#merchant-communication-section strong{color:var(--ink)!important}.card p,.card small,.card .subtext,.metric-card span,#merchant-customer-section span,#merchant-approval-section div,#merchant-communication-section small{color:var(--muted)!important}.btn-primary,#merchant-save-pricing{background:var(--accent)!important;border-color:var(--accent)!important;color:${['#e5e7eb','#ffffff','#f8fafc','#f4f8ff','#f3f8ff','#ffffff','#fbfaff','#f0fdfa','#f5f5ff','#f4f9fc'].includes(t[2])?'#111827':'#ffffff'}!important}.text-input,.pin-input{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}`;}
+
+
+function clearMerchantSessionTimers(){if(merchantIdleTimer)clearTimeout(merchantIdleTimer);if(merchantHardTimer)clearTimeout(merchantHardTimer);merchantIdleTimer=null;merchantHardTimer=null;}
+function endMerchantSession(message){clearMerchantSessionTimers();if(merchantCustomerTimer){clearInterval(merchantCustomerTimer);merchantCustomerTimer=null;}sessionStorage.removeItem(`merchant_auth_${currentSlug}`);merchantToken='';if($('auth-backdrop'))$('auth-backdrop').classList.add('active');['status-card-box','merchant-metrics-section','merchant-promo-section','merchant-contact-section','merchant-customer-section','merchant-approval-section','merchant-communication-section','merchant-pricing-section'].forEach(id=>{const el=$(id);if(el)el.hidden=true;});if(message)showToast(message,true);}
+function resetMerchantIdleTimer(){if(!merchantToken)return;if(merchantIdleTimer)clearTimeout(merchantIdleTimer);merchantIdleTimer=setTimeout(()=>endMerchantSession('Your Merchant session expired after 30 minutes of inactivity. Sign in again.'),30*60*1000);const now=Date.now();if(now-merchantLastTouchAt>60000){merchantLastTouchAt=now;apiPost({action:'merchantTouchSession',shopId:currentSlug,merchantToken}).catch(e=>{if(/session expired/i.test(e.message||''))endMerchantSession(e.message);});}}
+function startMerchantSessionTimers(){clearMerchantSessionTimers();merchantHardTimer=setTimeout(()=>endMerchantSession('Your Merchant session reached its 8-hour limit. Sign in again.'),8*60*60*1000);resetMerchantIdleTimer();}
+['pointerdown','keydown','touchstart','click'].forEach(name=>document.addEventListener(name,resetMerchantIdleTimer,{passive:true}));
 
 function showToast(msg, isError = false) {
   const box = $("toast-box");
@@ -159,8 +167,7 @@ async function loadMerchantCustomers() {
   } catch (err) {
     if (list) list.innerHTML = `<p style="color:#b91c1c">${escapeHtml(err.message || 'Unable to load customer visits.')}</p>`;
     if (/session expired/i.test(err.message || '')) {
-      sessionStorage.removeItem(`merchant_auth_${currentSlug}`);
-      merchantToken = '';
+      endMerchantSession('Your Merchant session expired. Verify your email or use your shop PIN again.');
       if ($('auth-backdrop')) $('auth-backdrop').classList.add('active');
       if ($('pin-input')) { $('pin-input').value = ''; $('pin-input').focus(); }
       const customerSection = $('merchant-customer-section');
@@ -191,10 +198,7 @@ function verifyAuth() {
   const overlay = $("auth-backdrop");
   if (!merchantToken && overlay) {
     overlay.classList.add("active");
-    if ($("pin-input")) {
-      $("pin-input").value = "";
-      $("pin-input").focus();
-    }
+    if ($("merchant-email-otp")) $("merchant-email-otp").value = "";
   }
 }
 
@@ -227,6 +231,7 @@ async function initDashboard() {
   if ($("preview-storefront-btn")) $("preview-storefront-btn").href = `https://${currentSlug}.ccd.dev/`;
 
   verifyAuth();
+  if(merchantToken)startMerchantSessionTimers();
 
   try {
     const data = await apiPost({ action: "getStoreConfig", shopId: currentSlug, clientType: "MERCHANT_BOOTSTRAP" });
@@ -264,33 +269,54 @@ async function initDashboard() {
   }
 }
 
-const unlockBtn = $("btn-unlock");
-if (unlockBtn) {
-  unlockBtn.addEventListener("click", async () => {
-    const pin = $("pin-input") ? $("pin-input").value.trim() : "";
-    if (!/^\d{6,12}$/.test(pin)) return showToast("Enter the 6–12 digit merchant PIN configured by CCD Admin.", true);
-    unlockBtn.disabled = true;
-    unlockBtn.textContent = "Verifying...";
-    try {
-      const result = await apiPost({ action: "verifyMerchantPin", shopId: currentSlug, pin });
-      if (!result.authorized || !result.sessionToken) throw new Error(result.message || "PIN verification failed.");
-      merchantToken = result.sessionToken;
-      sessionStorage.setItem(`merchant_auth_${currentSlug}`, merchantToken);
-      if ($("auth-backdrop")) $("auth-backdrop").classList.remove("active");
-      ensureMerchantExtraSections();
-      await loadMerchantCustomers();
-      if (merchantCustomerTimer) clearInterval(merchantCustomerTimer);
-      merchantCustomerTimer = setInterval(() => { if (merchantToken && !document.hidden) loadMerchantCustomers(); }, 15000);
-      showToast("Dashboard unlocked successfully.");
-    } catch (err) {
-      showToast(err.message || "Verification error. Check your connection.", true);
-      if ($("pin-input")) { $("pin-input").value = ""; $("pin-input").focus(); }
-    } finally {
-      unlockBtn.disabled = false;
-      unlockBtn.textContent = "Unlock Dashboard";
-    }
-  });
-}
+const sendMerchantOtpBtn = $('btn-send-email-otp');
+if (sendMerchantOtpBtn) sendMerchantOtpBtn.addEventListener('click', async () => {
+  sendMerchantOtpBtn.disabled=true;sendMerchantOtpBtn.textContent='Sending OTP…';
+  try {
+    const r=await apiPost({action:'merchantOtpStart',shopId:currentSlug});
+    if(r.status!=='success')throw new Error(r.message||'Could not send merchant OTP.');
+    if($('merchant-email-otp-step'))$('merchant-email-otp-step').hidden=false;
+    if($('merchant-otp-destination'))$('merchant-otp-destination').textContent=r.message||('Code sent to '+(r.maskedEmail||'registered email'));
+    if($('merchant-email-otp'))$('merchant-email-otp').focus();
+    showToast(r.message||'Merchant OTP sent.');
+  } catch(e) {showToast(e.message||'Could not send email OTP.',true);}
+  finally {sendMerchantOtpBtn.disabled=false;sendMerchantOtpBtn.textContent='Resend email OTP';}
+});
+const verifyMerchantOtpBtn=$('btn-verify-email-otp');
+if(verifyMerchantOtpBtn)verifyMerchantOtpBtn.addEventListener('click',async()=>{
+  const otp=$('merchant-email-otp')?$('merchant-email-otp').value.trim():'';
+  if(!/^\d{6}$/.test(otp))return showToast('Enter the six-digit code sent to the registered merchant email.',true);
+  verifyMerchantOtpBtn.disabled=true;verifyMerchantOtpBtn.textContent='Verifying…';
+  try{
+    const result=await apiPost({action:'merchantOtpVerify',shopId:currentSlug,otp});
+    if(!result.authorized||!result.sessionToken)throw new Error(result.message||'Email OTP verification failed.');
+    merchantToken=result.sessionToken;sessionStorage.setItem(`merchant_auth_${currentSlug}`,merchantToken);startMerchantSessionTimers();
+    if($('auth-backdrop'))$('auth-backdrop').classList.remove('active');
+    ensureMerchantExtraSections();await loadMerchantCustomers();
+    if(merchantCustomerTimer)clearInterval(merchantCustomerTimer);
+    merchantCustomerTimer=setInterval(()=>{if(merchantToken&&!document.hidden)loadMerchantCustomers();},15000);
+    showToast('Merchant email verified. Dashboard unlocked.');
+  }catch(e){showToast(e.message||'OTP verification failed.',true);if($('merchant-email-otp')){$('merchant-email-otp').value='';$('merchant-email-otp').focus();}}
+  finally{verifyMerchantOtpBtn.disabled=false;verifyMerchantOtpBtn.textContent='Verify OTP & unlock';}
+});
+if($('use-pin-login'))$('use-pin-login').addEventListener('click',()=>{if($('pin-login-panel'))$('pin-login-panel').hidden=false;if($('pin-input'))$('pin-input').focus();});
+const unlockBtn = $('btn-unlock');
+if (unlockBtn) unlockBtn.addEventListener('click', async () => {
+  const pin = $('pin-input') ? $('pin-input').value.trim() : '';
+  if (!/^\d{6,12}$/.test(pin)) return showToast('Enter the 6–12 digit merchant PIN configured by CCD Admin.', true);
+  unlockBtn.disabled = true; unlockBtn.textContent = 'Verifying…';
+  try {
+    const result = await apiPost({ action: 'verifyMerchantPin', shopId: currentSlug, pin });
+    if (!result.authorized || !result.sessionToken) throw new Error(result.message || 'PIN verification failed.');
+    merchantToken = result.sessionToken;sessionStorage.setItem(`merchant_auth_${currentSlug}`, merchantToken);startMerchantSessionTimers();
+    if ($('auth-backdrop')) $('auth-backdrop').classList.remove('active');
+    ensureMerchantExtraSections();await loadMerchantCustomers();
+    if (merchantCustomerTimer) clearInterval(merchantCustomerTimer);
+    merchantCustomerTimer = setInterval(() => { if (merchantToken && !document.hidden) loadMerchantCustomers(); }, 15000);
+    showToast('Dashboard unlocked successfully.');
+  } catch (err) {showToast(err.message || 'Verification error. Check your connection.', true);if ($('pin-input')) { $('pin-input').value = ''; $('pin-input').focus(); }}
+  finally {unlockBtn.disabled = false;unlockBtn.textContent = 'Unlock with PIN';}
+});
 
 if ($("pin-input")) $("pin-input").addEventListener("keydown", e => { if (e.key === "Enter" && unlockBtn) unlockBtn.click(); });
 if ($("btn-logout")) $("btn-logout").addEventListener("click", () => {
