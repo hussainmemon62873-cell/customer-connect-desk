@@ -4,7 +4,11 @@ if (window.CCDLoading) window.CCDLoading.hold();
 // Zero Browser Alerts + Step Validation + Master-Sheet Sync
 // ==========================================
 
+<<<<<<< HEAD
+const SCRIPT_URL = location.hostname === 'customer-connect-desk.pages.dev' ? 'https://admin.ccd.dev/api' : new URL('/api', location.origin).toString();
+=======
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxCuJf9iM2gzpEY_KpYpnEqxRwUZDRk3Adu4ATMqHFBn5q5NDed1YhLwWR25tDm9NCl/exec";
+>>>>>>> bc46469a2d2eb5b670d695aee4c1222c0ee69eac
 const BASE_DOMAIN = "https://ccd.dev";
 
 let currentUser = { name: "", email: "", sessionToken: "" };
@@ -20,22 +24,27 @@ const $ = id => document.getElementById(id);
 const ico = name => `<svg class="i" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 const esc = v => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-// Shared Admin API transport. Credentials and the issued session token remain in memory only.
+// Shared Admin API transport. Passwords and issued session tokens remain in memory only.
 async function apiCall(payload = {}) {
   const action = String(payload.action || '');
   const request = { ...payload };
   if (!['adminAuth','adminRecoveryStart','adminRecoveryVerify'].includes(action) && currentUser.sessionToken && !request.adminToken) request.adminToken = currentUser.sessionToken;
   let response;
-  try { response = await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, cache:'no-store', body:JSON.stringify(request) }); }
-  catch (error) { throw new Error('Could not reach the CCD Apps Script API. Check the Web App deployment URL and network connection.'); }
+  try {
+    response = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store', body: JSON.stringify(request) });
+  } catch (error) {
+    throw new Error('Could not reach the CCD API gateway. Deploy the updated Cloudflare Worker and confirm the admin.ccd.dev route.');
+  }
+  const raw = await response.text();
   let result;
-  try { result = await response.json(); }
-  catch (error) { throw new Error('The CCD Apps Script API returned an unreadable response. Check the deployed backend version.'); }
+  try { result = JSON.parse(raw); }
+  catch (error) {
+    if (/accounts\.google\.com|ServiceLogin|Google Accounts|<html[\s>]/i.test(raw)) throw new Error('Google Apps Script returned a Google sign-in page instead of JSON. Set the Web App to Execute as: Me and Who has access: Anyone, then deploy a new version.');
+    throw new Error('The CCD API gateway returned an unreadable response. Confirm that the latest Cloudflare Worker is deployed.');
+  }
   if (!response.ok || !result || typeof result !== 'object' || Array.isArray(result)) throw new Error((result && result.message) || 'The CCD API request failed (' + response.status + ').');
   return result;
 }
-
-
 const CCD_CATEGORY_LABELS = {
   general:'General business', salon:'Beauty salon & wellness', restaurant:'Restaurant & cafe', retail:'Retail & fashion',
   grocery:'Grocery & supermarket', electronics:'Electronics & appliances', clinic:'Clinic & healthcare',
@@ -518,14 +527,6 @@ function handleWizardEnterKey() {
   }));
 }
 
-if ($("btn-toggle-eye")) $("btn-toggle-eye").addEventListener("click", () => {
-  const input = $("admin-pass");
-  const show = input.type === "password";
-  input.type = show ? "text" : "password";
-  $("btn-toggle-eye").setAttribute("aria-pressed", String(show));
-  $("btn-toggle-eye").setAttribute("aria-label", show ? "Hide password" : "Show password");
-});
-
 let adminIdleTimer = null;
 let adminHardTimer = null;
 let lastAdminTouchAt = 0;
@@ -613,10 +614,6 @@ if($('btn-forgot-admin-password'))$('btn-forgot-admin-password').addEventListene
 if($('btn-back-admin-login'))$('btn-back-admin-login').addEventListener('click',()=>{$('admin-recovery-panel').hidden=true;if($('auth-status'))$('auth-status').hidden=true;});
 if($('btn-send-admin-otp'))$('btn-send-admin-otp').addEventListener('click',startAdminRecovery);
 if($('btn-reset-admin-password'))$('btn-reset-admin-password').addEventListener('click',resetAdminPassword);
-if ($("btn-toggle-eye")) $("btn-toggle-eye").addEventListener("click", () => {
-  const input = $("admin-pass");const show = input.type === "password";input.type = show ? "text" : "password";
-  $("btn-toggle-eye").setAttribute("aria-pressed", String(show));$("btn-toggle-eye").setAttribute("aria-label", show ? "Hide password" : "Show password");
-});
 
 function setSyncState(ok) {
   const v = $("stat-sync-state"), t = $("stat-sync-time");

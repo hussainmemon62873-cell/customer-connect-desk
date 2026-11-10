@@ -37,6 +37,101 @@ async function callAppsScript(payload, env) {
   if (!response.ok) return null;
   try { return await response.json(); } catch (error) { return null; }
 }
+
+// First-party API gateway for browser clients. This prevents browser fetch() from
+// receiving a Google Apps Script login/redirect page and keeps GAS_URL server-side.
+function apiCorsHeaders(request, host) {
+  const origin = request.headers.get('origin') || '';
+  if (!origin) return { allowed: true, headers: {} };
+  const requestOrigin = new URL(request.url).origin;
+  const pagesFallbackOrigin = host === 'admin.ccd.dev' && origin === 'https://customer-connect-desk.pages.dev';
+  if (origin !== requestOrigin && !pagesFallbackOrigin) return { allowed: false, headers: {} };
+  return { allowed: true, headers: {
+    'access-control-allow-origin': origin,
+    'access-control-allow-methods': 'GET, POST, OPTIONS',
+    'access-control-allow-headers': 'Content-Type',
+    'access-control-max-age': '86400',
+    'vary': 'Origin'
+  }};
+}
+function isValidCcdApiHost(host) {
+  return host !== 'media.ccd.dev' && (ALLOWED_ROOT_HOSTS.has(host) || !!getTenant(host));
+}
+function googleDeploymentError(response, body) {
+  const finalHost = (() => { try { return new URL(response.url).hostname.toLowerCase(); } catch (err) { return ''; } })();
+  const sample = String(body || '').slice(0, 6000);
+  return finalHost === 'accounts.google.com' || /accounts\.google\.com|ServiceLogin|Sign in to continue|Google Accounts|identifierNext|passwordNext/i.test(sample);
+}
+async function readAppsScriptJson(response) {
+  const body = await response.text();
+  let parsed = null;
+  try { parsed = JSON.parse(body); } catch (err) {}
+  return { body, parsed };
+}
+async function handleApiHealth(request, env, host) {
+  const corsResult = apiCorsHeaders(request, host);
+  if (!corsResult.allowed) return json({ status: 'error', code: 'ORIGIN_DENIED', message: 'This webpage origin is not allowed to call the CCD API.' }, 403);
+  const headers = corsResult.headers;
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
+  if (request.method !== 'GET') return json({ status: 'error', message: 'GET required for the connection check.' }, 405, headers);
+  if (!env.GAS_URL || !/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(String(env.GAS_URL))) {
+    return json({ status: 'error', code: 'GAS_URL_MISSING', message: 'The Cloudflare Worker GAS_URL variable is missing or invalid.' }, 503, headers);
+  }
+  try {
+    const response = await fetch(env.GAS_URL, { method: 'GET', redirect: 'follow', headers: { accept: 'application/json' }, signal: AbortSignal.timeout(15000) });
+    const { body, parsed } = await readAppsScriptJson(response);
+    if (!response.ok || !parsed || typeof parsed !== 'object' || Array.isArray(parsed) || parsed.status !== 'success' || parsed.isPlatformRoot !== true) {
+      if (googleDeploymentError(response, body)) return json({ status: 'error', code: 'GOOGLE_AUTH_REQUIRED', message: 'Google Apps Script is requesting Google sign-in instead of returning the public CCD response. Set the Web App to Execute as: Me and Who has access: Anyone, then deploy a new version.' }, 502, headers);
+      return json({ status: 'error', code: 'GAS_HEALTH_FAILED', message: 'Apps Script did not return the expected CCD health response. Confirm that GAS_URL points to the current CCD /exec deployment.' }, 502, headers);
+    }
+    return json({ status: 'success', gateway: 'Cloudflare Worker', backend: 'Google Apps Script', reachable: true, message: 'Cloudflare API gateway and Google Apps Script are reachable.' }, 200, headers);
+  } catch (error) {
+    return json({ status: 'error', code: 'GAS_UNREACHABLE', message: 'Cloudflare could not reach Google Apps Script. Check the GAS_URL Worker variable and Apps Script deployment.' }, 502, headers);
+  }
+}
+async function handleApiGateway(request, env, host) {
+  const corsResult = apiCorsHeaders(request, host);
+  if (!corsResult.allowed) return json({ status: 'error', code: 'ORIGIN_DENIED', message: 'This webpage origin is not allowed to call the CCD API.' }, 403);
+  const headers = corsResult.headers;
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers });
+  if (request.method !== 'POST') return json({ status: 'error', message: 'POST required for CCD API actions.' }, 405, headers);
+  if (!env.GAS_URL || !/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(String(env.GAS_URL))) {
+    return json({ status: 'error', code: 'GAS_URL_MISSING', message: 'The Cloudflare Worker GAS_URL variable is missing or invalid.' }, 503, headers);
+  }
+  let raw = '';
+  let payload;
+  try {
+    raw = await request.text();
+    if (new TextEncoder().encode(raw).byteLength > 500000) return json({ status: 'error', message: 'Request is too large.' }, 413, headers);
+    payload = JSON.parse(raw);
+  } catch (error) {
+    return json({ status: 'error', message: 'The CCD API request must contain valid JSON.' }, 400, headers);
+  }
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload) || typeof payload.action !== 'string' || !payload.action.trim()) {
+    return json({ status: 'error', message: 'A valid CCD API action is required.' }, 400, headers);
+  }
+  const form = new URLSearchParams();
+  form.set('postData', JSON.stringify(payload));
+  try {
+    const response = await fetch(env.GAS_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded;charset=UTF-8', accept: 'application/json' },
+      body: form.toString(),
+      redirect: 'follow',
+      signal: AbortSignal.timeout(55000)
+    });
+    const { body, parsed } = await readAppsScriptJson(response);
+    if (!response.ok || !parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      if (googleDeploymentError(response, body)) return json({ status: 'error', code: 'GOOGLE_AUTH_REQUIRED', message: 'Google Apps Script is requesting Google sign-in. Set the Web App to Execute as: Me and Who has access: Anyone, then deploy a new version.' }, 502, headers);
+      return json({ status: 'error', code: 'GAS_BAD_RESPONSE', message: 'Google Apps Script did not return readable JSON. Check the deployment and Apps Script execution log.' }, 502, headers);
+    }
+    return json(parsed, 200, headers);
+  } catch (error) {
+    const timedOut = /timeout|aborted/i.test(String(error && error.message || error));
+    return json({ status: 'error', code: timedOut ? 'GAS_TIMEOUT' : 'GAS_UNREACHABLE', message: timedOut ? 'The CCD backend took too long to respond. Retry the request.' : 'Cloudflare could not reach Google Apps Script. Check the Worker route and GAS_URL.' }, 502, headers);
+  }
+}
+
 async function cachedAppsScript(payload, cacheKey, ttlSeconds, env) {
   const keyRequest = new Request('https://seo-cache.ccd.dev/' + encodeURIComponent(cacheKey));
   let cache = null;
@@ -293,7 +388,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const host = url.hostname.toLowerCase();
-    if (host === 'www.ccd.dev') {
+    if (host === 'www.ccd.dev' && url.pathname !== '/api' && url.pathname !== '/api/health') {
       const next = new URL(request.url);
       next.hostname = 'ccd.dev';
       return Response.redirect(next.toString(), 301);
@@ -319,6 +414,14 @@ export default {
       return new Response(request.method === 'HEAD' ? null : object.body, { headers: h });
     }
     if (url.pathname === '/upload' && host === 'admin.ccd.dev') return applySecurityHeaders(await handleUpload(request, env, request.headers.get('origin') || ''), host);
+    if ((url.pathname === '/api' || url.pathname === '/api/health') && isValidCcdApiHost(host)) {
+      const apiResponse = url.pathname === '/api/health'
+        ? await handleApiHealth(request, env, host)
+        : await handleApiGateway(request, env, host);
+      const securedApiResponse = applySecurityHeaders(apiResponse, host);
+      if (apiResponse.headers.has('access-control-allow-origin')) securedApiResponse.headers.set('cross-origin-resource-policy', 'cross-origin');
+      return securedApiResponse;
+    }
     if (!ALLOWED_ROOT_HOSTS.has(host) && !getTenant(host)) return applySecurityHeaders(new Response('Unknown CCD host.', { status: 404 }), host);
     if (!env.PAGES_ORIGIN) return applySecurityHeaders(new Response('Worker is missing PAGES_ORIGIN.', { status: 503 }), host);
     if (request.method === 'GET' || request.method === 'HEAD') {

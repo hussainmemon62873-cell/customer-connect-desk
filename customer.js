@@ -1,5 +1,5 @@
 // Customer Hub: email OTP verified profile access. No profile data or token is persisted.
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyoFCx6UgGKFmgDxkQePZOuWhWEGqNn5wro0qXfGvb8d31hhTkzZKjMFnCDB9z93wmi/exec";
+const SCRIPT_URL = location.hostname === 'customer-connect-desk.pages.dev' ? 'https://admin.ccd.dev/api' : new URL('/api', location.origin).toString();
 const $ = id => document.getElementById(id);
 let toastTimer = null;
 let customerToken = "";

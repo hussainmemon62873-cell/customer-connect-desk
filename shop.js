@@ -1,4 +1,4 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzNPnuDhiXOrm4-tRJJ7wXpb7PMwifLQfK-i3pbW-QaOrU74fm-PFgh9aT2sntGLZgx/exec";
+const SCRIPT_URL = location.hostname === 'customer-connect-desk.pages.dev' ? 'https://admin.ccd.dev/api' : new URL('/api', location.origin).toString();
 
 let globalStoreData = null;
 let carouselIndex = 0;

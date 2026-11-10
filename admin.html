@@ -4,9 +4,9 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#ffffff"><meta name="description" content="Customer Connect Desk Super Admin">
   <title>Customer Connect Desk | Super Admin</title>
-  <link rel="stylesheet" href="admin.css">
+  <link rel="stylesheet" href="admin.css?v=20261110-gateway2">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
-  <script>window.CCD_MEDIA_WORKER_URL = "https://admin.ccd.dev";</script><script src="admin.js" defer></script>
+  <script>window.CCD_MEDIA_WORKER_URL = "https://admin.ccd.dev";</script><script src="admin-auth-ui.js?v=20261110-gateway2" defer></script><script src="admin.js?v=20261110-gateway2" defer></script>
 <link rel="stylesheet" href="brand-loader.css"><link rel="stylesheet" href="premium-ui.css">  <meta name="robots" content="noindex,nofollow,noarchive">
 </head>
 <body><div id="ccd-brand-loader" role="status" aria-live="polite" aria-label="Loading MPlus secure dynamic transactions"><div class="ccd-loader-panel"><img class="ccd-loader-logo" src="assets/mplus-logo.png" alt="MPlus — Secure, Fast Dynamic Transactions"><p class="ccd-loader-tagline">Secure · Fast · Dynamic Transactions</p><div class="ccd-loader-track" aria-hidden="true"></div><p class="ccd-loader-caption">Preparing your CCD workspace</p></div></div><script src="brand-loader.js"></script>
@@ -20,9 +20,11 @@
     <form id="admin-login-form" autocomplete="on">
       <label for="admin-email">Admin email</label><input id="admin-email" type="email" value="hussainmemon2956@gmail.com" autocomplete="username" readonly>
       <label for="admin-pass">Admin password</label>
-      <div class="password-field"><input id="admin-pass" type="password" autocomplete="current-password" placeholder="Enter Admin password" required><button id="btn-toggle-eye" type="button" aria-label="Show password">Show</button></div>
+      <div class="password-field"><input id="admin-pass" type="password" autocomplete="current-password" placeholder="Enter Admin password" required><button id="btn-toggle-eye" type="button" aria-label="Show password" aria-controls="admin-pass" aria-pressed="false">Show</button></div>
       <button id="btn-admin-login" class="btn btn-primary" type="submit">Sign in</button>
     </form>
+    <div class="auth-connection-check"><div class="auth-connection-copy"><strong>Backend connection</strong><span id="admin-connection-status" role="status" aria-live="polite">Checking Cloudflare gateway and Google Apps Script…</span></div><button id="btn-admin-connection-check" class="btn btn-quiet" type="button">Check connection</button></div>
+    <p class="auth-help-note">This Admin page uses your registered CCD email and the Admin password stored in Apps Script. It does not use Google Sign-In.</p>
     <button id="btn-forgot-admin-password" class="btn btn-quiet" type="button">Forgot password?</button>
     <section id="admin-recovery-panel" hidden style="margin-top:16px;text-align:left">
       <h2 style="font-size:18px">Recover Admin password</h2><p class="muted">A one-time code will be sent to your registered Admin email.</p>
